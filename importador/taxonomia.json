@@ -1,0 +1,294 @@
+{
+    "orden_generos": [
+        "Acción",
+        "Aventura",
+        "Ciencia ficción",
+        "Comedia",
+        "Crimen",
+        "Drama",
+        "Fantasía",
+        "Musical",
+        "Romance",
+        "Terror",
+        "Thriller",
+        "Western",
+        "Bélico",
+        "Misterio"
+    ],
+    "generos": {
+        "Acción": [
+            "Artes marciales",
+            "Acción militar",
+            "Acción policial",
+            "Vigilantes",
+            "Persecuciones",
+            "Superhéroes",
+            "Rescate"
+        ],
+        "Aventura": [
+            "Exploración",
+            "Expedición",
+            "Búsqueda del tesoro",
+            "Piratas",
+            "Road trip"
+        ],
+        "Ciencia ficción": [
+            "Space opera",
+            "Cyberpunk",
+            "Distopía",
+            "Viajes en el tiempo",
+            "Inteligencia artificial",
+            "Robots",
+            "Extraterrestres",
+            "Clonación",
+            "Realidad virtual",
+            "Universos paralelos",
+            "Biotecnología",
+            "Retrofuturismo",
+            "Ciencia ficción militar"
+        ],
+        "Comedia": [
+            "Slapstick",
+            "Humor negro",
+            "Parodia",
+            "Sátira",
+            "Comedia absurda",
+            "Mockumentary",
+            "Comedia sexual"
+        ],
+        "Crimen": [
+            "Mafia y crimen organizado",
+            "Narcotráfico",
+            "Robos y atracos",
+            "Asesinos seriales",
+            "Crimen de cuello blanco",
+            "Estafas",
+            "Corrupción",
+            "Procedimental policial",
+            "Pandillas"
+        ],
+        "Drama": [
+            "Melodrama",
+            "Drama social"
+        ],
+        "Fantasía": [
+            "Alta fantasía",
+            "Fantasía urbana",
+            "Fantasía oscura",
+            "Espada y hechicería",
+            "Mitología",
+            "Cuentos de hadas",
+            "Portal fantasy"
+        ],
+        "Musical": [
+            "Musical clásico",
+            "Musical contemporáneo",
+            "Jukebox musical",
+            "Película de baile"
+        ],
+        "Romance": [
+            "Enemies to lovers",
+            "Friends to lovers",
+            "Amor imposible",
+            "Segunda oportunidad",
+            "Triángulo amoroso",
+            "Romance a distancia"
+        ],
+        "Terror": [
+            "Sobrenatural",
+            "Slasher",
+            "Gore",
+            "Body horror",
+            "Posesiones",
+            "Zombis",
+            "Vampiros",
+            "Criaturas y monstruos",
+            "Folk horror",
+            "Terror cósmico",
+            "Found footage",
+            "Home invasion",
+            "Terror religioso"
+        ],
+        "Thriller": [
+            "Thriller erótico",
+            "Gato y ratón",
+            "Contrarreloj",
+            "Secuestro y rehenes"
+        ],
+        "Western": [
+            "Western clásico",
+            "Spaghetti western",
+            "Neo-western",
+            "Western revisionista",
+            "Western fronterizo"
+        ],
+        "Bélico": [
+            "Combate terrestre",
+            "Combate aéreo",
+            "Combate naval",
+            "Resistencia",
+            "Prisioneros de guerra",
+            "Guerra civil"
+        ],
+        "Misterio": [
+            "Whodunit",
+            "Detective clásico",
+            "Habitación cerrada",
+            "Investigación amateur",
+            "Desapariciones"
+        ]
+    },
+    "tags": {
+        "tono": {
+            "nombre": "Tono",
+            "unico": false,
+            "valores": [
+                "Oscuro",
+                "Ligero",
+                "Agridulce",
+                "Tenso",
+                "Absurdo",
+                "Inspirador",
+                "Perturbador",
+                "Psicológico"
+            ]
+        },
+        "epoca": {
+            "nombre": "Ambientación: época",
+            "unico": false,
+            "valores": [
+                "Antigüedad",
+                "Medieval",
+                "Siglos XVIII-XIX",
+                "Primera Guerra Mundial",
+                "Segunda Guerra Mundial",
+                "Siglo XX",
+                "Contemporánea",
+                "Futuro",
+                "Prehistoria",
+                "Siglos XVI-XVII"
+            ]
+        },
+        "lugar": {
+            "nombre": "Ambientación: lugar",
+            "unico": false,
+            "valores": [
+                "Urbano",
+                "Rural",
+                "Pueblo pequeño",
+                "Espacio",
+                "Mar",
+                "Desierto",
+                "Jungla",
+                "Bosque",
+                "Oficina",
+                "Escuela",
+                "Un solo lugar cerrado",
+                "Mundo postapocalíptico"
+            ]
+        },
+        "escala": {
+            "nombre": "Escala",
+            "unico": true,
+            "valores": [
+                "Íntima",
+                "Épica"
+            ]
+        },
+        "formato": {
+            "nombre": "Formato",
+            "unico": false,
+            "valores": [
+                "Live action",
+                "Animación 2D tradicional",
+                "CGI/3D",
+                "Stop motion",
+                "Anime",
+                "Animación experimental",
+                "Documental",
+                "Stand-up"
+            ]
+        },
+        "tematica": {
+            "nombre": "Temática",
+            "unico": false,
+            "valores": [
+                "Supervivencia",
+                "Venganza",
+                "Espionaje",
+                "Conspiración",
+                "Familia",
+                "Amistad",
+                "Crecer",
+                "Animales",
+                "Vacaciones",
+                "LGBT",
+                "Legal",
+                "Médico",
+                "Política",
+                "Tecnología",
+                "Naturaleza",
+                "Ciencia",
+                "Música",
+                "Alimentación",
+                "Viajes",
+                "Medio ambiente",
+                "Secretos",
+                "Deporte",
+                "Fútbol",
+                "Fútbol americano",
+                "Básquetbol",
+                "Béisbol",
+                "Boxeo",
+                "Artes marciales",
+                "Automovilismo",
+                "Tenis",
+                "Lucha libre",
+                "Atletismo",
+                "Hockey",
+                "Deportes extremos",
+                "eSports",
+                "Deporte escolar"
+            ]
+        },
+        "audiencia": {
+            "nombre": "Audiencia",
+            "unico": true,
+            "valores": [
+                "Infantil",
+                "Familiar",
+                "Adolescente",
+                "Adultos"
+            ]
+        },
+        "basado-en": {
+            "nombre": "Basado en",
+            "unico": false,
+            "valores": [
+                "Original",
+                "Hechos reales",
+                "Biografía",
+                "Novela",
+                "Cómic",
+                "Videojuego",
+                "Obra de teatro",
+                "Remake",
+                "Biografía musical",
+                "Biografía deportiva",
+                "Biografía política",
+                "Biografía científica",
+                "Biografía empresarial",
+                "Biografía criminal",
+                "Biografía artística",
+                "Biografía histórica",
+                "Biografía militar",
+                "Biografía religiosa",
+                "Mito o leyenda",
+                "Cuento o libro ilustrado",
+                "Juguete o marca",
+                "Serie de TV",
+                "Libro de no ficción"
+            ]
+        }
+    }
+}

@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./support.js"></script>
+</head>
+
+<body>
+  <x-dc>
+    <helmet>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+      <style>
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+          background: #0a0f1d;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        a {
+          color: #c4b5f0;
+        }
+
+        a:hover {
+          color: #e2d9ff;
+        }
+
+        button {
+          font-family: inherit;
+        }
+
+        * {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(196, 181, 240, 0.45) transparent;
+        }
+
+        ::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: rgba(196, 181, 240, 0.4);
+          border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(196, 181, 240, 0.7);
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        @keyframes flapTop {
+          from {
+            transform: rotateX(0deg);
+          }
+
+          to {
+            transform: rotateX(-90deg);
+          }
+        }
+
+        @keyframes flapBot {
+          from {
+            transform: rotateX(90deg);
+          }
+
+          to {
+            transform: rotateX(0deg);
+          }
+        }
+
+        @keyframes leverPull {
+          0% {
+            transform: translateY(0);
+            animation-timing-function: cubic-bezier(.6, 0, .9, .4);
+          }
+
+          28% {
+            transform: translateY(14px);
+            animation-timing-function: cubic-bezier(.5, 0, 1, 1);
+          }
+
+          40% {
+            transform: translateY(120px);
+          }
+
+          54% {
+            transform: translateY(120px);
+            animation-timing-function: cubic-bezier(.2, .9, .3, 1);
+          }
+
+          68% {
+            transform: translateY(-12px);
+          }
+
+          80% {
+            transform: translateY(5px);
+          }
+
+          91% {
+            transform: translateY(-2px);
+          }
+
+          100% {
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes boardFlash {
+          0% {
+            opacity: 0;
+          }
+
+          15% {
+            opacity: .55;
+          }
+
+          100% {
+            opacity: 0;
+          }
+        }
+
+        @keyframes cardIn {
+          from {
+            opacity: 0;
+            transform: translateY(18px);
+          }
+
+          to {
+            opacity: 1;
+            transform: none;
+          }
+        }
+      </style>
+    </helmet>
+    <div ref="{{ rootRef }}"
+      style="min-height:100vh;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
+      <div
+        style="max-width:1040px;margin:0 auto;padding:clamp(24px,5vw,56px) clamp(14px,4vw,40px) 72px;display:flex;flex-direction:column;gap:clamp(20px,3vw,30px);">
+
+        <nav style="display:flex;justify-content:center;">
+          <div
+            style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+            <a href="Tragamonedas%20de%20Peliculas.dc.html" aria-current="page"
+              style="display:flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;">Tragamonedas</a>
+            <a href="Descubrir.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;"
+              style-hover="color:#ffffff;">Descubrir</a>
+          </div>
+        </nav>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div
+            style="font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#8e97ad;">
+            {{ stepText }}</div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,28px);width:100%;">
+            <button onClick="{{ prevFilter }}" aria-label="Filtro anterior"
+              style="flex:none;width:48px;height:48px;border-radius:50%;border:1px solid rgba(196,181,240,0.28);background:rgba(255,255,255,0.03);color:#c4b5f0;display:flex;align-items:center;justify-content:center;cursor:pointer;"
+              style-hover="background:rgba(196,181,240,0.12);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 5 8 12 15 19"></polyline>
+              </svg>
+            </button>
+            <h1
+              style="margin:0;min-width:0;flex:0 1 6.2em;text-align:center;font:600 clamp(44px,9vw,84px)/1 'Barlow Condensed',sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#f4f2ec;">
+              {{ filterLabel }}</h1>
+            <button onClick="{{ nextFilter }}" aria-label="Filtro siguiente"
+              style="flex:none;width:48px;height:48px;border-radius:50%;border:1px solid rgba(196,181,240,0.28);background:rgba(255,255,255,0.03);color:#c4b5f0;display:flex;align-items:center;justify-content:center;cursor:pointer;"
+              style-hover="background:rgba(196,181,240,0.12);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 5 16 12 9 19"></polyline>
+              </svg>
+            </button>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <sc-for list="{{ filterDots }}" as="d" hint-placeholder-count="6">
+              <button onClick="{{ d.onClick }}" title="{{ d.label }}" aria-label="{{ d.label }}"
+                style="height:8px;width:{{ d.w }};border-radius:4px;border:none;padding:0;cursor:pointer;background:{{ d.bg }};transition:width .25s, background .25s;"></button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div
+          style="width:100%;max-width:760px;margin:0 auto;background:rgba(18,26,44,0.85);border:1px solid rgba(196,181,240,0.14);border-radius:18px;padding:clamp(14px,2.4vw,22px);display:flex;flex-direction:column;gap:14px;">
+          <div style="text-align:center;font-size:14px;color:#9aa3b8;">{{ promptText }}</div>
+
+          <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+              <sc-for list="{{ options }}" as="o" hint-placeholder-count="8">
+                <button onClick="{{ o.onClick }}"
+                  style="min-height:40px;padding:0 16px;border-radius:999px;font:500 15px/1 'Barlow',sans-serif;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};border:1px solid {{ o.bd }};transition:background .2s,color .2s;">{{
+                  o.label }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isSub }}" hint-placeholder-val="{{ false }}">
+            <div
+              style="display:flex;flex-direction:column;gap:16px;max-height:340px;overflow-y:auto;padding-right:8px;scrollbar-width:thin;scrollbar-color:rgba(196,181,240,0.45) transparent;">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;">
+                <button onClick="{{ clearSub }}"
+                  style="min-height:40px;padding:0 16px;border-radius:999px;font:500 15px/1 'Barlow',sans-serif;cursor:pointer;background:{{ subAnyBg }};color:{{ subAnyFg }};border:1px solid {{ subAnyBd }};">Cualquiera</button>
+                <sc-if value="{{ hasGenre }}" hint-placeholder-val="{{ false }}">
+                  <div
+                    style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+                    <sc-for list="{{ scopeTabs }}" as="t" hint-placeholder-count="2">
+                      <button onClick="{{ t.onClick }}"
+                        style="min-height:34px;padding:0 16px;border-radius:999px;border:none;cursor:pointer;font:600 14px/1 'Barlow',sans-serif;background:{{ t.bg }};color:{{ t.fg }};">{{
+                        t.label }}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <span style="font-size:13px;color:#7c859c;">{{ subHint }}</span>
+              </div>
+              <sc-for list="{{ subGroups }}" as="g" hint-placeholder-count="2">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div
+                    style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">
+                    {{ g.name }}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                    <sc-for list="{{ g.options }}" as="o" hint-placeholder-count="5">
+                      <button onClick="{{ o.onClick }}"
+                        style="min-height:40px;padding:0 14px;border-radius:999px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};border:1px solid {{ o.bd }};">{{
+                        o.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isYear }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:14px;align-items:center;">
+              <div
+                style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+                <sc-for list="{{ yearTabs }}" as="t" hint-placeholder-count="2">
+                  <button onClick="{{ t.onClick }}"
+                    style="min-height:36px;padding:0 18px;border-radius:999px;border:none;cursor:pointer;font:600 14px/1 'Barlow',sans-serif;background:{{ t.bg }};color:{{ t.fg }};">{{
+                    t.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ isDecade }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+                  <sc-for list="{{ options }}" as="o" hint-placeholder-count="8">
+                    <button onClick="{{ o.onClick }}"
+                      style="min-height:40px;padding:0 16px;border-radius:999px;font:500 15px/1 'Barlow',sans-serif;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};border:1px solid {{ o.bd }};">{{
+                      o.label }}</button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ isExact }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;">
+                  <div
+                    style="display:flex;align-items:center;border:1px solid rgba(255,255,255,0.16);border-radius:12px;overflow:hidden;">
+                    <button onClick="{{ yearDown }}" aria-label="Año anterior"
+                      style="width:44px;height:44px;border:none;background:rgba(255,255,255,0.04);color:#eef0f6;font-size:20px;cursor:pointer;">−</button>
+                    <input type="number" value="{{ yearExact }}" onChange="{{ onYearInput }}"
+                      style="width:90px;height:44px;border:none;background:transparent;color:#f4f2ec;text-align:center;font:600 24px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;outline:none;">
+                    <button onClick="{{ yearUp }}" aria-label="Año siguiente"
+                      style="width:44px;height:44px;border:none;background:rgba(255,255,255,0.04);color:#eef0f6;font-size:20px;cursor:pointer;">+</button>
+                  </div>
+                  <button onClick="{{ setExactYear }}"
+                    style="min-height:44px;padding:0 18px;border-radius:999px;border:1px solid #c4b5f0;background:{{ exactBtnBg }};color:{{ exactBtnFg }};font:600 14px/1 'Barlow',sans-serif;cursor:pointer;">{{
+                    exactBtnText }}</button>
+                  <button onClick="{{ clearYear }}"
+                    style="min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:#dfe2ee;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;">Cualquiera</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isText }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+              <div style="display:flex;gap:8px;width:100%;max-width:520px;">
+                <div style="position:relative;flex:1;min-width:0;">
+                  <input type="text" value="{{ query }}" placeholder="{{ textPlaceholder }}" onChange="{{ onQuery }}"
+                    onFocus="{{ onFocusQ }}" onBlur="{{ onBlurQ }}" onKeyDown="{{ onKeyQ }}"
+                    style="width:100%;height:46px;padding:0 16px;border-radius:12px;border:1px solid rgba(196,181,240,0.3);background:rgba(0,0,0,0.25);color:#f4f2ec;font:500 16px/1 'Barlow',sans-serif;outline:none;">
+                  <sc-if value="{{ showSuggest }}" hint-placeholder-val="{{ false }}">
+                    <div
+                      style="position:absolute;top:52px;left:0;right:0;z-index:5;background:#161f35;border:1px solid rgba(196,181,240,0.22);border-radius:12px;padding:6px;box-shadow:0 18px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;">
+                      <sc-for list="{{ suggestions }}" as="sg" hint-placeholder-count="3">
+                        <button onMouseDown="{{ sg.onPick }}"
+                          style="text-align:left;min-height:42px;padding:0 12px;border:none;border-radius:8px;background:transparent;color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;cursor:pointer;"
+                          style-hover="background:rgba(196,181,240,0.12);">{{ sg.name }}</button>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+                <button onClick="{{ clearText }}"
+                  style="flex:none;min-height:46px;padding:0 16px;border-radius:12px;border:1px solid {{ anyBd }};background:{{ anyBg }};color:{{ anyFg }};font:500 14px/1 'Barlow',sans-serif;cursor:pointer;">Cualquiera</button>
+              </div>
+              <sc-if value="{{ hasTextVal }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:14px;color:#9aa3b8;">Fijado: <span style="color:#c4b5f0;font-weight:600;">{{
+                    textVal }}</span></div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+          <div
+            style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#6f7890;">
+            Filtros activos</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;min-height:36px;">
+            <sc-if value="{{ noFilters }}" hint-placeholder-val="{{ true }}">
+              <span style="font-size:14px;color:#8e97ad;">Ninguno: cualquier película del catálogo</span>
+            </sc-if>
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="0">
+              <div
+                style="display:flex;align-items:center;border-radius:999px;background:rgba(196,181,240,0.13);border:1px solid rgba(196,181,240,0.34);">
+                <button onClick="{{ c.onEdit }}" title="{{ c.kind }}"
+                  style="border:none;background:transparent;color:#ece6ff;font:500 14px/1 'Barlow',sans-serif;padding:0 4px 0 14px;height:34px;cursor:pointer;">{{
+                  c.label }}</button>
+                <button onClick="{{ c.onRemove }}" aria-label="Quitar filtro"
+                  style="border:none;background:transparent;color:#c4b5f0;width:32px;height:34px;font-size:17px;line-height:1;cursor:pointer;border-radius:0 999px 999px 0;"
+                  style-hover="color:#ffffff;">×</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ hasFilters }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ clearAll }}"
+                style="border:none;background:transparent;color:#8e97ad;font:500 13px/1 'Barlow',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:8px;">Limpiar</button>
+            </sc-if>
+          </div>
+          <sc-if value="{{ showLiveCount }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:14px;color:{{ liveCountColor }};">{{ liveCountText }}</div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;gap:clamp(8px,1.6vw,18px);">
+            <div style="flex:1;min-width:0;">{{ board }}</div>
+            <sc-if value="{{ showLever }}" hint-placeholder-val="{{ true }}">{{ lever }}</sc-if>
+          </div>
+          <sc-if value="{{ compact }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ pull }}"
+              style="width:100%;min-height:58px;border-radius:16px;border:1px solid rgba(255,255,255,0.25);background:linear-gradient(180deg,#d5c9fa,#a896dc);color:#0d1224;font:700 20px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 30px -10px rgba(170,150,230,0.6), inset 0 1px 0 rgba(255,255,255,0.6);opacity:{{ btnOpacity }};">Jalar
+              la palanca</button>
+          </sc-if>
+          <div style="text-align:center;font-size:13px;color:#7c859c;">{{ hintText }}</div>
+        </div>
+
+        <sc-if value="{{ showResult }}" hint-placeholder-val="{{ false }}">
+          <div
+            style="animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);border-radius:22px;padding:clamp(16px,3vw,32px);display:flex;flex-wrap:wrap;gap:clamp(20px,3vw,34px);box-shadow:0 30px 70px -30px rgba(0,0,0,0.8);">
+            <div style="flex:1 1 220px;max-width:300px;margin:0 auto;">
+              <sc-if value="{{ hasPoster }}" hint-placeholder-val="{{ false }}">{{ posterImg }}</sc-if>
+              <sc-if value="{{ noPoster }}" hint-placeholder-val="{{ true }}">
+                <div
+                  style="aspect-ratio:2/3;border-radius:14px;background:repeating-linear-gradient(135deg,#1b2440 0 10px,#172037 10px 20px);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:flex-end;padding:14px;">
+                  <span style="font:600 18px/1.15 'Barlow Condensed',sans-serif;color:#8e97ad;">{{ m.titulo }}</span>
+                </div>
+              </sc-if>
+            </div>
+            <div style="flex:999 1 340px;min-width:0;display:flex;flex-direction:column;gap:18px;">
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div
+                  style="font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#c4b5f0;">
+                  {{ countText }}</div>
+                <h2
+                  style="margin:0;font:600 clamp(34px,5vw,52px)/1 'Barlow Condensed',sans-serif;letter-spacing:.01em;color:#f6f4ee;text-wrap:balance;">
+                  {{ m.titulo }}</h2>
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:15px;color:#a8b0c4;">
+                  <span style="font-style:italic;">{{ m.titulo_original }}</span>
+                  <span>{{ m.anio }}</span>
+                  <span>{{ duration }}</span>
+                  <sc-if value="{{ hasClasif }}" hint-placeholder-val="{{ true }}">
+                    <span
+                      style="border:1px solid rgba(255,255,255,0.35);border-radius:4px;padding:2px 7px;font:600 13px/1.2 'Barlow Condensed',sans-serif;letter-spacing:.06em;color:#eef0f6;">{{
+                      m.clasificacion_mx }}</span>
+                  </sc-if>
+                </div>
+              </div>
+              <p style="margin:0;font-size:17px;line-height:1.55;color:#d8dcea;text-wrap:pretty;max-width:60ch;">{{
+                m.sinopsis }}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <sc-for list="{{ m.generos }}" as="g" hint-placeholder-count="1">
+                  <span
+                    style="padding:6px 12px;border-radius:999px;background:#c4b5f0;color:#0d1224;font:600 13px/1 'Barlow',sans-serif;">{{
+                    g }}</span>
+                </sc-for>
+                <sc-for list="{{ subs }}" as="sg" hint-placeholder-count="2">
+                  <span
+                    style="padding:6px 12px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);color:#ddd5fb;font:500 13px/1 'Barlow',sans-serif;">{{
+                    sg }}</span>
+                </sc-for>
+              </div>
+              <div
+                style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);">
+                <sc-for list="{{ tags }}" as="t" hint-placeholder-count="3">
+                  <div style="display:flex;flex-direction:column;gap:5px;">
+                    <span
+                      style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;">{{
+                      t.k }}</span>
+                    <span style="font-size:15px;color:#eef0f6;">{{ t.v }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;">
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <span
+                    style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;">Dirección</span>
+                  <span style="font-size:15px;color:#eef0f6;">{{ directors }}</span>
+                  <span
+                    style="margin-top:12px;font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;">Dónde
+                    verla en México</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <sc-for list="{{ m.plataformas }}" as="p" hint-placeholder-count="1">
+                      <span
+                        style="padding:7px 12px;border-radius:8px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);font:600 14px/1 'Barlow',sans-serif;color:#f4f2ec;">{{
+                        p }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <span
+                    style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;">Reparto
+                    principal</span>
+                  <sc-for list="{{ cast }}" as="a" hint-placeholder-count="3">
+                    <div style="display:flex;justify-content:space-between;gap:12px;font-size:15px;padding:3px 0;">
+                      <span style="color:#eef0f6;">{{ a.nombre }}</span>
+                      <span style="color:#8e97ad;text-align:right;">{{ a.rol }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+                <button onClick="{{ pull }}"
+                  style="min-height:50px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 17px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;"
+                  style-hover="background:#d6cbfa;">Otra vez</button>
+                <button onClick="{{ changeFilters }}"
+                  style="min-height:50px;padding:0 24px;border-radius:999px;border:1px solid rgba(255,255,255,0.22);background:transparent;color:#eef0f6;font:700 17px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;"
+                  style-hover="background:rgba(255,255,255,0.06);">Cambiar filtros</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showNone }}" hint-placeholder-val="{{ false }}">
+          <div
+            style="animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;max-width:620px;margin:0 auto;width:100%;text-align:center;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);border-radius:22px;padding:clamp(22px,4vw,36px);display:flex;flex-direction:column;align-items:center;gap:14px;">
+            <h2
+              style="margin:0;font:600 clamp(28px,4vw,38px)/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">
+              Hoy no hay función con esa combinación</h2>
+            <p style="margin:0;font-size:16px;line-height:1.5;color:#b8bfd1;max-width:44ch;text-wrap:pretty;">Ninguna
+              película cumple todos tus filtros a la vez. Prueba quitando alguno y vuelve a jalar la palanca.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+              <sc-for list="{{ chips }}" as="c" hint-placeholder-count="2">
+                <button onClick="{{ c.onRemove }}"
+                  style="display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:rgba(196,181,240,0.13);border:1px solid rgba(196,181,240,0.34);color:#ece6ff;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;">Quitar
+                  {{ c.label }} <span style="color:#c4b5f0;font-size:17px;">×</span></button>
+              </sc-for>
+            </div>
+            <button onClick="{{ clearAll }}"
+              style="margin-top:4px;min-height:48px;padding:0 24px;border-radius:999px;border:1px solid rgba(255,255,255,0.22);background:transparent;color:#eef0f6;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;">Quitar
+              todos los filtros</button>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </x-dc>
+  <script type="text/x-dc" data-dc-script
+    data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;inicial&quot;,&quot;con filtros&quot;,&quot;girando&quot;,&quot;resultado&quot;,&quot;sin resultados&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;columnas&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:18,&quot;max&quot;:26,&quot;step&quot;:1,&quot;default&quot;:22,&quot;tsType&quot;:&quot;number&quot;},&quot;velocidad&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.5,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  // ================== CONFIGURACIÓN DE SUPABASE ==================
+  // Pega tu anon key (o publishable key) de Project Settings → API.
+  // NUNCA pongas aquí la service_role key.
+  static SUPABASE_URL = 'https://mlrezhasoubggrembngu.supabase.co';
+  static SUPABASE_ANON_KEY = 'sb_publishable_aMwHv2EdEELy5FRcRdkYDg_ipcSNSTG';
+  // ================================================================
+  static CHARS = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789';
+  static GENRES = {
+    'Acción': ['Artes marciales', 'Acción militar', 'Acción policial', 'Vigilantes', 'Persecuciones', 'Superhéroes', 'Rescate'],
+    'Aventura': ['Exploración', 'Expedición', 'Búsqueda del tesoro', 'Piratas', 'Road trip'],
+    'Ciencia ficción': ['Space opera', 'Cyberpunk', 'Distopía', 'Viajes en el tiempo', 'Inteligencia artificial', 'Robots', 'Extraterrestres', 'Clonación', 'Realidad virtual', 'Universos paralelos', 'Biotecnología', 'Retrofuturismo', 'Ciencia ficción militar'],
+    'Comedia': ['Slapstick', 'Humor negro', 'Parodia', 'Sátira', 'Comedia absurda', 'Mockumentary', 'Comedia sexual'],
+    'Crimen': ['Mafia y crimen organizado', 'Narcotráfico', 'Robos y atracos', 'Asesinos seriales', 'Crimen de cuello blanco', 'Estafas', 'Corrupción', 'Procedimental policial', 'Pandillas'],
+    'Drama': ['Melodrama', 'Drama social'],
+    'Fantasía': ['Alta fantasía', 'Fantasía urbana', 'Fantasía oscura', 'Espada y hechicería', 'Mitología', 'Cuentos de hadas', 'Portal fantasy'],
+    'Musical': ['Musical clásico', 'Musical contemporáneo', 'Jukebox musical', 'Película de baile'],
+    'Romance': ['Enemies to lovers', 'Friends to lovers', 'Amor imposible', 'Segunda oportunidad', 'Triángulo amoroso', 'Romance a distancia'],
+    'Terror': ['Sobrenatural', 'Slasher', 'Gore', 'Body horror', 'Posesiones', 'Zombis', 'Vampiros', 'Criaturas y monstruos', 'Folk horror', 'Terror cósmico', 'Found footage', 'Home invasion', 'Terror religioso'],
+    'Thriller': ['Thriller erótico', 'Gato y ratón', 'Contrarreloj', 'Secuestro y rehenes'],
+    'Western': ['Western clásico', 'Spaghetti western', 'Neo-western', 'Western revisionista', 'Western fronterizo'],
+    'Bélico': ['Combate terrestre', 'Combate aéreo', 'Combate naval', 'Resistencia', 'Prisioneros de guerra', 'Guerra civil'],
+    'Misterio': ['Whodunit', 'Detective clásico', 'Habitación cerrada', 'Investigación amateur', 'Desapariciones']
+  };
+  static TAG_LABELS = { 'formato': 'Formato', 'audiencia': 'Audiencia', 'basado-en': 'Basado en', 'epoca': 'Época', 'lugar': 'Lugar', 'tematica': 'Temática', 'tono': 'Tono', 'escala': 'Escala' };
+  static FILTERS = [
+    { key: 'genero', label: 'Género', type: 'list', prompt: 'Elige un género', options: Object.keys(Component.GENRES) },
+    { key: 'subgenero', label: 'Subgénero', type: 'sub', prompt: 'Elige un subgénero' },
+    { key: 'anio', label: 'Año', type: 'year', prompt: 'Elige una década o un año exacto' },
+    { key: 'actor', label: 'Actor', type: 'text', prompt: 'Busca un actor o actriz', placeholder: 'Ej. Gael García Bernal' },
+    { key: 'director', label: 'Director', type: 'text', prompt: 'Busca a quien la dirigió', placeholder: 'Ej. Wes Craven' },
+    { key: 'plataforma', label: 'Plataforma', type: 'list', prompt: '¿Dónde quieres verla?', options: ['Netflix', 'Max', 'Prime Video', 'Disney+', 'Apple TV+', 'Paramount+', 'ViX', 'MUBI'] }
+  ];
+  static DECADES = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020];
+  static EXTRA_ACTORS = ['Salma Hayek', 'Diego Luna', 'Tom Hanks', 'Meryl Streep', 'Zendaya'];
+  static EXTRA_DIRECTORS = ['Guillermo del Toro', 'Alfonso Cuarón', 'Greta Gerwig'];
+  static MOVIES = [
+    {
+      "id": "grown-ups-2",
+      "titulo": "Son como niños 2",
+      "titulo_original": "Grown Ups 2",
+      "anio": 2013,
+      "duracion_min": 101,
+      "clasificacion_mx": "B",
+      "sinopsis": "Lenny regresa con su familia a su pueblo natal, donde él y sus amigos de toda la vida vuelven a meterse en problemas.",
+      "generos": ["Comedia"],
+      "subgeneros": ["Comedia: Slapstick", "Comedia: Comedia sexual"],
+      "tags": {
+        "formato": ["Live action"],
+        "audiencia": ["Adolescente"],
+        "basado-en": ["Original"],
+        "epoca": ["Contemporánea"],
+        "lugar": ["Pueblo pequeño"],
+        "tematica": ["Amistad", "Familia"],
+        "tono": ["Ligero"],
+        "escala": ["Íntima"]
+      },
+      "directores": [{ "nombre": "Dennis Dugan" }],
+      "actores": [
+        { "nombre": "Adam Sandler", "personaje": "Lenny Feder" },
+        { "nombre": "Kevin James", "personaje": "Eric Lamonsoff" },
+        { "nombre": "Chris Rock", "personaje": null }
+      ],
+      "plataformas": ["Netflix"]
+    },
+    {
+      "id": "up",
+      "titulo": "Up",
+      "titulo_original": "Up",
+      "anio": 2009,
+      "duracion_min": 96,
+      "clasificacion_mx": "A",
+      "sinopsis": "Carl, un vendedor de globos de 78 años, ata miles de ellos a su casa para volar a Sudamérica, sin saber que Russell, un pequeño explorador, viaja con él.",
+      "generos": ["Aventura", "Drama"],
+      "subgeneros": ["Aventura: Exploración", "Aventura: Expedición", "Drama: Melodrama"],
+      "tags": {
+        "formato": ["CGI/3D"],
+        "audiencia": ["Familiar"],
+        "basado-en": ["Original"],
+        "epoca": ["Contemporánea"],
+        "lugar": ["Jungla"],
+        "tematica": ["Amistad", "Familia", "Crecer"],
+        "tono": ["Agridulce", "Inspirador"],
+        "escala": ["Épica"]
+      },
+      "directores": [{ "nombre": "Pete Docter" }, { "nombre": "Bob Peterson" }],
+      "actores": [
+        { "nombre": "Ed Asner", "personaje": "Carl Fredricksen" },
+        { "nombre": "Jordan Nagai", "personaje": "Russell" },
+        { "nombre": "Christopher Plummer", "personaje": "Charles Muntz" }
+      ],
+      "plataformas": ["Disney+"]
+    },
+    {
+      "id": "godfather",
+      "titulo": "El Padrino",
+      "titulo_original": "The Godfather",
+      "anio": 1972,
+      "duracion_min": 175,
+      "clasificacion_mx": "C",
+      "sinopsis": "El patriarca de una familia de la mafia neoyorquina cede el control de su imperio a su hijo menor, que pasa de ser ajeno al negocio a convertirse en su jefe más implacable.",
+      "generos": ["Crimen", "Drama"],
+      "subgeneros": ["Crimen: Mafia y crimen organizado", "Drama: Melodrama"],
+      "tags": {
+        "formato": ["Live action"],
+        "audiencia": ["Adultos"],
+        "basado-en": ["Novela"],
+        "epoca": ["Siglo XX"],
+        "lugar": ["Urbano"],
+        "tematica": ["Familia", "Venganza"],
+        "tono": ["Oscuro", "Tenso"],
+        "escala": ["Épica"]
+      },
+      "directores": [{ "nombre": "Francis Ford Coppola" }],
+      "actores": [
+        { "nombre": "Marlon Brando", "personaje": "Vito Corleone" },
+        { "nombre": "Al Pacino", "personaje": "Michael Corleone" },
+        { "nombre": "James Caan", "personaje": "Sonny Corleone" },
+        { "nombre": "Diane Keaton", "personaje": "Kay Adams" }
+      ],
+      "plataformas": ["Paramount+"]
+    },
+    {
+      "id": "eeaao",
+      "titulo": "Todo en todas partes al mismo tiempo",
+      "titulo_original": "Everything Everywhere All at Once",
+      "anio": 2022,
+      "duracion_min": 139,
+      "clasificacion_mx": "B15",
+      "sinopsis": "Evelyn, dueña de una lavandería agobiada por una auditoría, descubre que puede conectar con versiones de sí misma en otros universos para salvar el multiverso.",
+      "generos": ["Ciencia ficción", "Comedia", "Acción"],
+      "subgeneros": ["Ciencia ficción: Universos paralelos", "Comedia: Comedia absurda", "Acción: Artes marciales"],
+      "tags": {
+        "formato": ["Live action"],
+        "audiencia": ["Adultos"],
+        "basado-en": ["Original"],
+        "epoca": ["Contemporánea"],
+        "lugar": ["Urbano"],
+        "tematica": ["Familia", "Secretos"],
+        "tono": ["Absurdo", "Agridulce"],
+        "escala": ["Épica"]
+      },
+      "directores": [{ "nombre": "Daniel Kwan" }, { "nombre": "Daniel Scheinert" }],
+      "actores": [
+        { "nombre": "Michelle Yeoh", "personaje": "Evelyn Wang" },
+        { "nombre": "Ke Huy Quan", "personaje": "Waymond Wang" },
+        { "nombre": "Jamie Lee Curtis", "personaje": "Deirdre Beaubeirdre" },
+        { "nombre": "Stephanie Hsu", "personaje": "Joy Wang" }
+      ],
+      "plataformas": ["Prime Video", "MUBI"]
+    },
+    {
+      "id": "scream",
+      "titulo": "Scream: Grita antes de morir",
+      "titulo_original": "Scream",
+      "anio": 1996,
+      "duracion_min": 111,
+      "clasificacion_mx": "C",
+      "sinopsis": "Un año después del asesinato de su madre, Sidney Prescott se vuelve el blanco de un asesino enmascarado que conoce todas las reglas de las películas de terror.",
+      "generos": ["Terror", "Misterio"],
+      "subgeneros": ["Terror: Slasher", "Misterio: Whodunit"],
+      "tags": {
+        "formato": ["Live action"],
+        "audiencia": ["Adultos"],
+        "basado-en": ["Original"],
+        "epoca": ["Contemporánea"],
+        "lugar": ["Pueblo pequeño"],
+        "tematica": ["Secretos", "Venganza"],
+        "tono": ["Tenso", "Oscuro"],
+        "escala": ["Íntima"]
+      },
+      "directores": [{ "nombre": "Wes Craven" }],
+      "actores": [
+        { "nombre": "Neve Campbell", "personaje": "Sidney Prescott" },
+        { "nombre": "Courteney Cox", "personaje": "Gale Weathers" },
+        { "nombre": "David Arquette", "personaje": "Dewey Riley" },
+        { "nombre": "Skeet Ulrich", "personaje": "Billy Loomis" }
+      ],
+      "plataformas": ["Netflix"]
+    },
+    {
+      "id": "amores-perros",
+      "titulo": "Amores perros",
+      "titulo_original": "Amores perros",
+      "anio": 2000,
+      "duracion_min": 154,
+      "clasificacion_mx": "C",
+      "sinopsis": "Un choque automovilístico en la Ciudad de México enlaza tres historias sobre el amor, la pérdida y la lealtad, unidas por la presencia de los perros.",
+      "generos": ["Drama", "Crimen"],
+      "subgeneros": ["Drama: Drama social", "Crimen: Pandillas"],
+      "tags": {
+        "formato": ["Live action"],
+        "audiencia": ["Adultos"],
+        "basado-en": ["Original"],
+        "epoca": ["Contemporánea"],
+        "lugar": ["Urbano"],
+        "tematica": ["Animales", "Familia"],
+        "tono": ["Oscuro", "Agridulce"],
+        "escala": ["Íntima"]
+      },
+      "directores": [{ "nombre": "Alejandro G. Iñárritu" }],
+      "actores": [
+        { "nombre": "Emilio Echevarría", "personaje": "El Chivo" },
+        { "nombre": "Gael García Bernal", "personaje": "Octavio" },
+        { "nombre": "Vanessa Bauche", "personaje": "Susana" },
+        { "nombre": "Goya Toledo", "personaje": "Valeria" }
+      ],
+      "plataformas": ["Prime Video"]
+    }
+  ];
+
+  state = {
+    fi: 0,
+    f: { genero: null, subgenero: null, anio: null, actor: null, director: null, plataforma: null },
+    yearMode: 'decada', yearExact: 2000, subScope: 'solo',
+    q: { actor: '', director: '' }, focus: false,
+    compact: false, phase: 'inicial', movie: null, count: 0,
+    leverKey: 0, flashKey: 0,
+    opts: null, total: null, sugg: { actor: [], director: [] }, error: false
+  };
+  rootRef = React.createRef();
+  cells = [];
+  spec = { kind: 'welcome' };
+  timers = [];
+  seen = [];
+  lightPhase = 0;
+
+  componentDidMount() {
+    const el = this.rootRef.current;
+    const compact = el ? el.getBoundingClientRect().width < 640 : false;
+    this.setState({ compact }, () => { this.applyPreset(this.props.estado); if (this.live()) this.refreshOpts(); });
+    if (el && window.ResizeObserver) {
+      this.ro = new ResizeObserver(e => {
+        const c = e[0].contentRect.width < 640;
+        if (c !== this.state.compact) this.setState({ compact: c }, () => this.relayout());
+      });
+      this.ro.observe(el);
+    }
+  }
+  componentDidUpdate(pp, ps) {
+    if (pp.estado !== this.props.estado) { this.applyPreset(this.props.estado); if (this.live()) this.refreshOpts(); }
+    else if (pp.columnas !== this.props.columnas) this.relayout();
+  }
+
+  // ================== BACKEND (Supabase RPC) ==================
+  live() { return (this.props.estado ?? 'interactivo') === 'interactivo'; }
+
+  async rpc(fn, args) {
+    const C = Component;
+    if (!C.SUPABASE_ANON_KEY || C.SUPABASE_ANON_KEY.includes('PEGA_AQUI')) {
+      this.errKind = 'nokey';
+      console.error('Falta la anon key: pégala en CONFIGURACIÓN DE SUPABASE, al inicio del script.');
+      return null;
+    }
+    const headers = { 'Content-Type': 'application/json', apikey: C.SUPABASE_ANON_KEY };
+    // Las llaves legacy (JWT) también van como Bearer; las nuevas "sb_publishable_" no.
+    if (C.SUPABASE_ANON_KEY.startsWith('eyJ')) headers.Authorization = 'Bearer ' + C.SUPABASE_ANON_KEY;
+    try {
+      const r = await fetch(`${C.SUPABASE_URL}/rest/v1/rpc/${fn}`, { method: 'POST', headers, body: JSON.stringify(args) });
+      if (!r.ok) { this.errKind = (r.status === 401 || r.status === 403) ? 'badkey' : 'server'; console.error(`[${fn}] ${r.status}`, await r.text()); return null; }
+      this.errKind = null;
+      return await r.json();
+    } catch (e) { this.errKind = 'net'; console.error(`[${fn}]`, e); return null; }
+  }
+
+  // Estado de la UI → formato que espera tirar_ruleta / opciones_ruleta
+  toFiltros(f, omit) {
+    const o = {};
+    if (f.genero && omit !== 'genero') o.genero = f.genero;
+    if (f.subgenero && f.subgenero.length) o.subgeneros = f.subgenero;   // ["Terror: Slasher", ...] (siempre, para que las opciones sean combinables)
+    if (f.plataforma && omit !== 'plataforma') o.plataforma = f.plataforma;
+    if (f.actor && omit !== 'actor') o.actor = f.actor;
+    if (f.director && omit !== 'director') o.director = f.director;
+    if (f.anio && omit !== 'anio') {
+      if (f.anio.mode === 'decada') { o.anio_min = f.anio.value; o.anio_max = f.anio.value + 9; }
+      else o.anio = f.anio.value;
+    }
+    return o;
+  }
+
+  // Opciones del filtro activo (sin su propio valor) + contador con todos los filtros
+  refreshOpts() {
+    clearTimeout(this.optsT);
+    this.optsT = setTimeout(async () => {
+      const id = (this.optsReq = (this.optsReq || 0) + 1);
+      const f = this.state.f; const key = Component.FILTERS[this.state.fi].key;
+      const omit = key === 'subgenero' ? null : key;   // subgéneros: solo combinaciones que existen
+      const [facet, all] = await Promise.all([
+        this.rpc('opciones_ruleta', { filtros: this.toFiltros(f, omit) }),
+        this.rpc('opciones_ruleta', { filtros: this.toFiltros(f) })
+      ]);
+      if (id !== this.optsReq) return;           // llegó una respuesta más nueva
+      this.setState({ opts: facet, total: all ? all.total : null });
+    }, 120);
+  }
+
+  searchPeople(key, q) {
+    clearTimeout(this.peopleT);
+    if (!q.trim()) { this.setState(st => ({ sugg: { ...st.sugg, [key]: [] } })); return; }
+    this.peopleT = setTimeout(async () => {
+      const id = (this.peopleReq = (this.peopleReq || 0) + 1);
+      const r = await this.rpc('buscar_personas', { texto: q.trim(), rol_buscado: key, limite: 6 });
+      if (id !== this.peopleReq) return;
+      this.setState(st => ({ sugg: { ...st.sugg, [key]: (r || []).map(p => p.nombre) } }));
+    }, 180);
+  }
+
+  // Jala la palanca contra el backend. No repite películas mientras no cambien los filtros.
+  async fetchResult(f) {
+    const filtros = this.toFiltros(f);
+    let excl = this.seen.length;
+    let r = await this.rpc('tirar_ruleta', { filtros: { ...filtros, excluir: this.seen } });
+    if (r && !r.encontrada && excl) {            // ya salieron todas: reinicia la ronda
+      this.seen = []; excl = 0;
+      r = await this.rpc('tirar_ruleta', { filtros });
+    }
+    if (!r) return { movie: null, count: 0, error: true };
+    if (!r.encontrada) return { movie: null, count: 0 };
+    this.seen.push(r.id);
+    return { movie: r, count: r.coincidencias + excl };
+  }
+
+  pullLive = async () => {
+    if (this.busy) return;
+    this.busy = true; this.hold = false; cancelAnimationFrame(this.raf);
+    const token = (this.pullToken = (this.pullToken || 0) + 1);
+    const f = this.state.f; const sig = JSON.stringify(f);
+    if (sig !== this.seenSig) { this.seen = []; this.seenSig = sig; }
+    const wait = ms => new Promise(res => setTimeout(res, ms));
+    const pRes = this.fetchResult(f);              // la petición sale de inmediato
+    this.setState(s => ({ leverKey: s.leverKey + 1, phase: 'girando', error: false }));
+    await wait(this.state.compact ? 120 : 440);    // mientras baja la palanca
+    if (token !== this.pullToken) return;
+    // Las casillas giran al azar mientras llega la respuesta
+    this.hold = true; this.spinning = true; this.spinStart = performance.now(); this.lastHold = 0;
+    this.raf = requestAnimationFrame(this.loop);
+    const [res] = await Promise.all([pRes, wait(350)]);
+    if (token !== this.pullToken) return;
+    cancelAnimationFrame(this.raf); this.hold = false; this.spinning = false;
+    this.pending = res;
+    this.spin(res.error ? { kind: 'error' } : res.movie ? { kind: 'movie', movie: res.movie } : { kind: 'none' });
+  };
+  // ============================================================
+  componentWillUnmount() { this.ro && this.ro.disconnect(); this.stopAll(); }
+
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  stopAll() { this.timers.forEach(clearTimeout); this.timers = []; cancelAnimationFrame(this.raf); this.hold = false; this.spinning = false; this.busy = false; }
+
+  emptyF() { return { genero: null, subgenero: null, anio: null, actor: null, director: null, plataforma: null }; }
+  applyPreset(e) {
+    this.stopAll();
+    const FS = { ...this.emptyF(), genero: 'Terror', plataforma: 'Netflix', anio: { mode: 'decada', value: 1990 } };
+    if (e === 'con filtros') { this.setState({ f: FS, fi: 0, phase: 'inicial', movie: null }); this.setStatic({ kind: 'welcome' }); }
+    else if (e === 'girando') {
+      this.setState({ f: FS, fi: 0, phase: 'girando', movie: null });
+      this.setStatic({ kind: 'welcome' });
+      this.hold = true; this.spinning = true; this.spinStart = performance.now(); this.lastHold = 0;
+      this.raf = requestAnimationFrame(this.loop);
+    } else if (e === 'resultado') {
+      const movie = Component.MOVIES.find(m => m.id === 'scream');
+      this.setState({ f: FS, fi: 0, phase: 'resultado', movie, count: this.matches(FS).length });
+      this.setStatic({ kind: 'movie', movie });
+    } else if (e === 'sin resultados') {
+      this.setState({ f: { ...this.emptyF(), genero: 'Terror', plataforma: 'Disney+' }, fi: 0, phase: 'sin', movie: null });
+      this.setStatic({ kind: 'none' });
+    } else { this.setState({ f: this.emptyF(), fi: 0, phase: 'inicial', movie: null }); this.setStatic({ kind: 'welcome' }); }
+  }
+
+  dims() { return this.state.compact ? { cols: 13, rows: 3 } : { cols: this.props.columnas ?? 22, rows: 2 }; }
+  norm(s) {
+    return String(s).toUpperCase().replace(/Ñ/g, '\u0001').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\u0001/g, 'Ñ').replace(/[^A-ZÑ0-9 :.,'&!?\-]/g, ' ');
+  }
+  low(s) { return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  wrap(text, cols) {
+    const words = this.norm(text).split(/\s+/).filter(Boolean); const lines = []; let cur = '';
+    words.forEach(w => {
+      while (w.length > cols) { if (cur) { lines.push(cur); cur = ''; } lines.push(w.slice(0, cols)); w = w.slice(cols); }
+      if (!cur) cur = w; else if ((cur + ' ' + w).length <= cols) cur += ' ' + w; else { lines.push(cur); cur = w; }
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  contentFor(spec) {
+    const { cols, rows } = this.dims();
+    if (spec.kind === 'movie') {
+      const t = this.wrap(spec.movie.titulo, cols);
+      return t.length < rows ? [...t, String(spec.movie.anio)] : t.slice(0, rows);
+    }
+    if (spec.kind === 'error') return [...this.wrap('SIN SENAL', cols), ...this.wrap('INTENTA DE NUEVO', cols)].slice(0, rows);
+    if (spec.kind === 'none') return [...this.wrap('SIN FUNCION', cols), ...this.wrap('QUITA UN FILTRO', cols)].slice(0, rows);
+    return this.wrap('JALA LA PALANCA', cols);
+  }
+  gridChars(spec) {
+    const { cols, rows } = this.dims(); const lines = this.contentFor(spec);
+    const top = Math.floor((rows - lines.length) / 2); const out = [];
+    for (let r = 0; r < rows; r++) {
+      const l = lines[r - top] || ''; const pad = Math.floor((cols - l.length) / 2);
+      for (let c = 0; c < cols; c++) { const ch = l[c - pad]; out.push(c >= pad && ch ? ch : ' '); }
+    }
+    return out;
+  }
+  setStatic(spec) {
+    this.spec = spec;
+    this.cells = this.gridChars(spec).map(ch => ({ cur: ch, prev: ch, flip: 0, dur: 0 }));
+    this.forceUpdate();
+  }
+  relayout() {
+    if (this.hold) { this.setStatic(this.spec); return; }
+    if (this.spinning) { cancelAnimationFrame(this.raf); this.spinning = false; this.setStatic(this.spec); this.onSpinEnd(); return; }
+    this.setStatic(this.spec);
+  }
+  rand() { const C = Component.CHARS; return C[Math.floor(Math.random() * C.length)]; }
+
+  spin(spec) {
+    const { cols } = this.dims(); const v = this.props.velocidad ?? 1;
+    const g = this.gridChars(spec);
+    if (this.cells.length !== g.length) this.setStatic(this.spec);
+    this.spec = spec;
+    this.seqs = g.map((fin, k) => {
+      const r = Math.floor(k / cols), c = k % cols;
+      const stop = (1000 + c * 75 + r * 45) / v; const arr = []; let t = 0;
+      while (true) {
+        const remain = stop - t; const dt = remain > 650 ? 50 : 50 + ((650 - remain) / 650) * 190;
+        t += dt;
+        if (t >= stop) { arr.push({ t: stop, ch: fin, dt }); break; }
+        arr.push({ t, ch: this.rand(), dt });
+      }
+      return { arr, p: 0 };
+    });
+    this.spinStart = performance.now(); this.spinning = true;
+    this.raf = requestAnimationFrame(this.loop);
+  }
+  loop = (now) => {
+    const el = now - this.spinStart; let changed = false, done = true;
+    if (this.hold) {
+      done = false;
+      if (now - this.lastHold > 75) {
+        this.lastHold = now;
+        this.cells.forEach(c => { c.prev = c.cur; c.cur = this.rand(); c.flip++; c.dur = 75; });
+        changed = true;
+      }
+    } else {
+      this.seqs.forEach((s, k) => {
+        const c = this.cells[k]; if (!c) return;
+        while (s.p < s.arr.length && s.arr[s.p].t <= el) {
+          const st = s.arr[s.p]; c.prev = c.cur; c.cur = st.ch; c.flip++; c.dur = Math.min(Math.max(st.dt * 0.95, 45), 230); s.p++; changed = true;
+        }
+        if (s.p < s.arr.length) done = false;
+      });
+    }
+    const ph = Math.floor(el / 85);
+    if (ph !== this.lightPhase) { this.lightPhase = ph; changed = true; }
+    if (changed) this.forceUpdate();
+    if (done) { this.spinning = false; this.onSpinEnd(); }
+    else this.raf = requestAnimationFrame(this.loop);
+  };
+  onSpinEnd() {
+    const p = this.pending || { movie: null, count: 0 };
+    this.later(() => {
+      this.flashUntil = performance.now() + 750;
+      this.setState(s => ({ flashKey: s.flashKey + 1 }));
+      this.later(() => this.forceUpdate(), 780);
+      this.later(() => { this.busy = false; this.setState(p.error ? { phase: 'inicial', movie: null, error: true } : { phase: p.movie ? 'resultado' : 'sin', movie: p.movie, count: p.count }); }, 380);
+    }, 240);
+  }
+
+  matches(f) {
+    const L = s => this.low(s);
+    return Component.MOVIES.filter(m =>
+      (!f.genero || m.generos.some(g => L(g) === L(f.genero))) &&
+      (!f.subgenero || f.subgenero.every(v => m.subgeneros.some(g => L(g) === L(v)))) &&
+      (!f.plataforma || m.plataformas.some(g => L(g) === L(f.plataforma))) &&
+      (!f.anio || (f.anio.mode === 'decada' ? Math.floor(m.anio / 10) * 10 === f.anio.value : m.anio === f.anio.value)) &&
+      (!f.actor || m.actores.some(a => L(a.nombre) === L(f.actor))) &&
+      (!f.director || m.directores.some(d => L(d.nombre) === L(f.director)))
+    );
+  }
+  pull = () => (this.live() ? this.pullLive() : this.pullMock());
+  pullMock = () => {
+    if (this.busy) return;
+    this.busy = true; this.hold = false; cancelAnimationFrame(this.raf);
+    const f = this.state.f; const ms = this.matches(f); const sig = JSON.stringify(f);
+    if (sig !== this.seenSig) { this.seen = []; this.seenSig = sig; }
+    let pool = ms.filter(m => !this.seen.includes(m.id));
+    if (!pool.length) { this.seen = this.state.movie ? [this.state.movie.id] : []; pool = ms.filter(m => !this.seen.includes(m.id)); if (!pool.length) pool = ms; }
+    const movie = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+    if (movie) this.seen.push(movie.id);
+    this.pending = { movie, count: ms.length };
+    this.setState(s => ({ leverKey: s.leverKey + 1, phase: 'girando' }));
+    this.later(() => this.spin(movie ? { kind: 'movie', movie } : { kind: 'none' }), this.state.compact ? 120 : 440);
+  };
+
+  setFilter(key, val) { this.setState(s => ({ f: { ...s.f, [key]: val } })); }
+  static MAX_SUBS = 3;
+  toggleSub(v, g) {
+    this.setState(st => {
+      const cur = st.f.subgenero || [];
+      if (cur.includes(v)) { const next = cur.filter(x => x !== v); return { f: { ...st.f, subgenero: next.length ? next : null } }; }
+      if (cur.length >= Component.MAX_SUBS) return {};
+      return { f: { ...st.f, subgenero: [...cur, v], genero: st.f.genero || g } };
+    });
+  }
+  decadeLabel(d) { return d >= 2000 ? 'Años ' + d : 'Años ' + String(d).slice(2); }
+  chipLabel(key, v) { if (key === 'anio') return v.mode === 'decada' ? this.decadeLabel(v.value) : String(v.value); if (key === 'subgenero') { const g = String(v).split(':')[0].trim(); return this.state.f.genero && this.low(g) !== this.low(this.state.f.genero) ? v : this.subName(v); } return v; }
+  subName(v) { const i = String(v).indexOf(':'); return i >= 0 ? v.slice(i + 1).trim() : v; }
+  names(key) {
+    const set = new Set();
+    Component.MOVIES.forEach(m => (key === 'actor' ? m.actores : m.directores).forEach(p => set.add(p.nombre)));
+    (key === 'actor' ? Component.EXTRA_ACTORS : Component.EXTRA_DIRECTORS).forEach(n => set.add(n));
+    return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+  }
+  optStyle(sel) { return sel ? { bg: '#c4b5f0', fg: '#0c1122', bd: '#c4b5f0' } : { bg: 'rgba(255,255,255,0.03)', fg: '#dfe2ee', bd: 'rgba(255,255,255,0.14)' }; }
+
+  lightB(i, n, bottom) {
+    if (this.flashUntil && performance.now() < this.flashUntil) return 1;
+    if (this.spinning) { const idx = bottom ? n - 1 - i : i; const m = (idx + this.lightPhase) % 6; return m === 0 ? 1 : m === 1 ? 0.45 : 0.08; }
+    return i % 2 ? 0.2 : 0.32;
+  }
+  renderLights(bottom) {
+    const n = this.state.compact ? 16 : 32; const h = React.createElement;
+    const dots = [];
+    for (let i = 0; i < n; i++) {
+      const b = this.lightB(i, n, bottom);
+      dots.push(h('div', { key: i, style: { width: 'clamp(4px,0.6vw,7px)', height: 'clamp(4px,0.6vw,7px)', borderRadius: '50%', background: `rgba(214,200,255,${0.14 + 0.86 * b})`, boxShadow: b > 0.6 ? '0 0 8px 2px rgba(196,176,255,0.75)' : 'none', transition: this.spinning ? 'none' : 'background .4s, box-shadow .4s' } }));
+    }
+    return h('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '0 6px', [bottom ? 'marginTop' : 'marginBottom']: 'clamp(8px,1.2vw,14px)' } }, dots);
+  }
+  renderBoard() {
+    const h = React.createElement; const { cols } = this.dims();
+    const gap = this.state.compact ? 1.1 : 0.55; const r = '0.9cqw';
+    const fs = `calc((100cqw - ${((cols - 1) * gap).toFixed(2)}cqw) / ${cols} * 1.02)`;
+    const face = (ch, half, key, extra) => h('div', { key, style: Object.assign({
+      position: 'absolute', left: 0, right: 0, height: '50%', [half === 'top' ? 'top' : 'bottom']: 0, overflow: 'hidden',
+      background: half === 'top' ? 'linear-gradient(180deg,#2b3244 0%,#1f2533 100%)' : 'linear-gradient(180deg,#1a1f2b 0%,#10141c 100%)',
+      borderRadius: half === 'top' ? `${r} ${r} 0 0` : `0 0 ${r} ${r}`, transformOrigin: half === 'top' ? '50% 100%' : '50% 0%', backfaceVisibility: 'hidden'
+    }, extra || {}) }, h('div', { style: { position: 'absolute', left: 0, right: 0, height: '200%', top: half === 'top' ? 0 : '-100%', display: 'flex', alignItems: 'center', justifyContent: 'center' } }, ch));
+    const cells = this.cells.map((c, k) => {
+      const kids = [face(c.cur, 'top', 'ts'), face(c.flip ? c.prev : c.cur, 'bot', 'bs')];
+      if (c.flip) {
+        const d = c.dur / 2;
+        kids.push(face(c.prev, 'top', 'ft' + c.flip, { zIndex: 2, animation: `flapTop ${d}ms ease-in both`, background: 'linear-gradient(180deg,#2b3244 0%,#181d28 100%)' }));
+        kids.push(face(c.cur, 'bot', 'fb' + c.flip, { zIndex: 2, animation: `flapBot ${d}ms ease-out ${d}ms both` }));
+      }
+      kids.push(h('div', { key: 'seam', style: { position: 'absolute', left: 0, right: 0, top: 'calc(50% - 0.5px)', height: '1px', background: 'rgba(0,0,0,0.85)', zIndex: 3 } }));
+      return h('div', { key: k, style: { position: 'relative', aspectRatio: '0.7', borderRadius: r, perspective: '180px', background: '#0a0d14', boxShadow: '0 1px 0 rgba(255,255,255,0.05), inset 0 0 0 1px rgba(0,0,0,0.6)', fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 600, fontSize: fs, lineHeight: 1, color: '#f5f3ec' } }, kids);
+    });
+    const grid = h('div', { style: { containerType: 'inline-size' } },
+      h('div', { style: { display: 'grid', gridTemplateColumns: `repeat(${cols}, minmax(0,1fr))`, columnGap: gap + 'cqw', rowGap: (gap * 2.2) + 'cqw' } }, cells));
+    return h('div', {
+      onPointerDown: e => { this.sy = e.clientY; },
+      onPointerUp: e => { if (this.sy != null && e.clientY - this.sy > 45) this.pull(); this.sy = null; },
+      style: { position: 'relative', borderRadius: 'clamp(16px,2.4vw,28px)', padding: 'clamp(10px,1.6vw,20px) clamp(10px,1.8vw,24px)', background: 'linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%)', boxShadow: '0 34px 70px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25)', touchAction: this.state.compact ? 'pan-x' : 'auto', userSelect: 'none', cursor: 'grab' }
+    },
+      this.renderLights(false),
+      h('div', { style: { background: '#121724', borderRadius: 'clamp(8px,1.2vw,14px)', padding: 'clamp(7px,1.1vw,14px)', boxShadow: 'inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1)' } }, grid),
+      this.renderLights(true),
+      this.state.flashKey ? h('div', { key: 'fl' + this.state.flashKey, style: { position: 'absolute', inset: 0, borderRadius: 'inherit', pointerEvents: 'none', background: 'radial-gradient(ellipse at 50% 50%, rgba(235,228,255,0.9), rgba(196,181,240,0.25) 60%, transparent 80%)', animation: 'boardFlash 650ms ease-out both' } }) : null
+    );
+  }
+  renderLever() {
+    const h = React.createElement; const k = this.state.leverKey;
+    return h('div', { onClick: this.pull, role: 'button', 'aria-label': 'Jalar la palanca', style: { flex: 'none', position: 'relative', width: '64px', height: '250px', overflow: 'hidden', cursor: 'pointer' } },
+      h('div', { style: { position: 'absolute', left: '50%', top: '30px', bottom: '64px', width: '12px', marginLeft: '-6px', borderRadius: '6px', background: '#080b13', boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.08)' } }),
+      h('div', { key: 'lv' + k, style: { position: 'absolute', top: '12px', left: '50%', width: '44px', marginLeft: '-22px', animation: k ? 'leverPull 1100ms both' : 'none' } },
+        h('div', { style: { position: 'relative', zIndex: 1, width: '44px', height: '44px', borderRadius: '50%', background: 'radial-gradient(circle at 34% 28%, #fbf8ff 0%, #cdbff4 22%, #8d7cc4 60%, #3d3366 100%)', boxShadow: '0 8px 18px rgba(0,0,0,0.55), 0 0 18px rgba(196,181,240,0.25)' } }),
+        h('div', { style: { width: '10px', height: '170px', margin: '-4px auto 0', borderRadius: '5px', background: 'linear-gradient(90deg,#5d6579,#dfe3ec 45%,#6a7286)' } })
+      ),
+      h('div', { style: { position: 'absolute', zIndex: 2, left: '4px', right: '4px', bottom: 0, height: '70px', borderRadius: '14px', background: 'linear-gradient(180deg,#505a70 0%,#353d4f 100%)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22), 0 10px 20px rgba(0,0,0,0.5)' } },
+        h('div', { style: { position: 'absolute', top: '10px', left: '50%', width: '20px', height: '8px', marginLeft: '-10px', borderRadius: '4px', background: '#0a0d15' } })
+      )
+    );
+  }
+
+  renderVals() {
+    const s = this.state; const FIL = Component.FILTERS; const fd = FIL[s.fi]; const val = s.f[fd.key];
+    if (this.live()) {                                   // refresca opciones y contador al cambiar filtros
+      const sig = JSON.stringify([s.f, s.fi]);
+      if (sig !== this.optsSig) { this.optsSig = sig; setTimeout(() => this.refreshOpts(), 0); }
+    }
+    const go = d => this.setState(st => ({ fi: (st.fi + d + FIL.length) % FIL.length, focus: false }));
+    const O = this.live() ? s.opts : null;          // null = aún cargando o sin backend → listas fijas
+    const keep = (arr, v) => (v && !arr.includes(v) ? [...arr, v] : arr);
+    let options = [];
+    if (fd.type === 'list') {
+      let labels = fd.options;
+      if (O && fd.key === 'genero') labels = keep(O.generos.map(g => g.nombre), val);
+      if (O && fd.key === 'plataforma') labels = keep(O.plataformas.map(p => p.nombre), val);
+      options = ['Cualquiera', ...labels].map(label => {
+        const sel = label === 'Cualquiera' ? !val : val === label;
+        return { label, ...this.optStyle(sel), onClick: () => this.setFilter(fd.key, label === 'Cualquiera' ? null : label) };
+      });
+    } else if (fd.type === 'year' && s.yearMode === 'decada') {
+      options = [{ label: 'Cualquiera', ...this.optStyle(!val), onClick: () => this.setFilter('anio', null) },
+        ...(O ? keep(O.decadas.map(d => d.decada), val && val.mode === 'decada' ? val.value : null).sort((a, b) => a - b) : Component.DECADES).map(d => ({ label: this.decadeLabel(d), ...this.optStyle(val && val.mode === 'decada' && val.value === d), onClick: () => this.setFilter('anio', { mode: 'decada', value: d }) }))];
+    }
+    const allG = Object.keys(Component.GENRES);
+    const gOrder = !s.f.genero ? allG : s.subScope === 'todos' ? [s.f.genero, ...allG.filter(g => g !== s.f.genero)] : [s.f.genero];
+    // Con backend: solo subgéneros que tienen películas con los demás filtros
+    const slug = t => this.low(t).replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const subsFor = g => {
+      if (!O) return Component.GENRES[g] || [];
+      const have = O.subgeneros.filter(x => x.genero === slug(g)).map(x => x.nombre);
+      const mine = (val || []).filter(v => this.low(String(v).split(':')[0].trim()) === this.low(g)).map(v => this.subName(v));
+      return mine.reduce((acc, x) => keep(acc, x), have);
+    };
+    const nSubs = (s.f.subgenero || []).length; const subsFull = nSubs >= Component.MAX_SUBS;
+    const subGroups = fd.type === 'sub' ? gOrder.map(g => ({
+      name: g,
+      options: subsFor(g).map(sub => {
+        const v = g + ': ' + sub; const on = (val || []).includes(v);
+        const st = on ? this.optStyle(true) : subsFull ? { bg: 'transparent', fg: '#5d6479', bd: 'rgba(255,255,255,0.07)' } : this.optStyle(false);
+        return { label: sub, ...st, onClick: () => this.toggleSub(v, g) };
+      })
+    })).filter(gr => gr.options.length) : [];
+    const subAny = this.optStyle(fd.type === 'sub' && !val);
+    const yearTabs = [['Décadas', 'decada'], ['Año exacto', 'exacto']].map(([label, mode]) => ({
+      label, bg: s.yearMode === mode ? '#c4b5f0' : 'transparent', fg: s.yearMode === mode ? '#0c1122' : '#c9cedd',
+      onClick: () => this.setState({ yearMode: mode })
+    }));
+    const exactSet = val && val.mode === 'exacto' && val.value === s.yearExact;
+    const setYear = y => { y = Math.max(1900, Math.min(2026, y)); this.setState(st => ({ yearExact: y, f: st.f.anio && st.f.anio.mode === 'exacto' ? { ...st.f, anio: { mode: 'exacto', value: y } } : st.f })); };
+
+    const isText = fd.type === 'text'; const q = isText ? s.q[fd.key] : '';
+    let sugg = [];
+    if (isText && this.live()) sugg = q ? s.sugg[fd.key] : (O ? (fd.key === 'actor' ? O.actores : O.directores).slice(0, 6).map(p => p.nombre) : []);
+    else if (isText && q) sugg = this.names(fd.key).filter(n => this.low(n).includes(this.low(q))).slice(0, 6);
+    const pickName = n => this.setState(st => ({ f: { ...st.f, [fd.key]: n }, q: { ...st.q, [fd.key]: n }, focus: false }));
+    const anySel = this.optStyle(isText && !val);
+
+    const chips = [];
+    FIL.forEach((d, i) => {
+      const v = s.f[d.key]; if (!v) return;
+      if (d.key === 'subgenero') {
+        v.forEach(sv => chips.push({ label: this.chipLabel('subgenero', sv), kind: d.label, onRemove: () => this.toggleSub(sv), onEdit: () => this.setState({ fi: i }) }));
+        return;
+      }
+      chips.push({
+        label: this.chipLabel(d.key, v), kind: d.label,
+        onRemove: () => this.setState(st => ({ f: { ...st.f, [d.key]: null }, q: d.type === 'text' ? { ...st.q, [d.key]: '' } : st.q })),
+        onEdit: () => this.setState({ fi: i })
+      });
+    });
+
+    const raw = s.movie || {};
+    const m = { generos: [], subgeneros: [], plataformas: [], actores: [], directores: [], tags: {}, ...raw };
+    ['titulo', 'titulo_original', 'sinopsis', 'clasificacion_mx', 'poster_url'].forEach(k => { if (m[k] == null) m[k] = ''; });
+    ['generos', 'subgeneros', 'plataformas', 'actores', 'directores'].forEach(k => { if (!Array.isArray(m[k])) m[k] = []; });
+    if (!m.tags || Array.isArray(m.tags)) m.tags = {};
+    const tot = s.total;
+    const n = s.count; const nF = chips.length;
+    const countText = nF === 0 ? `1 de ${n} ${n === 1 ? 'película' : 'películas'} del catálogo` : `1 de ${n} ${n === 1 ? 'película' : 'películas'} con estos filtros`;
+    const spinning = s.phase === 'girando';
+
+    return {
+      rootRef: this.rootRef,
+      stepText: `Filtro ${s.fi + 1} de ${FIL.length}`,
+      filterLabel: fd.label, promptText: fd.type === 'sub' ? (nSubs ? `Elige hasta 3 subgéneros · ${nSubs} de 3` : 'Elige hasta 3 subgéneros') : fd.prompt,
+      prevFilter: () => go(-1), nextFilter: () => go(1),
+      filterDots: FIL.map((d, i) => ({ label: d.label, w: i === s.fi ? '22px' : '8px', bg: i === s.fi ? '#c4b5f0' : s.f[d.key] ? 'rgba(196,181,240,0.5)' : 'rgba(255,255,255,0.18)', onClick: () => this.setState({ fi: i }) })),
+      isList: fd.type === 'list', isSub: fd.type === 'sub', subGroups, subAnyBg: subAny.bg, subAnyFg: subAny.fg, subAnyBd: subAny.bd,
+      subHint: subsFull ? 'Llegaste a 3. Quita uno para elegir otro.' : s.f.genero ? '' : 'Fija un género para ver solo sus subgéneros',
+      hasGenre: !!s.f.genero,
+      scopeTabs: [['Solo ' + (s.f.genero || ''), 'solo'], ['Todos', 'todos']].map(([label, k]) => ({
+        label, bg: s.subScope === k ? '#c4b5f0' : 'transparent', fg: s.subScope === k ? '#0c1122' : '#c9cedd',
+        onClick: () => this.setState({ subScope: k })
+      })),
+      clearSub: () => this.setFilter('subgenero', null), isYear: fd.type === 'year', isDecade: s.yearMode === 'decada', isExact: s.yearMode === 'exacto', isText,
+      options, yearTabs, yearExact: s.yearExact,
+      yearDown: () => setYear(s.yearExact - 1), yearUp: () => setYear(s.yearExact + 1),
+      onYearInput: e => { const y = parseInt(e.target.value, 10); if (!isNaN(y)) this.setState({ yearExact: y }); },
+      setExactYear: () => setYear(s.yearExact) || this.setFilter('anio', { mode: 'exacto', value: Math.max(1900, Math.min(2026, s.yearExact)) }),
+      clearYear: () => this.setFilter('anio', null),
+      exactBtnText: exactSet ? 'Fijado' : 'Fijar año', exactBtnBg: exactSet ? '#c4b5f0' : 'transparent', exactBtnFg: exactSet ? '#0c1122' : '#c4b5f0',
+      query: q, textPlaceholder: fd.placeholder || '',
+      onQuery: e => { const v = e.target.value; this.setState(st => ({ q: { ...st.q, [fd.key]: v }, focus: true })); if (this.live()) this.searchPeople(fd.key, v); },
+      onFocusQ: () => this.setState({ focus: true }),
+      onBlurQ: () => this.later(() => this.setState({ focus: false }), 120),
+      onKeyQ: e => { if (e.key === 'Enter') { const t = sugg[0] || q.trim(); if (t) pickName(t); } },
+      showSuggest: s.focus && sugg.length > 0 && !(sugg.length === 1 && sugg[0] === val),
+      suggestions: sugg.map(name => ({ name, onPick: e => { e.preventDefault(); pickName(name); } })),
+      clearText: () => this.setState(st => ({ f: { ...st.f, [fd.key]: null }, q: { ...st.q, [fd.key]: '' } })),
+      anyBg: anySel.bg, anyFg: anySel.fg, anyBd: anySel.bd,
+      hasTextVal: isText && !!val, textVal: val || '',
+      chips, noFilters: nF === 0, hasFilters: nF > 0,
+      clearAll: () => this.setState({ f: this.emptyF(), q: { actor: '', director: '' } }),
+      board: this.renderBoard(), lever: this.renderLever(),
+      showLever: !s.compact, compact: s.compact, pull: this.pull,
+      btnOpacity: spinning ? 0.55 : 1,
+      hintText: spinning ? 'Girando…' : s.error ? ({ nokey: 'Falta la llave de Supabase: pégala en CONFIGURACIÓN DE SUPABASE, al inicio del script.', badkey: 'Supabase rechazó la llave. Revisa que sea la anon o publishable key completa.', server: 'El catálogo respondió con un error. Revisa la consola para ver el detalle.' }[this.errKind] || 'No se pudo conectar con el catálogo. Revisa tu conexión y vuelve a jalar la palanca.') : s.compact ? 'O desliza hacia abajo sobre el tablero' : 'Jala la palanca o desliza hacia abajo sobre el tablero',
+      showResult: s.phase === 'resultado' && !!s.movie, showNone: s.phase === 'sin',
+      showLiveCount: this.live() && tot != null,
+      liveCountText: tot === 0 ? 'Ninguna película cumple estos filtros: quita alguno antes de jalar' : `${tot} ${tot === 1 ? 'película cumple' : 'películas cumplen'} estos filtros`,
+      liveCountColor: tot === 0 ? '#f0b3a8' : '#9aa3b8',
+      hasPoster: !!m.poster_url, noPoster: !m.poster_url,
+      posterImg: m.poster_url ? React.createElement('img', { src: m.poster_url, alt: 'Póster de ' + m.titulo, style: { display: 'block', width: '100%', aspectRatio: '2/3', objectFit: 'cover', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)' } }) : null,
+      hasClasif: !!m.clasificacion_mx,
+      m, countText,
+      duration: m.duracion_min ? `${Math.floor(m.duracion_min / 60)} h ${m.duracion_min % 60} min` : '',
+      tags: Object.keys(m.tags).filter(k => m.tags[k] && m.tags[k].length).map(k => ({ k: Component.TAG_LABELS[k] || k, v: m.tags[k].join(', ') })),
+      subs: m.subgeneros.map(v => this.subName(v)),
+      directors: m.directores.map(d => d.nombre).join(', '),
+      cast: m.actores.map(a => ({ nombre: a.nombre, rol: a.personaje || '—' })),
+      changeFilters: () => { this.setState({ phase: 'inicial', movie: null }); this.setStatic({ kind: 'welcome' }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    };
+  }
+}
+</script>
+</body>
+
+</html>
