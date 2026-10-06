@@ -275,8 +275,120 @@ button{font-family:inherit;}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;con recomendaciones&quot;,&quot;bloqueada&quot;,&quot;sin suficientes me gusta&quot;,&quot;cargando&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;con recomendaciones&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;progreso&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:40,&quot;step&quot;:1,&quot;default&quot;:12,&quot;tsType&quot;:&quot;number&quot;},&quot;columnasEscritorio&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;2&quot;,&quot;3&quot;],&quot;default&quot;:&quot;3&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script
+    data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;con recomendaciones&quot;,&quot;bloqueada&quot;,&quot;sin suficientes me gusta&quot;,&quot;cargando&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;progreso&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:40,&quot;step&quot;:1,&quot;default&quot;:12,&quot;tsType&quot;:&quot;number&quot;},&quot;columnasEscritorio&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;2&quot;,&quot;3&quot;],&quot;default&quot;:&quot;3&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
+  // ================== CONFIGURACIÓN DE SUPABASE ==================
+  // La misma publishable key de la tragamonedas. NUNCA la secret key.
+  static SUPABASE_URL = 'https://mlrezhasoubggrembngu.supabase.co';
+  static SUPABASE_KEY = 'sb_publishable_aMwHv2EdEELy5FRcRdkYDg_ipcSNSTG';
+  static SESION = 'ruleta_sesion_v1';      // dónde se recuerda la sesión anónima en este navegador
+  // ================================================================
+
+  live() { return (this.props.estado ?? 'interactivo') === 'interactivo'; }
+
+  leerSesion() { try { return JSON.parse(localStorage.getItem(Component.SESION)) || null; } catch (_) { return null; } }
+  guardarSesion(d) {
+    const ses = { access_token: d.access_token, refresh_token: d.refresh_token,
+                  expires_at: d.expires_at || Math.floor(Date.now() / 1000) + (d.expires_in || 3600) };
+    try { localStorage.setItem(Component.SESION, JSON.stringify(ses)); } catch (_) {}
+    this.ses = ses;
+    return ses;
+  }
+  async auth(ruta, cuerpo) {
+    const C = Component;
+    const r = await fetch(`${C.SUPABASE_URL}/auth/v1/${ruta}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', apikey: C.SUPABASE_KEY }, body: JSON.stringify(cuerpo) });
+    if (!r.ok) { const t = await r.text(); throw new Error(`auth ${r.status}: ${t}`); }
+    return r.json();
+  }
+  // Sesión anónima: se crea la primera vez y se renueva sola. Si la persona crea
+  // cuenta después, Supabase conserva el mismo usuario y sus swipes.
+  async sesion(forzarRenovar) {
+    if (this.renovando) return this.renovando;
+    this.renovando = (async () => {
+      let ses = this.ses || this.leerSesion();
+      const ahora = Math.floor(Date.now() / 1000);
+      if (ses && (forzarRenovar || ses.expires_at - 60 < ahora)) {
+        try { ses = this.guardarSesion(await this.auth('token?grant_type=refresh_token', { refresh_token: ses.refresh_token })); }
+        catch (e) { console.warn('No se pudo renovar la sesión; se crea una nueva', e); ses = null; }
+      }
+      if (!ses) ses = this.guardarSesion(await this.auth('signup', { data: {} }));
+      this.ses = ses;
+      return ses;
+    })();
+    try { return await this.renovando; } finally { this.renovando = null; }
+  }
+  async rpc(fn, args, reintento) {
+    const C = Component;
+    const ses = await this.sesion(false);
+    const r = await fetch(`${C.SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+      method: 'POST', body: JSON.stringify(args || {}),
+      headers: { 'Content-Type': 'application/json', apikey: C.SUPABASE_KEY, Authorization: 'Bearer ' + ses.access_token } });
+    if (r.status === 401 && !reintento) { await this.sesion(true); return this.rpc(fn, args, true); }
+    if (!r.ok) { const t = await r.text(); throw new Error(`${fn} ${r.status}: ${t}`); }
+    return r.json();
+  }
+  // Las escrituras van en fila (un swipe y su deshacer nunca se cruzan)
+  enFila(op) {
+    const sig = (this.fila || Promise.resolve()).then(op);
+    this.fila = sig.catch(() => {});
+    return sig;
+  }
+  normalizar(m) {
+    return { generos: [], subgeneros: [], plataformas: [], actores: [], directores: [], tags: {}, ...m,
+             titulo: m.titulo || '', titulo_original: m.titulo_original || '', sinopsis: m.sinopsis || '',
+             tags: m.tags && !Array.isArray(m.tags) ? m.tags : {} };
+  }
+  static TANDA = 12;   // cuántas recomendaciones se piden por tanda (se muestran 6 y las demás esperan)
+
+  // Traduce los botones de la tarjeta a los swipes del backend
+  static ACCION = { like: 'like', nope: 'dislike', seenYes: 'vista_gusto', seenNo: 'vista_no_gusto' };
+
+  async pedirRecs(genre, excluir) {
+    const filtros = { ...(genre ? { genero: genre } : {}), ...(excluir && excluir.length ? { excluir } : {}) };
+    const r = await this.rpc('recomendar', { filtros, cantidad: Component.TANDA });
+    const recs = (r.recomendaciones || []).map(m => this.normalizar(m));
+    recs.forEach(m => { this.recMap[m.id] = m; this.vistos.add(m.id); });
+    return { listo: r.listo, ids: recs.map(m => m.id) };
+  }
+  async iniciar(extra) {
+    this.timers.forEach(clearTimeout); this.timers = [];
+    const token = (this.carga = (this.carga || 0) + 1);
+    this.recMap = {}; this.vistos = new Set(); this.fin = false;
+    this.setState({ ...(extra || {}), status: 'loading', order: [], dismissed: [], leaving: {}, asking: null, expanded: {} });
+    try {
+      const [prog, perfil] = await Promise.all([this.rpc('resumen_swipes', {}), this.rpc('mi_perfil', { cantidad: 6 })]);
+      if (token !== this.carga) return;
+      if ((prog.total || 0) < 30) { this.setState({ status: 'locked', total: prog.total || 0 }); return; }
+      const { listo, ids } = await this.pedirRecs(this.state.genre, []);
+      if (token !== this.carga) return;
+      if (!listo) { this.setState({ status: 'nolikes', total: prog.total }); return; }
+      this.setState({ status: 'ready', total: prog.total, perfil: perfil.rasgos || [], positivos: perfil.positivos || 0, order: ids },
+                    () => this.enter(this.visible(this.state), 70));
+    } catch (e) {
+      console.error(e);
+      if (token === this.carga) this.setState({ status: 'offline' });
+    }
+  }
+  async rellenar() {               // cuando quedan pocas, trae más sin repetir
+    if (this.pidiendo || this.fin) return;
+    this.pidiendo = true;
+    try {
+      const { ids } = await this.pedirRecs(this.state.genre, [...this.vistos]);
+      if (!ids.length) this.fin = true;
+      this.setState(st => ({ order: [...st.order, ...ids.filter(id => !st.order.includes(id))] }));
+    } catch (e) { console.error(e); }
+    finally { this.pidiendo = false; }
+  }
+  refrescarPerfil() {              // "Así te vemos" se actualiza solo con cada respuesta
+    clearTimeout(this.perfilT);
+    this.perfilT = setTimeout(async () => {
+      try { const p = await this.rpc('mi_perfil', { cantidad: 6 }); this.setState({ perfil: p.rasgos || [], positivos: p.positivos || 0 }); }
+      catch (e) { console.error(e); }
+    }, 1200);
+  }
+  // ============================================================
   static GENRES = ['Acción', 'Aventura', 'Ciencia ficción', 'Comedia', 'Crimen', 'Drama', 'Fantasía', 'Musical', 'Romance', 'Terror', 'Thriller', 'Western', 'Bélico', 'Misterio'];
   static HUE = { 'Acción': 35, 'Aventura': 75, 'Ciencia ficción': 210, 'Comedia': 60, 'Crimen': 15, 'Drama': 265, 'Fantasía': 300, 'Musical': 330, 'Romance': 350, 'Terror': 25, 'Thriller': 185, 'Western': 50, 'Bélico': 120, 'Misterio': 240 };
   static PERFIL = [{ rasgo: 'Terror', afinidad: 0.83 }, { rasgo: 'Absurdo', afinidad: 0.80 }, { rasgo: 'Misterio', afinidad: 0.78 }, { rasgo: 'Comedia', afinidad: 0.70 }, { rasgo: 'dirigida por Tim Burton', afinidad: 0.55 }, { rasgo: 'con Johnny Depp', afinidad: 0.48 }];
@@ -302,7 +414,8 @@ class Component extends DCLogic {
   ];
   static VISIBLE = 6;
 
-  state = { status: 'loading', genre: null, order: Component.RECS.map(r => r.id), dismissed: [], leaving: {}, pose: {}, delay: {}, asking: null, expanded: {}, batchLoading: false, w: 420 };
+  recMap = {}; vistos = new Set();
+  state = { status: 'loading', perfil: [], positivos: 0, total: 0, genre: null, order: Component.RECS.map(r => r.id), dismissed: [], leaving: {}, pose: {}, delay: {}, asking: null, expanded: {}, batchLoading: false, w: 420 };
   rootRef = React.createRef();
   gridRef = React.createRef();
   timers = [];
@@ -331,15 +444,17 @@ class Component extends DCLogic {
     else if (e === 'sin suficientes me gusta') this.setState({ ...base, status: 'nolikes' });
     else if (e === 'cargando') this.setState({ ...base, status: 'loading' });
     else if (e === 'sin conexión') this.setState({ ...base, status: 'offline' });
+    else if (this.live()) this.iniciar(base);
     else this.load(base);
   }
   load(extra) {
+    if (this.live()) { this.iniciar(extra); return; }
     this.setState({ ...(extra || {}), status: 'loading' });
     this.later(() => { this.setState({ status: 'ready' }); this.enter(this.visible(this.state), 70); }, 1000);
   }
 
-  rec(id) { return Component.RECS.find(r => r.id === id); }
-  queue(s) { return s.order.filter(id => !s.dismissed.includes(id) && (!s.genre || this.rec(id).generos.includes(s.genre))); }
+  rec(id) { return this.live() ? this.recMap[id] : Component.RECS.find(r => r.id === id); }
+  queue(s) { return s.order.filter(id => this.rec(id) && !s.dismissed.includes(id) && (!s.genre || this.rec(id).generos.includes(s.genre))); }
   visible(s) { return this.queue(s).slice(0, Component.VISIBLE); }
 
   enter(ids, stagger) {
@@ -353,6 +468,12 @@ class Component extends DCLogic {
     if (this.state.leaving[id]) return;
     this.setState(s => ({ leaving: { ...s.leaving, [id]: kind }, asking: s.asking === id ? null : s.asking }));
     this.later(() => this.finalize(id), 470);
+    if (this.live()) {
+      this.enFila(() => this.rpc('registrar_swipe', { p_titulo: id, p_accion: Component.ACCION[kind] }))
+        .then(prog => { this.setState({ total: prog.total }); this.refrescarPerfil(); })
+        .catch(e => { console.error(e); this.setState({ status: 'offline' }); });
+      if (this.queue(this.state).length <= Component.VISIBLE + 2) this.rellenar();
+    }
   }
   finalize(id) {
     let nextId = null;
@@ -374,6 +495,14 @@ class Component extends DCLogic {
     this.setState({ batchLoading: true, asking: null, expanded: {} });
     const g = this.gridRef.current;
     if (g) window.scrollTo({ top: Math.max(0, g.getBoundingClientRect().top + window.scrollY - 24), behavior: 'smooth' });
+    if (this.live()) {
+      const inicio = Date.now();
+      this.pedirRecs(s.genre, [...this.vistos]).then(({ ids }) => {
+        this.later(() => this.setState({ batchLoading: false, order: ids, dismissed: [] },
+                                       () => this.enter(this.visible(this.state), 70)), Math.max(0, 600 - (Date.now() - inicio)));
+      }).catch(e => { console.error(e); this.setState({ batchLoading: false, status: 'offline' }); });
+      return;
+    }
     this.later(() => {
       this.setState(st => ({ batchLoading: false, order: [...st.order.filter(id => !vis.includes(id)), ...vis] }), () => this.enter(this.visible(this.state), 70));
     }, 950);
@@ -384,7 +513,7 @@ class Component extends DCLogic {
     const byLen = L <= 6 ? 30 : L <= 12 ? 22 : L <= 20 ? 18 : L <= 30 ? 15 : 13;
     return Math.min(byLen, 88 / (w * 0.47)).toFixed(1) + 'cqw';
   }
-  dur(m) { const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; }
+  dur(m) { if (!m) return ''; const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; }
 
   renderVals() {
     const s = this.state;
@@ -406,7 +535,7 @@ class Component extends DCLogic {
       return {
         tf, op, tr, z: lv ? 5 : 1,
         titulo: m.titulo, orig: m.titulo_original, showOrig: !!m.titulo_original && m.titulo_original !== m.titulo,
-        anio: m.anio, dur: this.dur(m.duracion_min), generos: m.generos, razones: m.razones.join(' · '),
+        anio: m.anio, dur: this.dur(m.duracion_min), generos: m.generos, razones: (m.razones || []).join(' · '),
         sinopsis: m.sinopsis, director: m.directores.map(d => d.nombre).join(' y '), actores: m.actores,
         plataformas: m.plataformas, noPlat: !m.plataformas.length,
         hasPoster: !!m.poster_url, noPoster: !m.poster_url, posterCss: m.poster_url ? `url("${m.poster_url}")` : 'none',
@@ -421,14 +550,15 @@ class Component extends DCLogic {
       };
     });
 
-    const prog = this.props.progreso ?? 12;
-    const total = s.status === 'nolikes' ? Math.max(prog, 30) : Math.min(prog, 29);
+    const prog = this.live() ? s.total : (this.props.progreso ?? 12);
+    const total = this.live() ? prog : s.status === 'nolikes' ? Math.max(prog, 30) : Math.min(prog, 29);
     const lit = Math.min(total, 30);
     const bulbs = Array.from({ length: 30 }, (_, i) => i < lit
       ? { bg: 'rgba(226,216,255,1)', sh: '0 0 8px 2px rgba(196,176,255,0.7)' }
       : { bg: 'rgba(214,200,255,0.14)', sh: 'none' });
 
-    const P = Component.PERFIL, hi = Math.max(...P.map(p => p.afinidad)), lo = Math.min(...P.map(p => p.afinidad));
+    const P = this.live() ? s.perfil : Component.PERFIL;
+    const hi = Math.max(...P.map(p => p.afinidad), 0), lo = Math.min(...P.map(p => p.afinidad), hi);
     const traits = P.slice(0, 6).map(p => {
       const a = hi === lo ? 1 : 0.25 + 0.75 * (p.afinidad - lo) / (hi - lo);
       return {
@@ -445,6 +575,7 @@ class Component extends DCLogic {
     const chip = sel => sel ? { bg: '#c4b5f0', fg: '#0c1122', bd: '#c4b5f0' } : { bg: 'rgba(255,255,255,0.03)', fg: '#dfe2ee', bd: 'rgba(255,255,255,0.14)' };
     const setGenre = g => {
       if (s.batchLoading || g === s.genre) return;
+      if (this.live()) { this.setState({ genre: g, asking: null }, () => this.iniciar()); return; }
       this.setState({ genre: g, asking: null }, () => this.enter(this.visible(this.state), 50));
     };
     const ready = s.status === 'ready';
@@ -454,14 +585,14 @@ class Component extends DCLogic {
       wrapMax: cols === 1 ? '460px' : cols === 2 ? '860px' : '1140px',
       gridCols: `repeat(${cols}, minmax(0, 1fr))`,
       isLocked: s.status === 'locked', isNoLikes: s.status === 'nolikes', isOffline: s.status === 'offline', isLoading: s.status === 'loading', isReady: ready,
-      total, bulbs, positivos: 18, traits,
+      total, bulbs, positivos: this.live() ? s.positivos : 18, traits,
       loadBulbs: Array.from({ length: 5 }, (_, i) => ({ delay: (i * 0.14).toFixed(2) + 's' })),
       genreChips: [{ label: 'Todos', ...chip(!s.genre), onClick: () => setGenre(null) },
         ...Component.GENRES.map(g => ({ label: g, ...chip(s.genre === g), onClick: () => setGenre(g) }))],
       batchLoading: s.batchLoading, skeletons: Array.from({ length: cols === 1 ? 2 : cols }, (_, i) => ({ delay: (i * 0.12).toFixed(2) + 's' })),
       showCards: !s.batchLoading, cards,
       showFilterEmpty: ready && !s.batchLoading && vis.length === 0,
-      emptyTitle: s.genre ? `No hay recomendaciones de ${s.genre} en esta tanda` : 'Ya calificaste toda esta tanda',
+      emptyTitle: s.genre ? `No hay más recomendaciones de ${s.genre} por ahora` : 'Ya calificaste toda esta tanda',
       clearGenre: () => setGenre(null),
       cancelAsk: () => this.setState({ asking: null }),
       retry: () => { if (navigator.onLine === false) return; this.load(); },
