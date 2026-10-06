@@ -93,11 +93,9 @@
         <nav style="display:flex;justify-content:center;">
           <div
             style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
-            <a href="Tragamonedas%20de%20Peliculas.dc.html"
-              style="display:flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;"
-              style-hover="color:#ffffff;">Tragamonedas</a>
-            <a href="Descubrir.dc.html" aria-current="page"
-              style="display:flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;">Descubrir</a>
+        <a href="Tragamonedas%20de%20Peliculas.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(9px,2.6vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(12px,3.6vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="color:#ffffff;">Tragamonedas</a>
+        <a href="Descubrir.dc.html" aria-current="page" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(9px,2.6vw,18px);border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(12px,3.6vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;">Descubrir</a>
+        <a href="Para%20ti.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(9px,2.6vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(12px,3.6vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="color:#ffffff;">Para ti</a>
           </div>
         </nav>
 
@@ -471,7 +469,7 @@
     </div>
   </x-dc>
   <script type="text/x-dc" data-dc-script
-    data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;cargando&quot;,&quot;mazo terminado&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;progresoInicial&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:40,&quot;step&quot;:1,&quot;default&quot;:12,&quot;tsType&quot;:&quot;number&quot;}}">
+    data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;con recomendaciones&quot;,&quot;bloqueada&quot;,&quot;sin suficientes me gusta&quot;,&quot;cargando&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;progreso&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:40,&quot;step&quot;:1,&quot;default&quot;:12,&quot;tsType&quot;:&quot;number&quot;},&quot;columnasEscritorio&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;2&quot;,&quot;3&quot;],&quot;default&quot;:&quot;3&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   // ================== CONFIGURACIÓN DE SUPABASE ==================
   // La misma publishable key de la tragamonedas. NUNCA la secret key.
@@ -535,344 +533,263 @@ class Component extends DCLogic {
              titulo: m.titulo || '', titulo_original: m.titulo_original || '', sinopsis: m.sinopsis || '',
              tags: m.tags && !Array.isArray(m.tags) ? m.tags : {} };
   }
-  filtrosActuales(genre) { return genre ? { genero: genre } : {}; }
-  async iniciar() {
+  static TANDA = 12;   // cuántas recomendaciones se piden por tanda (se muestran 6 y las demás esperan)
+
+  // Traduce los botones de la tarjeta a los swipes del backend
+  static ACCION = { like: 'like', nope: 'dislike', seenYes: 'vista_gusto', seenNo: 'vista_no_gusto' };
+
+  async pedirRecs(genre, excluir) {
+    const filtros = { ...(genre ? { genero: genre } : {}), ...(excluir && excluir.length ? { excluir } : {}) };
+    const r = await this.rpc('recomendar', { filtros, cantidad: Component.TANDA });
+    const recs = (r.recomendaciones || []).map(m => this.normalizar(m));
+    recs.forEach(m => { this.recMap[m.id] = m; this.vistos.add(m.id); });
+    return { listo: r.listo, ids: recs.map(m => m.id) };
+  }
+  async iniciar(extra) {
     this.timers.forEach(clearTimeout); this.timers = [];
     const token = (this.carga = (this.carga || 0) + 1);
-    this.fin = false;
-    this.setState({ loading: true, offline: false, deck: [], rated: [], history: [], front: null, phase: 'idle', flipped: false });
+    this.recMap = {}; this.vistos = new Set(); this.fin = false;
+    this.setState({ ...(extra || {}), status: 'loading', order: [], dismissed: [], leaving: {}, asking: null, expanded: {} });
     try {
-      const [prog, mazo] = await Promise.all([
-        this.rpc('resumen_swipes', {}),
-        this.rpc('mazo_swipe', { filtros: this.filtrosActuales(this.state.genre), cantidad: 20 })
-      ]);
+      const [prog, perfil] = await Promise.all([this.rpc('resumen_swipes', {}), this.rpc('mi_perfil', { cantidad: 6 })]);
       if (token !== this.carga) return;
-      if (!mazo.length) this.fin = true;
-      this.setState({ loading: false, prog: { ...Component.SAMPLE, ...prog }, deck: mazo.map(m => this.normalizar(m)) });
+      if ((prog.total || 0) < 30) { this.setState({ status: 'locked', total: prog.total || 0 }); return; }
+      const { listo, ids } = await this.pedirRecs(this.state.genre, []);
+      if (token !== this.carga) return;
+      if (!listo) { this.setState({ status: 'nolikes', total: prog.total }); return; }
+      this.setState({ status: 'ready', total: prog.total, perfil: perfil.rasgos || [], positivos: perfil.positivos || 0, order: ids },
+                    () => this.enter(this.visible(this.state), 70));
     } catch (e) {
       console.error(e);
-      if (token === this.carga) this.setState({ loading: false, offline: true });
+      if (token === this.carga) this.setState({ status: 'offline' });
     }
   }
-  async cargarMas() {
-    if (this.pidiendo || this.fin || !this.live()) return;
+  async rellenar() {               // cuando quedan pocas, trae más sin repetir
+    if (this.pidiendo || this.fin) return;
     this.pidiendo = true;
-    const token = this.carga;
     try {
-      const mas = await this.rpc('mazo_swipe', { filtros: this.filtrosActuales(this.state.genre), cantidad: 20 });
-      if (token !== this.carga) return;
-      this.setState(st => {
-        const ya = new Set([...st.deck.map(m => m.id), ...st.rated]);
-        const nuevas = mas.filter(m => !ya.has(m.id)).map(m => this.normalizar(m));
-        if (!nuevas.length) this.fin = true;
-        return { deck: [...st.deck, ...nuevas] };
-      });
+      const { ids } = await this.pedirRecs(this.state.genre, [...this.vistos]);
+      if (!ids.length) this.fin = true;
+      this.setState(st => ({ order: [...st.order, ...ids.filter(id => !st.order.includes(id))] }));
     } catch (e) { console.error(e); }
     finally { this.pidiendo = false; }
+  }
+  refrescarPerfil() {              // "Así te vemos" se actualiza solo con cada respuesta
+    clearTimeout(this.perfilT);
+    this.perfilT = setTimeout(async () => {
+      try { const p = await this.rpc('mi_perfil', { cantidad: 6 }); this.setState({ perfil: p.rasgos || [], positivos: p.positivos || 0 }); }
+      catch (e) { console.error(e); }
+    }, 1200);
   }
   // ============================================================
   static GENRES = ['Acción', 'Aventura', 'Ciencia ficción', 'Comedia', 'Crimen', 'Drama', 'Fantasía', 'Musical', 'Romance', 'Terror', 'Thriller', 'Western', 'Bélico', 'Misterio'];
   static HUE = { 'Acción': 35, 'Aventura': 75, 'Ciencia ficción': 210, 'Comedia': 60, 'Crimen': 15, 'Drama': 265, 'Fantasía': 300, 'Musical': 330, 'Romance': 350, 'Terror': 25, 'Thriller': 185, 'Western': 50, 'Bélico': 120, 'Misterio': 240 };
-  static SAMPLE = { total: 12, like: 5, dislike: 3, vista_gusto: 2, vista_no_gusto: 1, no_interesa: 1 };
-  static MOVIES = [
-    { id: 1, titulo: 'Son como niños 2', titulo_original: 'Grown Ups 2', anio: 2013, duracion_min: 101,
-      sinopsis: 'Lenny regresa con su familia a su pueblo natal, donde él y sus amigos de toda la vida descubren que crecer no los ha vuelto más sensatos.',
-      poster_url: null, generos: ['Comedia'], subgeneros: ['Slapstick', 'Comedia sexual'],
-      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adolescente'], 'Basado en': ['Original'], 'Época': ['Contemporánea'], 'Tono': ['Ligero'] },
-      directores: [{ id: 3, nombre: 'Dennis Dugan' }],
-      actores: [{ id: 4, nombre: 'Adam Sandler', personaje: 'Lenny Feder' }, { id: 5, nombre: 'Kevin James', personaje: 'Eric Lamonsoff' }, { id: 6, nombre: 'Chris Rock', personaje: 'Kurt McKenzie' }],
-      plataformas: ['Netflix'] },
-    { id: 2, titulo: 'Roma', titulo_original: 'Roma', anio: 2018, duracion_min: 135,
-      sinopsis: 'En la Ciudad de México de 1970, Cleo trabaja como empleada doméstica para una familia de clase media mientras ambas vidas atraviesan rupturas personales y un país convulsionado.',
-      poster_url: null, generos: ['Drama'], subgeneros: ['Drama social', 'Melodrama'],
-      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Siglo XX'], 'Lugar': ['Urbano'], 'Temática': ['Familia'], 'Tono': ['Agridulce'], 'Escala': ['Íntima'] },
-      directores: [{ id: 10, nombre: 'Alfonso Cuarón' }],
-      actores: [{ id: 11, nombre: 'Yalitza Aparicio', personaje: 'Cleo' }, { id: 12, nombre: 'Marina de Tavira', personaje: 'Sofía' }, { id: 13, nombre: 'Jorge Antonio Guerrero', personaje: 'Fermín' }],
-      plataformas: ['Netflix'] },
-    { id: 3, titulo: 'Coco', titulo_original: 'Coco', anio: 2017, duracion_min: 105,
-      sinopsis: 'Miguel sueña con ser músico aunque su familia lo prohíbe. En Día de Muertos cruza a la Tierra de los Muertos y busca a su tatarabuelo para volver a casa.',
-      poster_url: null, generos: ['Fantasía', 'Musical'], subgeneros: ['Mitología', 'Musical contemporáneo'],
-      tags: { 'Formato': ['CGI/3D'], 'Audiencia': ['Familiar'], 'Basado en': ['Original'], 'Lugar': ['Pueblo pequeño'], 'Temática': ['Familia', 'Crecer'], 'Tono': ['Agridulce', 'Inspirador'] },
-      directores: [{ id: 20, nombre: 'Lee Unkrich' }, { id: 21, nombre: 'Adrian Molina' }],
-      actores: [{ id: 22, nombre: 'Anthony Gonzalez', personaje: 'Miguel' }, { id: 23, nombre: 'Gael García Bernal', personaje: 'Héctor' }, { id: 24, nombre: 'Benjamin Bratt', personaje: 'Ernesto de la Cruz' }],
-      plataformas: ['Disney+'] },
-    { id: 4, titulo: 'El laberinto del fauno', titulo_original: "Pan's Labyrinth", anio: 2006, duracion_min: 118,
-      sinopsis: 'En la España de la posguerra, Ofelia se muda con su madre a la casa de su cruel padrastro, un capitán franquista, y encuentra a un fauno que le encarga tres pruebas.',
-      poster_url: null, generos: ['Fantasía', 'Bélico'], subgeneros: ['Fantasía oscura', 'Cuentos de hadas', 'Guerra civil'],
-      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Siglo XX'], 'Lugar': ['Bosque'], 'Temática': ['Crecer'], 'Tono': ['Oscuro'], 'Escala': ['Íntima'] },
-      directores: [{ id: 30, nombre: 'Guillermo del Toro' }],
-      actores: [{ id: 31, nombre: 'Ivana Baquero', personaje: 'Ofelia' }, { id: 32, nombre: 'Sergi López', personaje: 'Capitán Vidal' }, { id: 33, nombre: 'Maribel Verdú', personaje: 'Mercedes' }],
-      plataformas: ['Prime Video'] },
-    { id: 5, titulo: 'Mad Max: Furia en el camino', titulo_original: 'Mad Max: Fury Road', anio: 2015, duracion_min: 120,
-      sinopsis: 'En un desierto postapocalíptico, Furiosa huye de un tirano con sus cinco esposas, y Max, un vagabundo capturado, termina en medio de la persecución.',
-      poster_url: null, generos: ['Acción', 'Ciencia ficción'], subgeneros: ['Persecuciones', 'Distopía'],
-      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Futuro'], 'Lugar': ['Desierto'], 'Temática': ['Supervivencia'], 'Tono': ['Tenso'], 'Escala': ['Épica'] },
-      directores: [{ id: 40, nombre: 'George Miller' }],
-      actores: [{ id: 41, nombre: 'Tom Hardy', personaje: 'Max Rockatansky' }, { id: 42, nombre: 'Charlize Theron', personaje: 'Furiosa' }, { id: 43, nombre: 'Nicholas Hoult', personaje: 'Nux' }],
-      plataformas: ['Max'] },
-    { id: 6, titulo: 'Eterno resplandor de una mente sin recuerdos', titulo_original: 'Eternal Sunshine of the Spotless Mind', anio: 2004, duracion_min: 108,
-      sinopsis: 'Tras una ruptura dolorosa, Joel descubre que Clementine borró de su memoria todo rastro de él, y decide someterse al mismo procedimiento.',
-      poster_url: null, generos: ['Romance', 'Ciencia ficción', 'Drama'], subgeneros: ['Segunda oportunidad', 'Biotecnología'],
-      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Contemporánea'], 'Temática': ['Memoria'], 'Tono': ['Agridulce'], 'Escala': ['Íntima'] },
-      directores: [{ id: 50, nombre: 'Michel Gondry' }],
-      actores: [{ id: 51, nombre: 'Jim Carrey', personaje: 'Joel Barish' }, { id: 52, nombre: 'Kate Winslet', personaje: 'Clementine Kruczynski' }, { id: 53, nombre: 'Kirsten Dunst', personaje: 'Mary' }],
-      plataformas: [] },
-    { id: 7, titulo: 'El silencio de los inocentes', titulo_original: 'The Silence of the Lambs', anio: 1991, duracion_min: 118,
-      sinopsis: 'Clarice Starling, aprendiz del FBI, busca la ayuda de Hannibal Lecter, un brillante psiquiatra encarcelado, para atrapar a un asesino serial.',
-      poster_url: null, generos: ['Thriller', 'Crimen'], subgeneros: ['Gato y ratón', 'Asesinos seriales'],
-      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Novela'], 'Época': ['Contemporánea'], 'Tono': ['Oscuro', 'Tenso'] },
-      directores: [{ id: 60, nombre: 'Jonathan Demme' }],
-      actores: [{ id: 61, nombre: 'Jodie Foster', personaje: 'Clarice Starling' }, { id: 62, nombre: 'Anthony Hopkins', personaje: 'Hannibal Lecter' }, { id: 63, nombre: 'Scott Glenn', personaje: 'Jack Crawford' }],
-      plataformas: ['Prime Video'] },
-    { id: 8, titulo: 'Alien: el octavo pasajero', titulo_original: 'Alien', anio: 1979, duracion_min: 117,
-      sinopsis: 'La tripulación de una nave de carga responde a una señal en un planeta desconocido y sube a bordo, sin saberlo, a una criatura letal.',
-      poster_url: null, generos: ['Terror', 'Ciencia ficción'], subgeneros: ['Criaturas y monstruos', 'Extraterrestres'],
-      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Futuro'], 'Lugar': ['Espacio'], 'Temática': ['Supervivencia'], 'Tono': ['Tenso'] },
-      directores: [{ id: 70, nombre: 'Ridley Scott' }],
-      actores: [{ id: 71, nombre: 'Sigourney Weaver', personaje: 'Ellen Ripley' }, { id: 72, nombre: 'Tom Skerritt', personaje: 'Dallas' }, { id: 73, nombre: 'John Hurt', personaje: 'Kane' }],
-      plataformas: ['Disney+'] }
+  static PERFIL = [{ rasgo: 'Terror', afinidad: 0.83 }, { rasgo: 'Absurdo', afinidad: 0.80 }, { rasgo: 'Misterio', afinidad: 0.78 }, { rasgo: 'Comedia', afinidad: 0.70 }, { rasgo: 'dirigida por Tim Burton', afinidad: 0.55 }, { rasgo: 'con Johnny Depp', afinidad: 0.48 }];
+  static R = (id, titulo, orig, anio, dur, generos, dir, act, plat, razones, puntaje, sinopsis) => ({
+    id, titulo, titulo_original: orig, anio, duracion_min: dur, sinopsis, poster_url: null, generos, subgeneros: [], tags: {},
+    directores: dir.map((n, i) => ({ id: id * 10 + i, nombre: n })), actores: act.map(([n, p], i) => ({ id: id * 10 + 5 + i, nombre: n, personaje: p })),
+    plataformas: plat, puntaje, razones });
+  static RECS = [
+    Component.R(101, 'Beetlejuice Beetlejuice', 'Beetlejuice Beetlejuice', 2024, 104, ['Comedia', 'Terror', 'Fantasía'], ['Tim Burton'], [['Michael Keaton', 'Beetlejuice'], ['Winona Ryder', 'Lydia Deetz'], ['Jenna Ortega', 'Astrid Deetz']], [], ['Comedia', 'Terror', 'Absurdo'], 0.797, 'Tras una tragedia familiar, tres generaciones de la familia Deetz vuelven a casa a Winter River. La vida de Lydia da un vuelco cuando su hija adolescente abre por accidente el portal al Más Allá.'),
+    Component.R(102, 'Sweeney Todd: El barbero demoníaco de la calle Fleet', 'Sweeney Todd: The Demon Barber of Fleet Street', 2007, 116, ['Musical', 'Terror'], ['Tim Burton'], [['Johnny Depp', 'Sweeney Todd'], ['Helena Bonham Carter', 'Mrs. Lovett'], ['Alan Rickman', 'Juez Turpin']], ['Max'], ['Terror', 'dirigida por Tim Burton', 'con Johnny Depp'], 0.781, 'Un barbero vuelve a Londres tras años de prisión injusta y abre una barbería sobre la pastelería de Mrs. Lovett, decidido a vengarse del juez que le arrebató a su familia.'),
+    Component.R(103, 'Coraline', 'Coraline', 2009, 100, ['Fantasía', 'Terror'], ['Henry Selick'], [['Dakota Fanning', 'Coraline Jones'], ['Teri Hatcher', 'La Otra Madre'], ['Ian McShane', 'Sr. Bobinsky']], ['Prime Video'], ['Terror', 'Misterio', 'Absurdo'], 0.774, 'Aburrida en su nueva casa, Coraline encuentra una puerta secreta que lleva a una versión ideal de su vida, donde una madre con ojos de botón quiere que se quede para siempre.'),
+    Component.R(104, 'Entre navajas y secretos', 'Knives Out', 2019, 130, ['Misterio', 'Comedia', 'Crimen'], ['Rian Johnson'], [['Daniel Craig', 'Benoit Blanc'], ['Ana de Armas', 'Marta Cabrera'], ['Chris Evans', 'Ransom Drysdale']], ['Prime Video'], ['Misterio', 'Comedia'], 0.762, 'Un famoso novelista de crimen aparece muerto tras su cumpleaños número 85. Un detective excéntrico interroga a una familia en la que todos tenían motivos.'),
+    Component.R(105, 'Lo que hacemos en las sombras', 'What We Do in the Shadows', 2014, 86, ['Comedia', 'Terror'], ['Jemaine Clement', 'Taika Waititi'], [['Jemaine Clement', 'Vladislav'], ['Taika Waititi', 'Viago'], ['Jonathan Brugh', 'Deacon']], ['Max'], ['Comedia', 'Terror', 'Absurdo'], 0.755, 'Un equipo de documental sigue a cuatro vampiros que comparten casa en Wellington y lidian con las tareas domésticas, la vida nocturna y un vecino recién convertido.'),
+    Component.R(106, 'El jinete sin cabeza', 'Sleepy Hollow', 1999, 105, ['Terror', 'Misterio', 'Fantasía'], ['Tim Burton'], [['Johnny Depp', 'Ichabod Crane'], ['Christina Ricci', 'Katrina Van Tassel'], ['Christopher Walken', 'El Jinete']], ['Paramount+'], ['Misterio', 'Terror', 'dirigida por Tim Burton'], 0.741, 'En 1799, el agente Ichabod Crane llega al pueblo de Sleepy Hollow para investigar una serie de decapitaciones que los vecinos atribuyen a un jinete fantasma.'),
+    Component.R(107, '¡Huye!', 'Get Out', 2017, 104, ['Terror', 'Misterio', 'Thriller'], ['Jordan Peele'], [['Daniel Kaluuya', 'Chris Washington'], ['Allison Williams', 'Rose Armitage'], ['Catherine Keener', 'Missy Armitage']], ['Netflix'], ['Terror', 'Misterio'], 0.733, 'Chris viaja a conocer a la familia de su novia. La amabilidad excesiva de sus anfitriones y el comportamiento del personal de la casa empiezan a inquietarlo.'),
+    Component.R(108, 'El extraño mundo de Jack', 'The Nightmare Before Christmas', 1993, 76, ['Musical', 'Fantasía'], ['Henry Selick'], [['Chris Sarandon', 'Jack Skellington'], ['Catherine O’Hara', 'Sally'], ['Danny Elfman', 'Jack (canciones)']], ['Disney+'], ['Absurdo', 'Terror'], 0.719, 'Jack Skellington, el rey de Halloween, descubre la Navidad y decide adueñarse de ella, con resultados desastrosos para todos.'),
+    Component.R(109, 'Ed Wood', 'Ed Wood', 1994, 127, ['Comedia', 'Drama'], ['Tim Burton'], [['Johnny Depp', 'Ed Wood'], ['Martin Landau', 'Bela Lugosi'], ['Sarah Jessica Parker', 'Dolores Fuller']], [], ['dirigida por Tim Burton', 'con Johnny Depp', 'Absurdo'], 0.705, 'Retrato del entusiasta director considerado el peor de Hollywood y de su amistad con Bela Lugosi, ya olvidado, durante el rodaje de sus películas de bajo presupuesto.'),
+    Component.R(110, 'La cabaña del terror', 'The Cabin in the Woods', 2011, 95, ['Terror', 'Comedia'], ['Drew Goddard'], [['Kristen Connolly', 'Dana'], ['Chris Hemsworth', 'Curt'], ['Richard Jenkins', 'Sitterson']], ['Prime Video'], ['Terror', 'Comedia', 'Absurdo'], 0.698, 'Cinco amigos pasan un fin de semana en una cabaña aislada sin saber que cada uno de sus movimientos es vigilado y manipulado desde un laboratorio subterráneo.'),
+    Component.R(111, 'Fargo', 'Fargo', 1996, 98, ['Crimen', 'Thriller', 'Comedia'], ['Joel Coen'], [['Frances McDormand', 'Marge Gunderson'], ['William H. Macy', 'Jerry Lundegaard'], ['Steve Buscemi', 'Carl Showalter']], ['MUBI'], ['Comedia', 'Misterio'], 0.684, 'Un vendedor de autos endeudado contrata a dos criminales para secuestrar a su esposa. Una jefa de policía embarazada sigue el rastro de sangre en la nieve de Minnesota.'),
+    Component.R(112, 'Los otros', 'The Others', 2001, 104, ['Terror', 'Misterio'], ['Alejandro Amenábar'], [['Nicole Kidman', 'Grace Stewart'], ['Fionnula Flanagan', 'Sra. Mills'], ['Alakina Mann', 'Anne Stewart']], ['Netflix'], ['Misterio', 'Terror'], 0.671, 'En una mansión aislada tras la Segunda Guerra Mundial, una madre que protege a sus hijos de la luz comienza a sospechar que la casa está habitada por alguien más.'),
+    Component.R(113, 'El gran hotel Budapest', 'The Grand Budapest Hotel', 2014, 99, ['Comedia', 'Aventura'], ['Wes Anderson'], [['Ralph Fiennes', 'M. Gustave'], ['Tony Revolori', 'Zero Moustafa'], ['Saoirse Ronan', 'Agatha']], ['Disney+'], ['Comedia', 'Absurdo'], 0.66, 'El conserje de un hotel europeo de lujo y su joven botones se ven envueltos en el robo de una pintura renacentista y en la disputa por una enorme fortuna familiar.'),
+    Component.R(114, 'Charlie y la fábrica de chocolate', 'Charlie and the Chocolate Factory', 2005, 115, ['Fantasía', 'Comedia', 'Aventura'], ['Tim Burton'], [['Johnny Depp', 'Willy Wonka'], ['Freddie Highmore', 'Charlie Bucket'], ['David Kelly', 'Abuelo Joe']], ['Max'], ['con Johnny Depp', 'Absurdo', 'Comedia'], 0.652, 'Cinco niños ganan una visita a la misteriosa fábrica de Willy Wonka, un recorrido lleno de inventos imposibles en el que cada tentación tiene consecuencias.')
   ];
+  static VISIBLE = 6;
 
-  state = { loading: true, offline: false, genre: null, deck: [], rated: [], front: null, history: [], prog: { ...Component.SAMPLE }, phase: 'idle', drag: null, flyDir: null, flyTf: null, retTf: null, noTr: false, flipped: false, compact: true };
+  recMap = {}; vistos = new Set();
+  state = { status: 'loading', perfil: [], positivos: 0, total: 0, genre: null, order: Component.RECS.map(r => r.id), dismissed: [], leaving: {}, pose: {}, delay: {}, asking: null, expanded: {}, batchLoading: false, w: 420 };
   rootRef = React.createRef();
+  gridRef = React.createRef();
   timers = [];
 
   componentDidMount() {
     const el = this.rootRef.current;
     if (el && window.ResizeObserver) {
-      this.ro = new ResizeObserver(e => { const c = e[0].contentRect.width < 640; if (c !== this.state.compact) this.setState({ compact: c }); });
+      this.ro = new ResizeObserver(e => { const w = Math.round(e[0].contentRect.width); if (Math.abs(w - this.state.w) > 4) this.setState({ w }); });
       this.ro.observe(el);
     }
-    window.addEventListener('keydown', this.onKey);
     window.addEventListener('offline', this.goOff);
-    window.addEventListener('online', this.goOn);
+    window.addEventListener('keydown', this.onKey);
     this.applyEstado(this.props.estado);
   }
-  componentDidUpdate(pp) {
-    if (pp.estado !== this.props.estado) this.applyEstado(this.props.estado);
-    else if (pp.progresoInicial !== this.props.progresoInicial) this.setState({ prog: this.baseProg() });
-  }
-  componentWillUnmount() {
-    this.ro && this.ro.disconnect();
-    window.removeEventListener('keydown', this.onKey);
-    window.removeEventListener('offline', this.goOff);
-    window.removeEventListener('online', this.goOn);
-    this.timers.forEach(clearTimeout);
-  }
+  componentDidUpdate(pp) { if (pp.estado !== this.props.estado || pp.progreso !== this.props.progreso) this.applyEstado(this.props.estado); }
+  componentWillUnmount() { this.ro && this.ro.disconnect(); window.removeEventListener('offline', this.goOff); window.removeEventListener('keydown', this.onKey); this.timers.forEach(clearTimeout); }
   later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
   raf2(fn) { requestAnimationFrame(() => requestAnimationFrame(fn)); }
-  goOff = () => this.setState({ offline: true });
-  goOn = () => this.setState({ offline: false });
-  baseProg() { const p = this.props.progresoInicial ?? 12; return { ...Component.SAMPLE, total: p }; }
+  goOff = () => { if (this.state.status === 'ready' || this.state.status === 'loading') this.setState({ status: 'offline' }); };
+  onKey = e => { if (e.key === 'Escape' && this.state.asking) this.setState({ asking: null }); };
 
   applyEstado(e) {
     this.timers.forEach(clearTimeout); this.timers = [];
-    const ceros = { total: 0, like: 0, dislike: 0, vista_gusto: 0, vista_no_gusto: 0, no_interesa: 0 };
-    const base = { genre: null, rated: [], front: null, history: [], prog: this.live() ? ceros : this.baseProg(), phase: 'idle', drag: null, flipped: false, noTr: false, loading: false, offline: false };
-    if (e === 'cargando') this.setState({ ...base, loading: true });
-    else if (e === 'sin conexión') this.setState({ ...base, offline: true });
-    else if (e === 'mazo terminado') this.setState({ ...base, genre: 'Terror', rated: Component.MOVIES.filter(m => m.generos.includes('Terror')).map(m => m.id) });
-    else if (this.live()) { this.setState({ ...base, loading: true }); this.iniciar(); }
-    else { this.setState({ ...base, loading: true }); this.later(() => this.setState({ loading: false }), 1100); }
+    const base = { genre: null, order: Component.RECS.map(r => r.id), dismissed: [], leaving: {}, pose: {}, delay: {}, asking: null, expanded: {}, batchLoading: false };
+    if (e === 'bloqueada') this.setState({ ...base, status: 'locked' });
+    else if (e === 'sin suficientes me gusta') this.setState({ ...base, status: 'nolikes' });
+    else if (e === 'cargando') this.setState({ ...base, status: 'loading' });
+    else if (e === 'sin conexión') this.setState({ ...base, status: 'offline' });
+    else if (this.live()) this.iniciar(base);
+    else this.load(base);
+  }
+  load(extra) {
+    if (this.live()) { this.iniciar(extra); return; }
+    this.setState({ ...(extra || {}), status: 'loading' });
+    this.later(() => { this.setState({ status: 'ready' }); this.enter(this.visible(this.state), 70); }, 1000);
   }
 
-  queue(s) {
-    const fuente = this.live() ? s.deck : Component.MOVIES;
-    const q = fuente.filter(m => !s.rated.includes(m.id) && (!s.genre || m.generos.includes(s.genre)));
-    if (s.front) { const i = q.findIndex(m => m.id === s.front); if (i > 0) q.unshift(q.splice(i, 1)[0]); }
-    return q;
-  }
-  canAct() { const s = this.state; return s.phase === 'idle' && !s.loading && !s.offline && this.queue(s).length > 0; }
+  rec(id) { return this.live() ? this.recMap[id] : Component.RECS.find(r => r.id === id); }
+  queue(s) { return s.order.filter(id => !s.dismissed.includes(id) && (!s.genre || this.rec(id).generos.includes(s.genre))); }
+  visible(s) { return this.queue(s).slice(0, Component.VISIBLE); }
 
-  flyTarget(dir, x, y, g) {
-    const W = Math.max(window.innerWidth, 480) * 1.15, H = Math.max(window.innerHeight, 700) * 1.15;
-    if (dir === 'right') return `translate(${W}px, ${y * 1.5 + 50}px) rotate(${28 * g}deg)`;
-    if (dir === 'left') return `translate(${-W}px, ${y * 1.5 + 50}px) rotate(${-28 * g}deg)`;
-    if (dir === 'up') return `translate(${x * 1.5}px, ${-H}px) rotate(${x * 0.06}deg)`;
-    return `translate(${x * 1.5}px, ${H}px) rotate(${-x * 0.06}deg)`;
+  enter(ids, stagger) {
+    const pose = {}, delay = {};
+    ids.forEach((id, i) => { pose[id] = true; delay[id] = i * stagger; });
+    this.setState({ pose, delay }, () => this.raf2(() => this.setState({ pose: {} })));
+    this.later(() => this.setState({ delay: {} }), 900 + ids.length * stagger);
   }
 
-  commit(dir, liked) {
-    const s = this.state;
-    if (!['idle', 'drag', 'ask'].includes(s.phase)) return;
-    const m = this.queue(s)[0]; if (!m) return;
-    const d = s.drag || { x: 0, y: 0 };
-    this.setState({ phase: 'fly', flyDir: dir, flyTf: this.flyTarget(dir, d.x, d.y, this.grab || 1), drag: null });
-    this.later(() => this.finalize(m, dir, liked), 430);
-  }
-  finalize(m, dir, liked) {
-    const kind = { right: 'like', left: 'dislike', down: 'no_interesa' }[dir] || (liked ? 'vista_gusto' : 'vista_no_gusto');
-    this.grab = 1;
-    this.setState(st => ({
-      rated: [...st.rated, m.id], front: st.front === m.id ? null : st.front,
-      history: [...st.history, { id: m.id, dir, kind }],
-      prog: { ...st.prog, total: st.prog.total + 1, [kind]: (st.prog[kind] || 0) + 1 },
-      phase: 'idle', flyTf: null, flyDir: null, flipped: false, noTr: true
-    }), () => this.raf2(() => this.setState({ noTr: false })));
+  dismiss(id, kind) {
+    if (this.state.leaving[id]) return;
+    this.setState(s => ({ leaving: { ...s.leaving, [id]: kind }, asking: s.asking === id ? null : s.asking }));
+    this.later(() => this.finalize(id), 470);
     if (this.live()) {
-      this.enFila(() => this.rpc('registrar_swipe', { p_titulo: m.id, p_accion: kind }))
-        .then(prog => this.setState({ prog: { ...Component.SAMPLE, ...prog } }))
-        .catch(e => {                       // no se guardó: regresa la tarjeta y avisa
-          console.error(e);
-          this.setState(st => ({
-            rated: st.rated.filter(id => id !== m.id), history: st.history.filter(h => h.id !== m.id),
-            prog: { ...st.prog, total: Math.max(0, st.prog.total - 1), [kind]: Math.max(0, (st.prog[kind] || 0) - 1) },
-            front: m.id, offline: true }));
-        });
-      if (this.queue(this.state).length <= 5) this.cargarMas();
+      this.enFila(() => this.rpc('registrar_swipe', { p_titulo: id, p_accion: Component.ACCION[kind] }))
+        .then(prog => { this.setState({ total: prog.total }); this.refrescarPerfil(); })
+        .catch(e => { console.error(e); this.setState({ status: 'offline' }); });
+      if (this.queue(this.state).length <= Component.VISIBLE + 2) this.rellenar();
     }
   }
-  undo = () => {
-    const s = this.state;
-    if (!s.history.length || !['idle', 'ask'].includes(s.phase)) return;
-    const h = s.history[s.history.length - 1];
-    const m = (this.live() ? s.deck : Component.MOVIES).find(x => x.id === h.id);
-    if (this.live()) {
-      this.enFila(() => this.rpc('deshacer_swipe', {}))
-        .then(r => r && r.resumen && this.setState({ prog: { ...Component.SAMPLE, ...r.resumen } }))
-        .catch(e => { console.error(e); this.setState({ offline: true }); });
-    }
-    this.setState(st => ({
-      rated: st.rated.filter(id => id !== h.id), history: st.history.slice(0, -1),
-      prog: { ...st.prog, total: Math.max(0, st.prog.total - 1), [h.kind]: Math.max(0, (st.prog[h.kind] || 0) - 1) },
-      front: h.id, genre: !st.genre || m.generos.includes(st.genre) ? st.genre : null,
-      phase: 'return', retTf: this.flyTarget(h.dir, 0, 0, 1), noTr: true, flipped: false
-    }), () => this.raf2(() => this.setState({ phase: 'idle', noTr: false, retTf: null })));
-  };
-  act(dir) {
-    if (!this.canAct()) return;
-    if (dir === 'up') this.setState({ phase: 'ask' });
-    else this.commit(dir);
+  finalize(id) {
+    let nextId = null;
+    this.setState(s => {
+      const q = this.queue(s), vis = q.slice(0, Component.VISIBLE);
+      nextId = q[Component.VISIBLE] ?? null;
+      const order = s.order.slice();
+      if (nextId != null) { order.splice(order.indexOf(nextId), 1); order.splice(order.indexOf(id) + 1, 0, nextId); }
+      const leaving = { ...s.leaving }; delete leaving[id];
+      const expanded = { ...s.expanded }; delete expanded[id];
+      return { order, dismissed: [...s.dismissed, id], leaving, expanded, pose: nextId != null ? { ...s.pose, [nextId]: true } : s.pose };
+    }, () => { if (nextId != null) this.raf2(() => this.setState(s => { const pose = { ...s.pose }; delete pose[nextId]; return { pose }; })); });
   }
 
-  onKey = e => {
-    const t = e.target && e.target.tagName;
-    if (t === 'INPUT' || t === 'TEXTAREA') return;
-    if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); this.undo(); return; }
-    if (this.state.phase === 'ask') {
-      if (e.key === 'Escape') this.setState({ phase: 'idle' });
-      else if (e.key === 's' || e.key === 'S') this.commit('up', true);
-      else if (e.key === 'n' || e.key === 'N') this.commit('up', false);
+  otraTanda = () => {
+    const s = this.state;
+    if (s.batchLoading || Object.keys(s.leaving).length) return;
+    const vis = this.visible(s);
+    this.setState({ batchLoading: true, asking: null, expanded: {} });
+    const g = this.gridRef.current;
+    if (g) window.scrollTo({ top: Math.max(0, g.getBoundingClientRect().top + window.scrollY - 24), behavior: 'smooth' });
+    if (this.live()) {
+      const inicio = Date.now();
+      this.pedirRecs(s.genre, [...this.vistos]).then(({ ids }) => {
+        this.later(() => this.setState({ batchLoading: false, order: ids, dismissed: [] },
+                                       () => this.enter(this.visible(this.state), 70)), Math.max(0, 600 - (Date.now() - inicio)));
+      }).catch(e => { console.error(e); this.setState({ batchLoading: false, status: 'offline' }); });
       return;
     }
-    const map = { ArrowRight: 'right', ArrowLeft: 'left', ArrowUp: 'up', ArrowDown: 'down' };
-    if (map[e.key]) { e.preventDefault(); this.act(map[e.key]); }
+    this.later(() => {
+      this.setState(st => ({ batchLoading: false, order: [...st.order.filter(id => !vis.includes(id)), ...vis] }), () => this.enter(this.visible(this.state), 70));
+    }, 950);
   };
-
-  onDown = e => {
-    if (this.state.phase !== 'idle' || (e.button != null && e.button > 0)) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    this.grab = (e.clientY - r.top) < r.height / 2 ? 1 : -1;
-    this.ptr = { x: e.clientX, y: e.clientY, moved: false, hist: [{ x: 0, y: 0, t: performance.now() }] };
-    try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {}
-  };
-  onMove = e => {
-    const p = this.ptr; if (!p) return;
-    const x = e.clientX - p.x, y = e.clientY - p.y;
-    if (!p.moved && Math.hypot(x, y) < 6) return;
-    p.moved = true; p.hist.push({ x, y, t: performance.now() }); if (p.hist.length > 5) p.hist.shift();
-    this.setState({ phase: 'drag', drag: { x, y } });
-  };
-  onUp = e => {
-    const p = this.ptr; if (!p) return; this.ptr = null;
-    if (!p.moved) { this.setState(s => ({ flipped: !s.flipped })); return; }
-    const x = e.clientX - p.x, y = e.clientY - p.y, a = p.hist[0];
-    const dt = Math.max(performance.now() - a.t, 1), vx = (x - a.x) / dt, vy = (y - a.y) / dt;
-    let dir = null;
-    if (Math.abs(x) >= Math.abs(y)) { if (x > 110 || (vx > 0.55 && x > 35)) dir = 'right'; else if (x < -110 || (vx < -0.55 && x < -35)) dir = 'left'; }
-    else { if (y < -100 || (vy < -0.55 && y < -35)) dir = 'up'; else if (y > 110 || (vy > 0.55 && y > 35)) dir = 'down'; }
-    if (!dir) this.setState({ phase: 'idle', drag: null });
-    else if (dir === 'up') this.setState({ phase: 'ask', drag: null });
-    else this.commit(dir);
-  };
-  onCancel = () => { if (!this.ptr) return; this.ptr = null; this.setState({ phase: 'idle', drag: null }); };
 
   posterFs(t) {
     const L = t.length, w = Math.max(...t.split(/\s+/).map(x => x.length));
-    const byLen = L <= 6 ? 30 : L <= 12 ? 22 : L <= 20 ? 17 : L <= 30 ? 14 : 11.5;
-    return Math.min(byLen, 84 / (w * 0.47)).toFixed(1) + 'cqw';
+    const byLen = L <= 6 ? 30 : L <= 12 ? 22 : L <= 20 ? 18 : L <= 30 ? 15 : 13;
+    return Math.min(byLen, 88 / (w * 0.47)).toFixed(1) + 'cqw';
   }
   dur(m) { if (!m) return ''; const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; }
 
   renderVals() {
-    const s = this.state; const q = this.queue(s);
-    const base = d => `translate3d(0, ${d * 16}px, 0) scale(${1 - d * 0.05})`;
-    const dr = s.drag || { x: 0, y: 0 };
-    const p = s.phase === 'drag' ? Math.min(Math.hypot(dr.x, dr.y) / 180, 1) : 0;
-    const clamp = v => Math.max(0, Math.min(1, v));
-    let st = { like: 0, nope: 0, seen: 0, skip: 0 };
-    if (s.phase === 'drag') {
-      if (Math.abs(dr.x) >= Math.abs(dr.y)) { if (dr.x > 0) st.like = clamp((dr.x - 15) / 95); else st.nope = clamp((-dr.x - 15) / 95); }
-      else { if (dr.y < 0) st.seen = clamp((-dr.y - 15) / 85); else st.skip = clamp((dr.y - 15) / 95); }
-    } else if (s.phase === 'fly') {
-      st = { like: s.flyDir === 'right' ? 1 : 0, nope: s.flyDir === 'left' ? 1 : 0, seen: s.flyDir === 'up' ? 1 : 0, skip: s.flyDir === 'down' ? 1 : 0 };
-    }
-    const BUL = Array.from({ length: 9 }, (_, i) => i);
-    const slots = q.slice(0, 4).map((m, i) => {
-      const top = i === 0; let tf, d = i, tr;
-      if (top) {
-        if (s.phase === 'drag') tf = `translate(${dr.x}px, ${dr.y}px) rotate(${Math.max(-20, Math.min(20, dr.x * 0.075 * (this.grab || 1)))}deg)`;
-        else if (s.phase === 'fly') tf = s.flyTf;
-        else if (s.phase === 'return' && s.noTr) tf = s.retTf;
-        else tf = base(0);
-        d = 0;
-      } else {
-        d = s.phase === 'fly' || (s.phase === 'return' && s.noTr) ? i - 1 : i - p * 0.5;
-        tf = base(d);
-      }
-      if (s.noTr || s.phase === 'drag') tr = 'none';
-      else if (top) tr = s.phase === 'fly' ? 'transform .43s cubic-bezier(.3,.5,.45,1)' : 'transform .55s cubic-bezier(.25,1.35,.5,1)';
-      else tr = 'transform .42s cubic-bezier(.2,.8,.2,1), opacity .42s';
+    const s = this.state;
+    const cols = s.w < 640 ? 1 : (s.w < 1000 || String(this.props.columnasEscritorio ?? '3') === '2') ? 2 : 3;
+    const vis = this.visible(s);
+    const ease = 'cubic-bezier(.2,.8,.2,1)';
+    const STAMP = { like: ['ME LATE', '#7ee0a6'], seenYes: ['YA LA VI', '#c4b5f0'], seenNo: ['YA LA VI', '#c4b5f0'], nope: ['NO ES PARA MÍ', '#a3abbf'] };
+    const LEAVE = {
+      like: 'translate(115%, 40px) rotate(14deg)', seenYes: 'translate(0, -60%) rotate(-4deg) scale(.96)',
+      seenNo: 'translate(0, -60%) rotate(4deg) scale(.96)', nope: 'translate(0, 45%) rotate(-3deg) scale(.92)'
+    };
+    const BUL = [0, 1, 2, 3, 4];
+    const cards = vis.map(id => {
+      const m = this.rec(id), lv = s.leaving[id], ex = !!s.expanded[id], dl = s.delay[id] || 0;
+      let tf = 'translate3d(0,0,0) scale(1)', op = 1, tr = `transform .5s ${ease} ${dl}ms, opacity .45s ${dl}ms`;
+      if (lv) { tf = LEAVE[lv]; op = 0; tr = 'transform .46s cubic-bezier(.3,.5,.45,1), opacity .3s ease-in .16s'; }
+      else if (s.pose[id]) { tf = 'translate3d(0,16px,0) scale(.95)'; op = 0; tr = 'none'; }
       const h = Component.HUE[m.generos[0]] ?? 265;
       return {
-        isTop: top, tf, tr, op: d <= 2.01 ? 1 : 0, z: 10 - i, dim: Math.max(0, d) * 0.22,
-        cursor: top ? (s.phase === 'drag' ? 'grabbing' : 'grab') : 'default',
-        onDown: top ? this.onDown : undefined, onMove: top ? this.onMove : undefined, onUp: top ? this.onUp : undefined, onCancel: top ? this.onCancel : undefined,
-        flipTf: top && s.flipped ? 'rotateY(180deg)' : 'none',
-        flipTr: s.noTr ? 'none' : 'transform .6s cubic-bezier(.2,.8,.2,1)',
-        onFlip: () => this.setState(x => ({ flipped: !x.flipped })),
-        sLike: st.like, sNope: st.nope, sSeen: st.seen, sSkip: st.skip, sTr: s.phase === 'drag' ? 'none' : 'opacity .2s',
-        asking: top && s.phase === 'ask',
+        tf, op, tr, z: lv ? 5 : 1,
         titulo: m.titulo, orig: m.titulo_original, showOrig: !!m.titulo_original && m.titulo_original !== m.titulo,
-        anio: m.anio, dur: this.dur(m.duracion_min), generos: m.generos, genreLine: m.generos.join(' · '),
-        director: m.directores.map(x => x.nombre).join(' y '), actors: m.actores.slice(0, 3).map(a => a.nombre).join(', '),
-        sinopsis: m.sinopsis, subs: m.subgeneros,
-        tags: Object.keys(m.tags).filter(k => m.tags[k] && m.tags[k].length).map(k => ({ k, v: m.tags[k].join(', ') })),
-        plataformas: m.plataformas, hasPlat: m.plataformas.length > 0,
+        anio: m.anio, dur: this.dur(m.duracion_min), generos: m.generos, razones: (m.razones || []).join(' · '),
+        sinopsis: m.sinopsis, director: m.directores.map(d => d.nombre).join(' y '), actores: m.actores,
+        plataformas: m.plataformas, noPlat: !m.plataformas.length,
         hasPoster: !!m.poster_url, noPoster: !m.poster_url, posterCss: m.poster_url ? `url("${m.poster_url}")` : 'none',
         posterBg: `radial-gradient(ellipse 120% 80% at 50% 35%, oklch(0.34 0.08 ${h}) 0%, oklch(0.19 0.045 ${h}) 68%, #0c1121 100%)`,
-        posterFs: this.posterFs(m.titulo), bulbs: BUL
+        posterFs: this.posterFs(m.titulo), bulbs: BUL,
+        expanded: ex ? 'true' : 'false', exRows: ex ? '1fr' : '0fr', exOp: ex ? 1 : 0, exLabel: ex ? 'Ver menos' : 'Ver más', chev: ex ? 'rotate(180deg)' : 'none',
+        onToggle: () => this.setState(st => ({ expanded: { ...st.expanded, [id]: !st.expanded[id] } })),
+        onLike: () => this.dismiss(id, 'like'), onNope: () => this.dismiss(id, 'nope'),
+        onSeen: () => { if (!s.leaving[id]) this.setState({ asking: id }); },
+        onYes: () => this.dismiss(id, 'seenYes'), onNo: () => this.dismiss(id, 'seenNo'),
+        asking: s.asking === id && !lv, hasStamp: !!lv, stamp: lv ? STAMP[lv][0] : '', stampC: lv ? STAMP[lv][1] : 'transparent'
       };
     });
 
-    const total = s.prog.total; const lit = Math.min(total, 30);
+    const prog = this.live() ? s.total : (this.props.progreso ?? 12);
+    const total = this.live() ? prog : s.status === 'nolikes' ? Math.max(prog, 30) : Math.min(prog, 29);
+    const lit = Math.min(total, 30);
     const bulbs = Array.from({ length: 30 }, (_, i) => i < lit
       ? { bg: 'rgba(226,216,255,1)', sh: '0 0 8px 2px rgba(196,176,255,0.7)' }
       : { bg: 'rgba(214,200,255,0.14)', sh: 'none' });
 
-    const ready = !s.loading && !s.offline;
-    const empty = ready && q.length === 0;
-    const anyInGenre = s.genre && (this.live() || Component.MOVIES.some(m => m.generos.includes(s.genre)));
+    const P = this.live() ? s.perfil : Component.PERFIL;
+    const hi = Math.max(...P.map(p => p.afinidad), 0), lo = Math.min(...P.map(p => p.afinidad), hi);
+    const traits = P.slice(0, 6).map(p => {
+      const a = hi === lo ? 1 : 0.25 + 0.75 * (p.afinidad - lo) / (hi - lo);
+      return {
+        rasgo: p.rasgo,
+        bg: `rgba(196,181,240,${(0.05 + 0.2 * a).toFixed(3)})`,
+        bd: `rgba(214,200,255,${(0.2 + 0.7 * a).toFixed(3)})`,
+        sh: `0 0 ${Math.round(4 + 22 * a)}px ${Math.round(a * 2)}px rgba(196,176,255,${(0.08 + 0.5 * a).toFixed(3)}), inset 0 0 ${Math.round(8 * a)}px rgba(214,200,255,${(0.25 * a).toFixed(3)})`,
+        ts: `0 0 ${Math.round(12 * a)}px rgba(214,200,255,${(0.6 * a).toFixed(3)})`,
+        dot: `rgba(226,216,255,${(0.3 + 0.7 * a).toFixed(3)})`,
+        dotSh: `0 0 ${Math.round(2 + 7 * a)}px ${Math.round(a * 2)}px rgba(196,176,255,${(0.75 * a).toFixed(3)})`
+      };
+    });
+
     const chip = sel => sel ? { bg: '#c4b5f0', fg: '#0c1122', bd: '#c4b5f0' } : { bg: 'rgba(255,255,255,0.03)', fg: '#dfe2ee', bd: 'rgba(255,255,255,0.14)' };
-    const setGenre = g => { if (s.phase === 'idle' || s.phase === 'ask') this.setState({ genre: g, front: null, flipped: false, phase: 'idle' }, () => { if (this.live()) this.iniciar(); }); };
-    const can = this.canAct();
+    const setGenre = g => {
+      if (s.batchLoading || g === s.genre) return;
+      if (this.live()) { this.setState({ genre: g, asking: null }, () => this.iniciar()); return; }
+      this.setState({ genre: g, asking: null }, () => this.enter(this.visible(this.state), 50));
+    };
+    const ready = s.status === 'ready';
 
     return {
-      rootRef: this.rootRef, total, under30: total < 30, over30: total >= 30, bulbs,
+      rootRef: this.rootRef, gridRef: this.gridRef,
+      wrapMax: cols === 1 ? '460px' : cols === 2 ? '860px' : '1140px',
+      gridCols: `repeat(${cols}, minmax(0, 1fr))`,
+      isLocked: s.status === 'locked', isNoLikes: s.status === 'nolikes', isOffline: s.status === 'offline', isLoading: s.status === 'loading', isReady: ready,
+      total, bulbs, positivos: this.live() ? s.positivos : 18, traits,
+      loadBulbs: Array.from({ length: 5 }, (_, i) => ({ delay: (i * 0.14).toFixed(2) + 's' })),
       genreChips: [{ label: 'Todos', ...chip(!s.genre), onClick: () => setGenre(null) },
         ...Component.GENRES.map(g => ({ label: g, ...chip(s.genre === g), onClick: () => setGenre(g) }))],
-      showDeck: ready && q.length > 0, slots, stopPD: e => e.stopPropagation(),
-      answerYes: () => this.commit('up', true), answerNo: () => this.commit('up', false), cancelAsk: () => this.setState({ phase: 'idle' }),
-      showLoading: s.loading && !s.offline, showOffline: s.offline,
-      loadBulbs: Array.from({ length: 5 }, (_, i) => ({ delay: (i * 0.14).toFixed(2) + 's' })),
-      showEmpty: empty, emptyHasFilter: !!s.genre,
-      emptyTitle: s.genre ? (anyInGenre ? 'Ya calificaste todo lo de este filtro' : `Aún no hay películas de ${s.genre}`) : 'Ya calificaste todo el catálogo',
-      emptyText: s.genre ? 'Quita el filtro de género para seguir calificando películas.' : 'Pronto agregaremos más películas. Puedes deshacer la última si cambiaste de opinión.',
+      batchLoading: s.batchLoading, skeletons: Array.from({ length: cols === 1 ? 2 : cols }, (_, i) => ({ delay: (i * 0.12).toFixed(2) + 's' })),
+      showCards: !s.batchLoading, cards,
+      showFilterEmpty: ready && !s.batchLoading && vis.length === 0,
+      emptyTitle: s.genre ? `No hay más recomendaciones de ${s.genre} por ahora` : 'Ya calificaste toda esta tanda',
       clearGenre: () => setGenre(null),
-      retry: () => { if (navigator.onLine === false) return; if (this.live()) { this.iniciar(); return; } this.setState({ offline: false, loading: true }); this.later(() => this.setState({ loading: false }), 900); },
-      undo: this.undo, undoOp: s.history.length && s.phase === 'idle' ? 1 : 0.35, actOp: can ? 1 : 0.35,
-      actNope: () => this.act('left'), actSeen: () => this.act('up'), actLike: () => this.act('right'),
-      compact: s.compact, wide: !s.compact
+      cancelAsk: () => this.setState({ asking: null }),
+      retry: () => { if (navigator.onLine === false) return; this.load(); },
+      otraTanda: this.otraTanda, tandaOp: s.batchLoading ? 0.4 : 1
     };
   }
 }
