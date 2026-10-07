@@ -1,362 +1,712 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./support.js"></script>
 </head>
+
 <body>
-<x-dc>
-<helmet>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-html,body{margin:0;padding:0;background:#0a0f1d;}
-*{box-sizing:border-box;}
-a{color:#c4b5f0;}
-a:hover{color:#e2d9ff;}
-button,input,select{font-family:inherit;}
-input::placeholder{color:#6f7891;}
-input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
-input[type=number]{-moz-appearance:textfield;}
-*{scrollbar-width:thin;scrollbar-color:rgba(196,181,240,0.45) transparent;}
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(196,181,240,0.4);border-radius:3px;}
-@keyframes skPulse{0%,100%{opacity:.45;}50%{opacity:.9;}}
-</style>
-</helmet>
-<div ref="{{ rootRef }}" style="min-height:100vh;overflow-x:clip;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
-  <div style="max-width:1360px;margin:0 auto;padding:clamp(16px,4vw,40px) clamp(8px,2.4vw,24px) {{ padBottom }};display:flex;flex-direction:column;gap:20px;">
+  <x-dc>
+    <helmet>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+      <style>
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+          background: #0a0f1d;
+        }
 
-    <nav style="display:flex;justify-content:center;">
-      <div style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
-        <a href="Tragamonedas%20de%20Peliculas.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Tragamonedas</a>
-        <a href="Descubrir.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Descubrir</a>
-        <a href="Para%20ti.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Para ti</a>
-        <a href="Explorar.dc.html" aria-current="page" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;">Explorar</a>
-      </div>
-    </nav>
+        * {
+          box-sizing: border-box;
+        }
 
-    <header style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding-top:4px;">
-      <h1 style="margin:0;font:600 clamp(48px,12vw,64px)/0.95 'Barlow Condensed',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#f6f4ee;text-shadow:0 0 28px rgba(196,181,240,0.35);">Explorar</h1>
-      <p style="margin:0;font-size:15px;line-height:1.45;color:#a8b0c4;max-width:36ch;text-wrap:pretty;">Combina etiquetas para incluir o descartar películas de todo el catálogo.</p>
-    </header>
+        a {
+          color: #c4b5f0;
+        }
 
-    <div style="display:grid;grid-template-columns:{{ layoutCols }};gap:24px;align-items:start;">
+        a:hover {
+          color: #e2d9ff;
+        }
 
-      <aside aria-label="Filtros" style="position:{{ sb.pos }};top:{{ sb.top }};left:0;right:0;bottom:0;z-index:{{ sb.z }};height:{{ sb.h }};transform:{{ sb.tf }};visibility:{{ sb.vis }};transition:{{ sb.tr }};display:flex;flex-direction:column;background:{{ sb.bg }};border:{{ sb.bd }};border-radius:{{ sb.rad }};overflow:hidden;">
-        <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-          <div style="flex:none;display:flex;align-items:center;gap:8px;padding:10px 8px 10px 18px;border-bottom:1px solid rgba(255,255,255,0.08);">
-            <h2 style="margin:0;flex:1;font:600 26px/1 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.04em;color:#f6f4ee;">Filtros</h2>
-            <button onClick="{{ clearAll }}" style="min-height:44px;padding:0 12px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ clearOp }};">Limpiar todo</button>
-            <button onClick="{{ closeSheet }}" aria-label="Cerrar filtros" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;cursor:pointer;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
+        button,
+        input,
+        select {
+          font-family: inherit;
+        }
+
+        input::placeholder {
+          color: #6f7891;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+
+        * {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(196, 181, 240, 0.45) transparent;
+        }
+
+        ::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: rgba(196, 181, 240, 0.4);
+          border-radius: 3px;
+        }
+
+        @keyframes skPulse {
+
+          0%,
+          100% {
+            opacity: .45;
+          }
+
+          50% {
+            opacity: .9;
+          }
+        }
+      </style>
+    </helmet>
+    <div ref="{{ rootRef }}"
+      style="min-height:100vh;overflow-x:clip;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
+      <div
+        style="max-width:1360px;margin:0 auto;padding:clamp(16px,4vw,40px) clamp(8px,2.4vw,24px) {{ padBottom }};display:flex;flex-direction:column;gap:20px;">
+
+        <nav style="display:flex;justify-content:center;">
+          <div
+            style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+            <a href="Tragamonedas%20de%20Peliculas.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Tragamonedas</a>
+            <a href="Descubrir.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Descubrir</a>
+            <a href="Para%20ti.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Para ti</a>
+            <a href="Explorar.dc.html" aria-current="page"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;">Explorar</a>
           </div>
-        </sc-if>
+        </nav>
 
-        <div style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 12px 18px;display:flex;flex-direction:column;gap:16px;">
-          <div style="border-radius:16px;padding:8px 9px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 18px 40px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
-            <div style="background:#121724;border-radius:10px;padding:12px 12px 14px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;gap:14px;">
-              <div style="display:flex;justify-content:space-between;padding:0 2px;">
-                <sc-for list="{{ plateBulbs }}" as="d" hint-placeholder-count="16">
-                  <div style="width:4px;height:4px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 6px 1px rgba(196,176,255,0.6);"></div>
-                </sc-for>
+        <header
+          style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding-top:4px;">
+          <h1
+            style="margin:0;font:600 clamp(48px,12vw,64px)/0.95 'Barlow Condensed',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#f6f4ee;text-shadow:0 0 28px rgba(196,181,240,0.35);">
+            Explorar</h1>
+          <p style="margin:0;font-size:15px;line-height:1.45;color:#a8b0c4;max-width:36ch;text-wrap:pretty;">Combina
+            etiquetas para incluir o descartar películas de todo el catálogo.</p>
+        </header>
+
+        <div style="display:grid;grid-template-columns:{{ layoutCols }};gap:24px;align-items:start;">
+
+          <aside aria-label="Filtros"
+            style="position:{{ sb.pos }};top:{{ sb.top }};left:0;right:0;bottom:0;z-index:{{ sb.z }};height:{{ sb.h }};transform:{{ sb.tf }};visibility:{{ sb.vis }};transition:{{ sb.tr }};display:flex;flex-direction:column;background:{{ sb.bg }};border:{{ sb.bd }};border-radius:{{ sb.rad }};overflow:hidden;">
+            <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+              <div
+                style="flex:none;display:flex;align-items:center;gap:8px;padding:10px 8px 10px 18px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <h2
+                  style="margin:0;flex:1;font:600 26px/1 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.04em;color:#f6f4ee;">
+                  Filtros</h2>
+                <button onClick="{{ clearAll }}"
+                  style="min-height:44px;padding:0 12px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ clearOp }};">Limpiar
+                  todo</button>
+                <button onClick="{{ closeSheet }}" aria-label="Cerrar filtros"
+                  style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;cursor:pointer;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                    stroke-linecap="round">
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                  </svg></button>
               </div>
-              <label style="position:relative;display:flex;align-items:center;">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8e97ad" stroke-width="2" stroke-linecap="round" style="position:absolute;left:13px;pointer-events:none;"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
-                <input type="search" value="{{ texto }}" onChange="{{ onTexto }}" placeholder="Título, director o actor" aria-label="Buscar" style="width:100%;min-height:44px;padding:0 12px 0 38px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;" style-focus="border-color:#c4b5f0;"></input>
-              </label>
-              <div style="display:flex;flex-direction:column;gap:8px;">
-                <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Años</span>
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <input type="number" inputmode="numeric" value="{{ anioMin }}" onChange="{{ onAnioMin }}" placeholder="1950" aria-label="Desde el año" style="flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;text-align:center;" style-focus="border-color:#c4b5f0;"></input>
-                  <span style="color:#6f7891;">–</span>
-                  <input type="number" inputmode="numeric" value="{{ anioMax }}" onChange="{{ onAnioMax }}" placeholder="2026" aria-label="Hasta el año" style="flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;text-align:center;" style-focus="border-color:#c4b5f0;"></input>
+            </sc-if>
+
+            <div
+              style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 12px 18px;display:flex;flex-direction:column;gap:16px;">
+              <div
+                style="border-radius:16px;padding:8px 9px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 18px 40px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+                <div
+                  style="background:#121724;border-radius:10px;padding:12px 12px 14px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;gap:14px;">
+                  <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                    <sc-for list="{{ plateBulbs }}" as="d" hint-placeholder-count="16">
+                      <div
+                        style="width:4px;height:4px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 6px 1px rgba(196,176,255,0.6);">
+                      </div>
+                    </sc-for>
+                  </div>
+                  <label style="position:relative;display:flex;align-items:center;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8e97ad" stroke-width="2"
+                      stroke-linecap="round" style="position:absolute;left:13px;pointer-events:none;">
+                      <circle cx="11" cy="11" r="7"></circle>
+                      <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+                    </svg>
+                    <input type="search" value="{{ texto }}" onChange="{{ onTexto }}"
+                      placeholder="Título, director o actor" aria-label="Buscar"
+                      style="width:100%;min-height:44px;padding:0 12px 0 38px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;"
+                      style-focus="border-color:#c4b5f0;"></input>
+                  </label>
+                  <div style="display:flex;flex-direction:column;gap:8px;">
+                    <span
+                      style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Años</span>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <input type="number" inputmode="numeric" value="{{ anioMin }}" onChange="{{ onAnioMin }}"
+                        placeholder="1950" aria-label="Desde el año"
+                        style="flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;text-align:center;"
+                        style-focus="border-color:#c4b5f0;"></input>
+                      <span style="color:#6f7891;">–</span>
+                      <input type="number" inputmode="numeric" value="{{ anioMax }}" onChange="{{ onAnioMax }}"
+                        placeholder="2026" aria-label="Hasta el año"
+                        style="flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;text-align:center;"
+                        style-focus="border-color:#c4b5f0;"></input>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px;">
+                    <span
+                      style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Duración
+                      máxima</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                      <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="4">
+                        <button onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}"
+                          style="min-height:36px;padding:0 12px;border-radius:999px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }};transition:background .2s,color .2s;">{{
+                          c.label }}</button>
+                      </sc-for>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div style="display:flex;flex-direction:column;gap:8px;">
-                <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Duración máxima</span>
-                <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                  <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="4">
-                    <button onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" style="min-height:36px;padding:0 12px;border-radius:999px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }};transition:background .2s,color .2s;">{{ c.label }}</button>
+
+              <div style="display:flex;flex-direction:column;">
+                <sc-for list="{{ groups }}" as="g" hint-placeholder-count="14">
+                  <section style="border-top:1px solid rgba(255,255,255,0.07);">
+                    <button onClick="{{ g.onToggle }}" aria-expanded="{{ g.expanded }}"
+                      style="width:100%;min-height:46px;display:flex;align-items:center;gap:10px;padding:0 6px;border:none;background:transparent;color:#dfe2ee;cursor:pointer;text-align:left;"
+                      style-hover="color:#ffffff;">
+                      <span
+                        style="flex:1;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;">{{
+                        g.nombre }}</span>
+                      <sc-if value="{{ g.hasSel }}" hint-placeholder-val="{{ false }}">
+                        <span
+                          style="min-width:22px;height:22px;padding:0 7px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#c4b5f0;color:#0d1224;font:700 12px/1 'Barlow',sans-serif;box-shadow:0 0 10px rgba(196,176,255,0.5);">{{
+                          g.selCount }}</span>
+                      </sc-if>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
+                        style="transform:{{ g.chev }};transition:transform .3s;color:#8e97ad;">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </button>
+                    <div
+                      style="display:grid;grid-template-rows:{{ g.rows }};transition:grid-template-rows .38s cubic-bezier(.2,.8,.2,1);">
+                      <div style="min-height:0;overflow:hidden;">
+                        <div style="display:flex;flex-direction:column;padding:0 0 10px;">
+                          <sc-for list="{{ g.options }}" as="o" hint-placeholder-count="5">
+                            <button onClick="{{ o.onClick }}" title="{{ o.title }}"
+                              style="min-height:{{ optH }};display:flex;align-items:center;gap:10px;padding:0 6px;border:none;border-radius:8px;background:transparent;cursor:pointer;text-align:left;opacity:{{ o.op }};transition:opacity .2s;"
+                              style-hover="background:rgba(255,255,255,0.05);">
+                              <span
+                                style="width:20px;height:20px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;background:{{ o.boxBg }};border:1.5px solid {{ o.boxBd }};box-shadow:{{ o.boxSh }};color:#0d1224;transition:background .18s,border-color .18s,box-shadow .18s;">
+                                <sc-if value="{{ o.isInc }}" hint-placeholder-val="{{ false }}"><svg width="12"
+                                    height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1224" stroke-width="3.6"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="4 12.5 10 18 20 6"></polyline>
+                                  </svg></sc-if>
+                                <sc-if value="{{ o.isExc }}" hint-placeholder-val="{{ false }}"><svg width="10"
+                                    height="10" viewBox="0 0 24 24" fill="none" stroke="#f3c2c2" stroke-width="3.6"
+                                    stroke-linecap="round">
+                                    <line x1="5" y1="5" x2="19" y2="19"></line>
+                                    <line x1="19" y1="5" x2="5" y2="19"></line>
+                                  </svg></sc-if>
+                              </span>
+                              <span
+                                style="flex:1;min-width:0;font-size:14px;line-height:1.25;color:{{ o.fg }};text-decoration:{{ o.strike }};text-decoration-color:rgba(217,132,132,0.7);">{{
+                                o.label }}<sc-if value="{{ o.hasPadre }}" hint-placeholder-val="{{ false }}"><span
+                                    style="font-size:12px;color:#7c859c;"> · {{ o.padre }}</span></sc-if></span>
+                              <span style="flex:none;font:400 12px/1 'JetBrains Mono',monospace;color:#8e97ad;">{{ o.n
+                                }}</span>
+                            </button>
+                          </sc-for>
+                          <sc-if value="{{ g.hasMore }}" hint-placeholder-val="{{ false }}">
+                            <button onClick="{{ g.onMore }}"
+                              style="align-self:flex-start;min-height:40px;padding:0 6px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;"
+                              style-hover="color:#ffffff;">{{ g.moreLabel }}</button>
+                          </sc-if>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </sc-for>
+              </div>
+            </div>
+
+            <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+              <div
+                style="flex:none;padding:12px 14px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,0.08);background:#0c1222;">
+                <button onClick="{{ closeSheet }}"
+                  style="width:100%;min-height:56px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 19px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 28px -6px rgba(196,181,240,0.6);">{{
+                  verLabel }}</button>
+              </div>
+            </sc-if>
+          </aside>
+
+          <main ref="{{ resultsRef }}" style="min-width:0;display:flex;flex-direction:column;gap:16px;">
+            <sc-if value="{{ hasActive }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
+                <sc-for list="{{ activeChips }}" as="c" hint-placeholder-count="3">
+                  <span
+                    style="display:flex;align-items:center;gap:6px;min-height:36px;padding:0 4px 0 12px;border-radius:999px;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }};box-shadow:{{ c.sh }};font:600 14px/1 'Barlow',sans-serif;">
+                    <sc-if value="{{ c.isInc }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="4 12.5 10 18 20 6"></polyline>
+                      </svg></sc-if>
+                    <sc-if value="{{ c.isExc }}" hint-placeholder-val="{{ false }}"><svg width="10" height="10"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round">
+                        <line x1="5" y1="5" x2="19" y2="19"></line>
+                        <line x1="19" y1="5" x2="5" y2="19"></line>
+                      </svg></sc-if>
+                    <span style="white-space:nowrap;">{{ c.label }}</span>
+                    <button onClick="{{ c.onRemove }}" aria-label="{{ c.removeLabel }}"
+                      style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:none;background:transparent;color:inherit;cursor:pointer;opacity:.75;"
+                      style-hover="opacity:1;background:rgba(0,0,0,0.12);">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.6" stroke-linecap="round">
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                      </svg></button>
+                  </span>
+                </sc-for>
+                <button onClick="{{ clearAll }}"
+                  style="min-height:36px;padding:0 10px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;"
+                  style-hover="color:#ffffff;">Limpiar todo</button>
+              </div>
+            </sc-if>
+
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;">
+              <div style="display:flex;align-items:baseline;gap:8px;">
+                <span
+                  style="font:600 clamp(28px,6vw,34px)/1 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 18px rgba(196,181,240,0.3);">{{
+                  countNum }}</span>
+                <span
+                  style="font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">{{
+                  countWord }}</span>
+              </div>
+              <label style="position:relative;display:flex;align-items:center;gap:8px;">
+                <span
+                  style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Orden</span>
+                <select value="{{ sort }}" onChange="{{ onSort }}"
+                  style="appearance:none;-webkit-appearance:none;min-height:40px;padding:0 34px 0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#eef0f6;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;outline:none;"
+                  style-focus="border-color:#c4b5f0;">
+                  <option value="popular">Más populares</option>
+                  <option value="recientes">Más recientes</option>
+                  <option value="antiguas">Más antiguas</option>
+                  <option value="cortas">Más cortas</option>
+                  <option value="titulo">A–Z</option>
+                  <option value="azar">Al azar</option>
+                </select>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="2.6"
+                  stroke-linecap="round" stroke-linejoin="round"
+                  style="position:absolute;right:14px;pointer-events:none;">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </label>
+            </div>
+
+            <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:{{ gridCols }};gap:{{ gridGap }};">
+                <sc-for list="{{ skeletons }}" as="k" hint-placeholder-count="8">
+                  <div style="display:flex;flex-direction:column;gap:10px;">
+                    <div
+                      style="aspect-ratio:2/3;border-radius:14px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};">
+                    </div>
+                    <div
+                      style="height:16px;width:85%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};">
+                    </div>
+                    <div
+                      style="height:12px;width:55%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};">
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+              <div
+                style="width:100%;max-width:460px;margin:12px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 28px;text-align:center;">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path>
+                  <path d="M10 5.1A15 15 0 0 1 22 8.8"></path>
+                  <path d="M5 12.5a10 10 0 0 1 5.2-2.8"></path>
+                  <path d="M14.5 9.9A10 10 0 0 1 19 12.5"></path>
+                  <path d="M8.5 16a5 5 0 0 1 7 0"></path>
+                  <circle cx="12" cy="19.5" r="0.8" fill="#c4b5f0"></circle>
+                  <line x1="3" y1="3" x2="21" y2="21"></line>
+                </svg>
+                <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sin conexión</h2>
+                <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">No
+                  pudimos cargar el catálogo. Revisa tu conexión e inténtalo de nuevo.</p>
+                <button onClick="{{ retry }}"
+                  style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;"
+                  style-hover="background:#d6cbfa;">Reintentar</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div
+                style="width:100%;max-width:480px;margin:12px auto 0;border-radius:20px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+                <div
+                  style="background:#121724;border-radius:12px;padding:26px 20px 22px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+                  <div style="display:flex;gap:10px;">
+                    <sc-for list="{{ deadBulbs }}" as="d" hint-placeholder-count="7">
+                      <div style="width:6px;height:6px;border-radius:50%;background:{{ d.bg }};box-shadow:{{ d.sh }};">
+                      </div>
+                    </sc-for>
+                  </div>
+                  <h2
+                    style="margin:0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">
+                    Ninguna película cumple todo esto</h2>
+                  <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:32ch;text-wrap:pretty;">{{
+                    emptyHint }}</p>
+                  <sc-if value="{{ canUndoLast }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ removeLast }}"
+                      style="margin-top:6px;min-height:50px;padding:0 24px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 17px/1 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 24px -6px rgba(196,181,240,0.6);"
+                      style-hover="background:#d6cbfa;">{{ removeLastLabel }}</button>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+              <div
+                style="display:grid;grid-template-columns:{{ gridCols }};gap:{{ gridGap }};opacity:{{ gridOp }};transition:opacity .2s;">
+                <sc-for list="{{ cards }}" as="r" hint-placeholder-count="8">
+                  <button onClick="{{ r.onOpen }}" aria-label="{{ r.aria }}"
+                    style="display:flex;flex-direction:column;gap:9px;padding:0;border:none;background:transparent;color:inherit;text-align:left;cursor:pointer;opacity:{{ r.op }};transform:{{ r.tf }};transition:{{ r.tr }};">
+                    <div
+                      style="width:100%;aspect-ratio:2/3;position:relative;border-radius:14px;overflow:hidden;container-type:inline-size;background:{{ r.posterBg }};border:1px solid rgba(196,181,240,0.14);box-shadow:0 18px 34px -20px rgba(0,0,0,0.95);transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s;"
+                      style-hover="transform:translateY(-4px);border-color:rgba(214,200,255,0.5);box-shadow:0 22px 40px -18px rgba(0,0,0,0.95), 0 0 24px -6px rgba(196,176,255,0.45);">
+                      <sc-if value="{{ r.hasPoster }}" hint-placeholder-val="{{ false }}">
+                        <div role="img" aria-label="{{ r.titulo }}"
+                          style="position:absolute;inset:0;background-image:{{ r.posterCss }};background-size:cover;background-position:center;">
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ r.noPoster }}" hint-placeholder-val="{{ true }}">
+                        <div
+                          style="position:absolute;inset:5px;border:1px solid rgba(214,200,255,0.2);border-radius:10px;display:flex;flex-direction:column;padding:8px 8px 9px;">
+                          <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                            <sc-for list="{{ posterBulbs }}" as="d" hint-placeholder-count="7">
+                              <div
+                                style="width:3px;height:3px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 4px 1px rgba(196,176,255,0.55);">
+                              </div>
+                            </sc-for>
+                          </div>
+                          <div
+                            style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                            <span
+                              style="text-align:center;font:600 {{ r.posterFs }}/0.92 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 16px rgba(196,181,240,0.3);">{{
+                              r.titulo }}</span>
+                          </div>
+                          <div style="display:flex;align-items:center;gap:5px;color:#e2d9ff;">
+                            <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                            <span style="font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;">{{ r.anio
+                              }}</span>
+                            <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:5px;padding:0 2px;">
+                      <span
+                        style="font:600 18px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{
+                        r.titulo }}</span>
+                      <span style="font-size:13px;color:#a8b0c4;">{{ r.meta }}</span>
+                      <div style="display:flex;flex-wrap:wrap;gap:4px;padding-top:2px;">
+                        <sc-for list="{{ r.generos }}" as="g" hint-placeholder-count="2">
+                          <span
+                            style="padding:3px 8px;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};font:600 11px/1.1 'Barlow',sans-serif;">{{
+                            g.label }}</span>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </button>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ hasPages }}" hint-placeholder-val="{{ false }}">
+                <nav aria-label="Páginas"
+                  style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;padding-top:12px;">
+                  <button onClick="{{ prevPage }}"
+                    style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#dfe2ee;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ prevOp }};">Anterior</button>
+                  <sc-for list="{{ pageItems }}" as="p" hint-placeholder-count="5">
+                    <button onClick="{{ p.onClick }}" aria-current="{{ p.current }}"
+                      style="min-width:44px;min-height:44px;padding:0 6px;border-radius:999px;border:1px solid {{ p.bd }};background:{{ p.bg }};color:{{ p.fg }};box-shadow:{{ p.sh }};font:600 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;cursor:{{ p.cursor }};">{{
+                      p.label }}</button>
+                  </sc-for>
+                  <button onClick="{{ nextPage }}"
+                    style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#dfe2ee;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ nextOp }};">Siguiente</button>
+                </nav>
+              </sc-if>
+            </sc-if>
+          </main>
+        </div>
+      </div>
+
+      <sc-if value="{{ showFab }}" hint-placeholder-val="{{ false }}">
+        <div
+          style="position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));z-index:30;display:flex;justify-content:center;pointer-events:none;">
+          <button onClick="{{ openSheet }}"
+            style="pointer-events:auto;min-height:54px;padding:0 26px;display:flex;align-items:center;gap:10px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 18px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 14px 30px -10px rgba(0,0,0,0.9), 0 0 26px -4px rgba(196,181,240,0.65);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+              stroke-linecap="round">
+              <line x1="4" y1="7" x2="20" y2="7"></line>
+              <line x1="7" y1="12" x2="17" y2="12"></line>
+              <line x1="10" y1="17" x2="14" y2="17"></line>
+            </svg>{{ fabLabel }}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasPanel }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closePanel }}"
+          style="position:fixed;inset:0;z-index:60;background:rgba(5,8,16,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:{{ pn.align }};justify-content:center;padding:{{ pn.pad }};opacity:{{ pn.op }};transition:opacity .3s;">
+          <div role="dialog" aria-modal="true" aria-label="{{ d.titulo }}" onClick="{{ stop }}"
+            style="position:relative;width:100%;max-width:780px;max-height:{{ pn.maxH }};overflow-y:auto;overscroll-behavior:contain;border-radius:{{ pn.rad }};background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.18);box-shadow:0 40px 80px -30px rgba(0,0,0,0.95);transform:{{ pn.tf }};transition:transform .38s cubic-bezier(.2,.8,.2,1);">
+            <button onClick="{{ closePanel }}" aria-label="Cerrar"
+              style="position:absolute;top:10px;right:10px;z-index:2;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(10,15,29,0.75);color:#eef0f6;cursor:pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                stroke-linecap="round">
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+              </svg></button>
+            <div style="padding:clamp(16px,3.5vw,28px);display:flex;flex-direction:column;gap:18px;">
+              <div style="display:flex;gap:clamp(14px,3vw,24px);align-items:flex-start;padding-right:40px;">
+                <div
+                  style="width:{{ pn.posterW }};flex:none;aspect-ratio:2/3;position:relative;border-radius:14px;overflow:hidden;container-type:inline-size;background:{{ d.posterBg }};box-shadow:0 14px 30px -14px rgba(0,0,0,0.95);">
+                  <sc-if value="{{ d.hasPoster }}" hint-placeholder-val="{{ false }}">
+                    <div role="img" aria-label="{{ d.titulo }}"
+                      style="position:absolute;inset:0;background-image:{{ d.posterCss }};background-size:cover;background-position:center;">
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ d.noPoster }}" hint-placeholder-val="{{ true }}">
+                    <div
+                      style="position:absolute;inset:5px;border:1px solid rgba(214,200,255,0.2);border-radius:10px;display:flex;flex-direction:column;padding:7px 7px 8px;">
+                      <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                        <sc-for list="{{ posterBulbs }}" as="b" hint-placeholder-count="7">
+                          <div
+                            style="width:3px;height:3px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 4px 1px rgba(196,176,255,0.55);">
+                          </div>
+                        </sc-for>
+                      </div>
+                      <div
+                        style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                        <span
+                          style="text-align:center;font:600 {{ d.posterFs }}/0.92 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 16px rgba(196,181,240,0.3);">{{
+                          d.titulo }}</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:4px;color:#e2d9ff;">
+                        <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                        <span style="font:600 9px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;">{{ d.anio
+                          }}</span>
+                        <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;">
+                  <h2
+                    style="margin:0;font:600 clamp(26px,5.4vw,40px)/1 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">
+                    {{ d.titulo }}</h2>
+                  <sc-if value="{{ d.showOrig }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size:14px;font-style:italic;color:#a8b0c4;">{{ d.orig }}</span>
+                  </sc-if>
+                  <span style="font-size:14px;color:#a8b0c4;">{{ d.meta }}</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <sc-for list="{{ d.generos }}" as="g" hint-placeholder-count="2">
+                      <button onClick="{{ g.onClick }}"
+                        style="min-height:30px;padding:0 11px;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};font:600 13px/1 'Barlow',sans-serif;cursor:pointer;">{{
+                        g.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+
+              <p style="margin:0;font-size:16px;line-height:1.55;color:#d8dcea;text-wrap:pretty;max-width:62ch;">{{
+                d.sinopsis }}</p>
+
+              <div style="display:grid;grid-template-columns:{{ pn.infoCols }};gap:16px 24px;">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <span
+                    style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;">Dirección</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <sc-for list="{{ d.directores }}" as="t" hint-placeholder-count="1">
+                      <button onClick="{{ t.onClick }}"
+                        style="min-height:34px;padding:0 12px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:600 14px/1 'Barlow',sans-serif;cursor:pointer;"
+                        style-hover="border-color:rgba(214,200,255,0.6);">{{ t.label }}</button>
+                    </sc-for>
+                  </div>
+                  <span
+                    style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;padding-top:10px;">Dónde
+                    verla</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <sc-for list="{{ d.plataformas }}" as="t" hint-placeholder-count="1">
+                      <button onClick="{{ t.onClick }}"
+                        style="min-height:34px;padding:0 12px;border-radius:8px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:600 13px/1 'Barlow',sans-serif;cursor:pointer;"
+                        style-hover="border-color:rgba(214,200,255,0.6);">{{ t.label }}</button>
+                    </sc-for>
+                    <sc-if value="{{ d.noPlat }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:14px;color:#a8b0c4;">Sin plataformas por ahora</span>
+                    </sc-if>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <span
+                    style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;padding-bottom:4px;">Reparto</span>
+                  <sc-for list="{{ d.actores }}" as="a" hint-placeholder-count="3">
+                    <button onClick="{{ a.onClick }}"
+                      style="min-height:36px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 8px;margin:0 -8px;border:none;border-radius:8px;background:transparent;font-size:14px;line-height:1.3;cursor:pointer;text-align:left;"
+                      style-hover="background:rgba(255,255,255,0.05);">
+                      <span style="color:{{ a.fg }};font-weight:600;">{{ a.label }}</span><span
+                        style="color:#8e97ad;text-align:right;">{{ a.personaje }}</span></button>
                   </sc-for>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div style="display:flex;flex-direction:column;">
-            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="14">
-              <section style="border-top:1px solid rgba(255,255,255,0.07);">
-                <button onClick="{{ g.onToggle }}" aria-expanded="{{ g.expanded }}" style="width:100%;min-height:46px;display:flex;align-items:center;gap:10px;padding:0 6px;border:none;background:transparent;color:#dfe2ee;cursor:pointer;text-align:left;" style-hover="color:#ffffff;">
-                  <span style="flex:1;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;">{{ g.nombre }}</span>
-                  <sc-if value="{{ g.hasSel }}" hint-placeholder-val="{{ false }}">
-                    <span style="min-width:22px;height:22px;padding:0 7px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#c4b5f0;color:#0d1224;font:700 12px/1 'Barlow',sans-serif;box-shadow:0 0 10px rgba(196,176,255,0.5);">{{ g.selCount }}</span>
-                  </sc-if>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transform:{{ g.chev }};transition:transform .3s;color:#8e97ad;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </button>
-                <div style="display:grid;grid-template-rows:{{ g.rows }};transition:grid-template-rows .38s cubic-bezier(.2,.8,.2,1);">
-                  <div style="min-height:0;overflow:hidden;">
-                    <div style="display:flex;flex-direction:column;padding:0 0 10px;">
-                      <sc-for list="{{ g.options }}" as="o" hint-placeholder-count="5">
-                        <button onClick="{{ o.onClick }}" title="{{ o.title }}" style="min-height:{{ optH }};display:flex;align-items:center;gap:10px;padding:0 6px;border:none;border-radius:8px;background:transparent;cursor:pointer;text-align:left;opacity:{{ o.op }};transition:opacity .2s;" style-hover="background:rgba(255,255,255,0.05);">
-                          <span style="width:20px;height:20px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;background:{{ o.boxBg }};border:1.5px solid {{ o.boxBd }};box-shadow:{{ o.boxSh }};color:#0d1224;transition:background .18s,border-color .18s,box-shadow .18s;">
-                            <sc-if value="{{ o.isInc }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1224" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 10 18 20 6"></polyline></svg></sc-if>
-                            <sc-if value="{{ o.isExc }}" hint-placeholder-val="{{ false }}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f3c2c2" stroke-width="3.6" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg></sc-if>
-                          </span>
-                          <span style="flex:1;min-width:0;font-size:14px;line-height:1.25;color:{{ o.fg }};text-decoration:{{ o.strike }};text-decoration-color:rgba(217,132,132,0.7);">{{ o.label }}<sc-if value="{{ o.hasPadre }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#7c859c;"> · {{ o.padre }}</span></sc-if></span>
-                          <span style="flex:none;font:400 12px/1 'JetBrains Mono',monospace;color:#8e97ad;">{{ o.n }}</span>
-                        </button>
-                      </sc-for>
-                      <sc-if value="{{ g.hasMore }}" hint-placeholder-val="{{ false }}">
-                        <button onClick="{{ g.onMore }}" style="align-self:flex-start;min-height:40px;padding:0 6px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;" style-hover="color:#ffffff;">{{ g.moreLabel }}</button>
-                      </sc-if>
-                    </div>
-                  </div>
+              <div
+                style="display:flex;flex-direction:column;gap:12px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
+                <div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px;">
+                  <span
+                    style="font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#c4b5f0;">Etiquetas</span>
+                  <span style="font-size:13px;color:#8e97ad;">Toca una para filtrar con ella</span>
                 </div>
-              </section>
-            </sc-for>
-          </div>
-        </div>
-
-        <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-          <div style="flex:none;padding:12px 14px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,0.08);background:#0c1222;">
-            <button onClick="{{ closeSheet }}" style="width:100%;min-height:56px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 19px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 28px -6px rgba(196,181,240,0.6);">{{ verLabel }}</button>
-          </div>
-        </sc-if>
-      </aside>
-
-      <main ref="{{ resultsRef }}" style="min-width:0;display:flex;flex-direction:column;gap:16px;">
-        <sc-if value="{{ hasActive }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
-            <sc-for list="{{ activeChips }}" as="c" hint-placeholder-count="3">
-              <span style="display:flex;align-items:center;gap:6px;min-height:36px;padding:0 4px 0 12px;border-radius:999px;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }};box-shadow:{{ c.sh }};font:600 14px/1 'Barlow',sans-serif;">
-                <sc-if value="{{ c.isInc }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 10 18 20 6"></polyline></svg></sc-if>
-                <sc-if value="{{ c.isExc }}" hint-placeholder-val="{{ false }}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg></sc-if>
-                <span style="white-space:nowrap;">{{ c.label }}</span>
-                <button onClick="{{ c.onRemove }}" aria-label="{{ c.removeLabel }}" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:none;background:transparent;color:inherit;cursor:pointer;opacity:.75;" style-hover="opacity:1;background:rgba(0,0,0,0.12);">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
-              </span>
-            </sc-for>
-            <button onClick="{{ clearAll }}" style="min-height:36px;padding:0 10px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;" style-hover="color:#ffffff;">Limpiar todo</button>
-          </div>
-        </sc-if>
-
-        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;">
-          <div style="display:flex;align-items:baseline;gap:8px;">
-            <span style="font:600 clamp(28px,6vw,34px)/1 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 18px rgba(196,181,240,0.3);">{{ countNum }}</span>
-            <span style="font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">{{ countWord }}</span>
-          </div>
-          <label style="position:relative;display:flex;align-items:center;gap:8px;">
-            <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Orden</span>
-            <select value="{{ sort }}" onChange="{{ onSort }}" style="appearance:none;-webkit-appearance:none;min-height:40px;padding:0 34px 0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#eef0f6;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;outline:none;" style-focus="border-color:#c4b5f0;">
-              <option value="popular">Más populares</option>
-              <option value="recientes">Más recientes</option>
-              <option value="antiguas">Más antiguas</option>
-              <option value="cortas">Más cortas</option>
-              <option value="titulo">A–Z</option>
-              <option value="azar">Al azar</option>
-            </select>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:14px;pointer-events:none;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-          </label>
-        </div>
-
-        <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
-          <div style="display:grid;grid-template-columns:{{ gridCols }};gap:{{ gridGap }};">
-            <sc-for list="{{ skeletons }}" as="k" hint-placeholder-count="8">
-              <div style="display:flex;flex-direction:column;gap:10px;">
-                <div style="aspect-ratio:2/3;border-radius:14px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};"></div>
-                <div style="height:16px;width:85%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};"></div>
-                <div style="height:12px;width:55%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};"></div>
-              </div>
-            </sc-for>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
-          <div style="width:100%;max-width:460px;margin:12px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 28px;text-align:center;">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path><path d="M10 5.1A15 15 0 0 1 22 8.8"></path><path d="M5 12.5a10 10 0 0 1 5.2-2.8"></path><path d="M14.5 9.9A10 10 0 0 1 19 12.5"></path><path d="M8.5 16a5 5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r="0.8" fill="#c4b5f0"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>
-            <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sin conexión</h2>
-            <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">No pudimos cargar el catálogo. Revisa tu conexión e inténtalo de nuevo.</p>
-            <button onClick="{{ retry }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Reintentar</button>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
-          <div style="width:100%;max-width:480px;margin:12px auto 0;border-radius:20px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
-            <div style="background:#121724;border-radius:12px;padding:26px 20px 22px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
-              <div style="display:flex;gap:10px;">
-                <sc-for list="{{ deadBulbs }}" as="d" hint-placeholder-count="7">
-                  <div style="width:6px;height:6px;border-radius:50%;background:{{ d.bg }};box-shadow:{{ d.sh }};"></div>
-                </sc-for>
-              </div>
-              <h2 style="margin:0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">Ninguna película cumple todo esto</h2>
-              <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:32ch;text-wrap:pretty;">{{ emptyHint }}</p>
-              <sc-if value="{{ canUndoLast }}" hint-placeholder-val="{{ true }}">
-                <button onClick="{{ removeLast }}" style="margin-top:6px;min-height:50px;padding:0 24px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 17px/1 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 24px -6px rgba(196,181,240,0.6);" style-hover="background:#d6cbfa;">{{ removeLastLabel }}</button>
-              </sc-if>
-            </div>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
-          <div style="display:grid;grid-template-columns:{{ gridCols }};gap:{{ gridGap }};opacity:{{ gridOp }};transition:opacity .2s;">
-            <sc-for list="{{ cards }}" as="r" hint-placeholder-count="8">
-              <button onClick="{{ r.onOpen }}" aria-label="{{ r.aria }}" style="display:flex;flex-direction:column;gap:9px;padding:0;border:none;background:transparent;color:inherit;text-align:left;cursor:pointer;opacity:{{ r.op }};transform:{{ r.tf }};transition:{{ r.tr }};">
-                <div style="width:100%;aspect-ratio:2/3;position:relative;border-radius:14px;overflow:hidden;container-type:inline-size;background:{{ r.posterBg }};border:1px solid rgba(196,181,240,0.14);box-shadow:0 18px 34px -20px rgba(0,0,0,0.95);transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s;" style-hover="transform:translateY(-4px);border-color:rgba(214,200,255,0.5);box-shadow:0 22px 40px -18px rgba(0,0,0,0.95), 0 0 24px -6px rgba(196,176,255,0.45);">
-                  <sc-if value="{{ r.hasPoster }}" hint-placeholder-val="{{ false }}">
-                    <div role="img" aria-label="{{ r.titulo }}" style="position:absolute;inset:0;background-image:{{ r.posterCss }};background-size:cover;background-position:center;"></div>
-                  </sc-if>
-                  <sc-if value="{{ r.noPoster }}" hint-placeholder-val="{{ true }}">
-                    <div style="position:absolute;inset:5px;border:1px solid rgba(214,200,255,0.2);border-radius:10px;display:flex;flex-direction:column;padding:8px 8px 9px;">
-                      <div style="display:flex;justify-content:space-between;padding:0 2px;">
-                        <sc-for list="{{ posterBulbs }}" as="d" hint-placeholder-count="7">
-                          <div style="width:3px;height:3px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 4px 1px rgba(196,176,255,0.55);"></div>
-                        </sc-for>
-                      </div>
-                      <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                        <span style="text-align:center;font:600 {{ r.posterFs }}/0.92 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 16px rgba(196,181,240,0.3);">{{ r.titulo }}</span>
-                      </div>
-                      <div style="display:flex;align-items:center;gap:5px;color:#e2d9ff;">
-                        <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
-                        <span style="font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;">{{ r.anio }}</span>
-                        <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
-                      </div>
-                    </div>
-                  </sc-if>
-                </div>
-                <div style="display:flex;flex-direction:column;gap:5px;padding:0 2px;">
-                  <span style="font:600 18px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ r.titulo }}</span>
-                  <span style="font-size:13px;color:#a8b0c4;">{{ r.meta }}</span>
-                  <div style="display:flex;flex-wrap:wrap;gap:4px;padding-top:2px;">
-                    <sc-for list="{{ r.generos }}" as="g" hint-placeholder-count="2">
-                      <span style="padding:3px 8px;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};font:600 11px/1.1 'Barlow',sans-serif;">{{ g.label }}</span>
+                <sc-for list="{{ d.tagGroups }}" as="tg" hint-placeholder-count="5">
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
+                    <span
+                      style="width:96px;flex:none;font:600 11px/1.2 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#7c859c;">{{
+                      tg.nombre }}</span>
+                    <sc-for list="{{ tg.chips }}" as="t" hint-placeholder-count="2">
+                      <button onClick="{{ t.onClick }}"
+                        style="min-height:32px;display:flex;align-items:center;gap:6px;padding:0 11px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:500 13px/1 'Barlow',sans-serif;cursor:pointer;transition:background .2s,color .2s;"
+                        style-hover="border-color:rgba(214,200,255,0.6);">
+                        <sc-if value="{{ t.isInc }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="4 12.5 10 18 20 6"></polyline>
+                          </svg></sc-if>{{ t.label }}</button>
                     </sc-for>
                   </div>
-                </div>
-              </button>
-            </sc-for>
-          </div>
-
-          <sc-if value="{{ hasPages }}" hint-placeholder-val="{{ false }}">
-            <nav aria-label="Páginas" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;padding-top:12px;">
-              <button onClick="{{ prevPage }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#dfe2ee;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ prevOp }};">Anterior</button>
-              <sc-for list="{{ pageItems }}" as="p" hint-placeholder-count="5">
-                <button onClick="{{ p.onClick }}" aria-current="{{ p.current }}" style="min-width:44px;min-height:44px;padding:0 6px;border-radius:999px;border:1px solid {{ p.bd }};background:{{ p.bg }};color:{{ p.fg }};box-shadow:{{ p.sh }};font:600 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;cursor:{{ p.cursor }};">{{ p.label }}</button>
-              </sc-for>
-              <button onClick="{{ nextPage }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#dfe2ee;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ nextOp }};">Siguiente</button>
-            </nav>
-          </sc-if>
-        </sc-if>
-      </main>
-    </div>
-  </div>
-
-  <sc-if value="{{ showFab }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));z-index:30;display:flex;justify-content:center;pointer-events:none;">
-      <button onClick="{{ openSheet }}" style="pointer-events:auto;min-height:54px;padding:0 26px;display:flex;align-items:center;gap:10px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 18px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 14px 30px -10px rgba(0,0,0,0.9), 0 0 26px -4px rgba(196,181,240,0.65);">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="10" y1="17" x2="14" y2="17"></line></svg>{{ fabLabel }}</button>
-    </div>
-  </sc-if>
-
-  <sc-if value="{{ hasPanel }}" hint-placeholder-val="{{ false }}">
-    <div onClick="{{ closePanel }}" style="position:fixed;inset:0;z-index:60;background:rgba(5,8,16,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:{{ pn.align }};justify-content:center;padding:{{ pn.pad }};opacity:{{ pn.op }};transition:opacity .3s;">
-      <div role="dialog" aria-modal="true" aria-label="{{ d.titulo }}" onClick="{{ stop }}" style="position:relative;width:100%;max-width:780px;max-height:{{ pn.maxH }};overflow-y:auto;overscroll-behavior:contain;border-radius:{{ pn.rad }};background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.18);box-shadow:0 40px 80px -30px rgba(0,0,0,0.95);transform:{{ pn.tf }};transition:transform .38s cubic-bezier(.2,.8,.2,1);">
-        <button onClick="{{ closePanel }}" aria-label="Cerrar" style="position:absolute;top:10px;right:10px;z-index:2;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(10,15,29,0.75);color:#eef0f6;cursor:pointer;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
-        <div style="padding:clamp(16px,3.5vw,28px);display:flex;flex-direction:column;gap:18px;">
-          <div style="display:flex;gap:clamp(14px,3vw,24px);align-items:flex-start;padding-right:40px;">
-            <div style="width:{{ pn.posterW }};flex:none;aspect-ratio:2/3;position:relative;border-radius:14px;overflow:hidden;container-type:inline-size;background:{{ d.posterBg }};box-shadow:0 14px 30px -14px rgba(0,0,0,0.95);">
-              <sc-if value="{{ d.hasPoster }}" hint-placeholder-val="{{ false }}">
-                <div role="img" aria-label="{{ d.titulo }}" style="position:absolute;inset:0;background-image:{{ d.posterCss }};background-size:cover;background-position:center;"></div>
-              </sc-if>
-              <sc-if value="{{ d.noPoster }}" hint-placeholder-val="{{ true }}">
-                <div style="position:absolute;inset:5px;border:1px solid rgba(214,200,255,0.2);border-radius:10px;display:flex;flex-direction:column;padding:7px 7px 8px;">
-                  <div style="display:flex;justify-content:space-between;padding:0 2px;">
-                    <sc-for list="{{ posterBulbs }}" as="b" hint-placeholder-count="7">
-                      <div style="width:3px;height:3px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 4px 1px rgba(196,176,255,0.55);"></div>
-                    </sc-for>
-                  </div>
-                  <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                    <span style="text-align:center;font:600 {{ d.posterFs }}/0.92 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 16px rgba(196,181,240,0.3);">{{ d.titulo }}</span>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:4px;color:#e2d9ff;">
-                    <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
-                    <span style="font:600 9px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;">{{ d.anio }}</span>
-                    <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
-                  </div>
-                </div>
-              </sc-if>
-            </div>
-            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;">
-              <h2 style="margin:0;font:600 clamp(26px,5.4vw,40px)/1 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ d.titulo }}</h2>
-              <sc-if value="{{ d.showOrig }}" hint-placeholder-val="{{ false }}">
-                <span style="font-size:14px;font-style:italic;color:#a8b0c4;">{{ d.orig }}</span>
-              </sc-if>
-              <span style="font-size:14px;color:#a8b0c4;">{{ d.meta }}</span>
-              <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                <sc-for list="{{ d.generos }}" as="g" hint-placeholder-count="2">
-                  <button onClick="{{ g.onClick }}" style="min-height:30px;padding:0 11px;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};font:600 13px/1 'Barlow',sans-serif;cursor:pointer;">{{ g.label }}</button>
                 </sc-for>
               </div>
             </div>
-          </div>
-
-          <p style="margin:0;font-size:16px;line-height:1.55;color:#d8dcea;text-wrap:pretty;max-width:62ch;">{{ d.sinopsis }}</p>
-
-          <div style="display:grid;grid-template-columns:{{ pn.infoCols }};gap:16px 24px;">
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;">Dirección</span>
-              <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                <sc-for list="{{ d.directores }}" as="t" hint-placeholder-count="1">
-                  <button onClick="{{ t.onClick }}" style="min-height:34px;padding:0 12px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:600 14px/1 'Barlow',sans-serif;cursor:pointer;" style-hover="border-color:rgba(214,200,255,0.6);">{{ t.label }}</button>
-                </sc-for>
-              </div>
-              <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;padding-top:10px;">Dónde verla</span>
-              <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                <sc-for list="{{ d.plataformas }}" as="t" hint-placeholder-count="1">
-                  <button onClick="{{ t.onClick }}" style="min-height:34px;padding:0 12px;border-radius:8px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:600 13px/1 'Barlow',sans-serif;cursor:pointer;" style-hover="border-color:rgba(214,200,255,0.6);">{{ t.label }}</button>
-                </sc-for>
-                <sc-if value="{{ d.noPlat }}" hint-placeholder-val="{{ false }}">
-                  <span style="font-size:14px;color:#a8b0c4;">Sin plataformas por ahora</span>
-                </sc-if>
-              </div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:4px;">
-              <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;padding-bottom:4px;">Reparto</span>
-              <sc-for list="{{ d.actores }}" as="a" hint-placeholder-count="3">
-                <button onClick="{{ a.onClick }}" style="min-height:36px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 8px;margin:0 -8px;border:none;border-radius:8px;background:transparent;font-size:14px;line-height:1.3;cursor:pointer;text-align:left;" style-hover="background:rgba(255,255,255,0.05);">
-                  <span style="color:{{ a.fg }};font-weight:600;">{{ a.label }}</span><span style="color:#8e97ad;text-align:right;">{{ a.personaje }}</span></button>
-              </sc-for>
-            </div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:12px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
-            <div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px;">
-              <span style="font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#c4b5f0;">Etiquetas</span>
-              <span style="font-size:13px;color:#8e97ad;">Toca una para filtrar con ella</span>
-            </div>
-            <sc-for list="{{ d.tagGroups }}" as="tg" hint-placeholder-count="5">
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
-                <span style="width:96px;flex:none;font:600 11px/1.2 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#7c859c;">{{ tg.nombre }}</span>
-                <sc-for list="{{ tg.chips }}" as="t" hint-placeholder-count="2">
-                  <button onClick="{{ t.onClick }}" style="min-height:32px;display:flex;align-items:center;gap:6px;padding:0 11px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:500 13px/1 'Barlow',sans-serif;cursor:pointer;transition:background .2s,color .2s;" style-hover="border-color:rgba(214,200,255,0.6);">
-                    <sc-if value="{{ t.isInc }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 10 18 20 6"></polyline></svg></sc-if>{{ t.label }}</button>
-                </sc-for>
-              </div>
-            </sc-for>
           </div>
         </div>
-      </div>
+      </sc-if>
     </div>
-  </sc-if>
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;con resultados&quot;,&quot;cargando&quot;,&quot;sin resultados&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;con resultados&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;porPagina&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;4&quot;,&quot;8&quot;,&quot;24&quot;],&quot;default&quot;:&quot;24&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+  </x-dc>
+  <script type="text/x-dc" data-dc-script
+    data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;con resultados&quot;,&quot;cargando&quot;,&quot;sin resultados&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;porPagina&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;4&quot;,&quot;8&quot;,&quot;24&quot;],&quot;default&quot;:&quot;24&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
-  static HUE = { 'Acción': 35, 'Aventura': 75, 'Ciencia ficción': 210, 'Comedia': 60, 'Crimen': 15, 'Drama': 265, 'Fantasía': 300, 'Musical': 330, 'Romance': 350, 'Terror': 25, 'Thriller': 185, 'Bélico': 120, 'Misterio': 240 };
+  // ================== CONFIGURACIÓN DE SUPABASE ==================
+  // La misma publishable key de las otras pantallas. NUNCA la secret key.
+  static SUPABASE_URL = 'https://mlrezhasoubggrembngu.supabase.co';
+  static SUPABASE_KEY = 'sb_publishable_aMwHv2EdEELy5FRcRdkYDg_ipcSNSTG';
+  // ================================================================
+  static NOMBRES = { epoca: 'Época', lugar: 'Lugar' };       // nombres cortos para la barra lateral
+  static PERSONAS = ['director', 'actor'];                    // grupos cuyas opciones cambian con cada búsqueda
+
+  live() { return (this.props.estado ?? 'interactivo') === 'interactivo'; }
+  labels = {};      // código de etiqueta → texto (para los chips de filtros activos)
+  films = {};       // películas ya vistas, por id (para la ficha)
+  cat = null;       // catálogo completo de etiquetas (primera búsqueda sin filtros)
+
+  async rpc(fn, args) {
+    const C = Component;
+    const headers = { 'Content-Type': 'application/json', apikey: C.SUPABASE_KEY };
+    if (C.SUPABASE_KEY.startsWith('eyJ')) headers.Authorization = 'Bearer ' + C.SUPABASE_KEY;
+    const r = await fetch(`${C.SUPABASE_URL}/rest/v1/rpc/${fn}`, { method: 'POST', headers, body: JSON.stringify(args) });
+    if (!r.ok) throw new Error(`${fn} ${r.status}: ${await r.text()}`);
+    return r.json();
+  }
+  // Estado de la pantalla → filtros de explorar()
+  filtros(s) {
+    const f = {};
+    const inc = Object.keys(s.tri).filter(k => s.tri[k] === 1), exc = Object.keys(s.tri).filter(k => s.tri[k] === -1);
+    if (inc.length) f.incluir = inc;
+    if (exc.length) f.excluir = exc;
+    const a = this.year(s.anioMin), b = this.year(s.anioMax);
+    if (a) f.anio_min = a;
+    if (b) f.anio_max = b;
+    if (s.durMax) f.duracion_max = s.durMax - 1;             // "< 2 h" = hasta 119 min
+    if (s.texto.trim()) f.texto = s.texto.trim();
+    return f;
+  }
+  recordar(res) {
+    (res.facetas || []).forEach(g => g.opciones.forEach(o => { this.labels[o.codigo] = o.etiqueta; }));
+    (res.resultados || []).forEach(m => {
+      this.films[m.id] = m;
+      (m.etiquetas || []).forEach(e => { this.labels[e.codigo] = e.etiqueta; });
+      (m.directores || []).forEach(x => { this.labels['d:' + x.id] = x.nombre; });
+      (m.actores || []).forEach(x => { this.labels['a:' + x.id] = x.nombre; });
+    });
+  }
+  pedir(ms) { clearTimeout(this.pedirT); this.pedirT = setTimeout(() => this.buscar(), ms || 0); }
+  async buscar() {
+    const id = (this.req = (this.req || 0) + 1);
+    const s = this.state, filtros = this.filtros(s), sinFiltros = !Object.keys(filtros).length;
+    const args = { filtros: s.sort === 'azar' ? { ...filtros, semilla: String(s.seed) } : filtros, orden: s.sort, pagina: s.page };
+    try {
+      const pRes = this.rpc('explorar', args);
+      const pCat = this.cat ? null : sinFiltros ? pRes : this.rpc('explorar', { filtros: {}, orden: 'popular', pagina: 1 });
+      const [res, cat] = await Promise.all([pRes, pCat]);
+      if (cat && !this.cat) { this.cat = cat.facetas || []; this.recordar(cat); }
+      if (id !== this.req) return;                           // ya hay una búsqueda más nueva
+      this.recordar(res);
+      const animar = this.animar || this.state.status !== 'ready'; this.animar = false;
+      this.setState({ res, status: 'ready', busy: false, entering: animar },
+                    () => { if (animar) this.raf2(() => this.setState({ entering: false })); });
+    } catch (e) {
+      console.error(e);
+      if (id === this.req) this.setState({ status: 'offline', busy: false });
+    }
+  }
+  // Barra lateral: catálogo completo (estable) con los conteos de la búsqueda actual
+  gruposVivos(R) {
+    const cat = this.cat || R.facetas, ahora = {};
+    R.facetas.forEach(g => { ahora[g.grupo] = g; });
+    const orden = cat.map(g => g.grupo);
+    R.facetas.forEach(g => { if (!orden.includes(g.grupo)) orden.push(g.grupo); });
+    return orden.map(k => {
+      const base = cat.find(g => g.grupo === k), now = ahora[k], persona = Component.PERSONAS.includes(k);
+      const ops = persona ? (now ? now.opciones.slice() : []) : (base ? base.opciones.slice() : []);
+      if (!persona && now) now.opciones.forEach(o => { if (!ops.some(x => x.codigo === o.codigo)) ops.push(o); });
+      const long = ops.length > 14;
+      if (long && !persona) {                                // grupos largos: primero lo que sí tiene películas ahora
+        const n = {}; (now ? now.opciones : []).forEach(o => { n[o.codigo] = o.n; });
+        ops.sort((a, b) => (n[b.codigo] || 0) - (n[a.codigo] || 0));
+      }
+      return { key: k, nombre: Component.NOMBRES[k] || (base || now).nombre, long,
+               all: ops.map(o => ({ codigo: o.codigo, etiqueta: o.etiqueta, padre: o.padre })) };
+    }).filter(g => g.all.length);
+  }
+  static HUE = { 'Acción': 35, 'Aventura': 75, 'Ciencia ficción': 210, 'Comedia': 60, 'Crimen': 15, 'Drama': 265, 'Fantasía': 300, 'Musical': 330, 'Romance': 350, 'Terror': 25, 'Thriller': 185, 'Bélico': 120, 'Misterio': 240, 'Western': 50 };
   static SUBP = { 'Comedia absurda': 'Comedia', 'Sobrenatural': 'Terror', 'Horror psicológico': 'Terror', 'Thriller psicológico': 'Thriller', 'Slasher': 'Terror', 'Cuento de hadas': 'Fantasía', 'Drama bélico': 'Bélico', 'Whodunit': 'Misterio', 'Sátira social': 'Comedia', 'Postapocalíptico': 'Ciencia ficción', 'Persecución': 'Acción', 'Gore': 'Terror', 'Musical gótico': 'Musical', 'Falso documental': 'Comedia', 'Vampiros': 'Terror', 'Road movie': 'Aventura', 'Coming of age': 'Drama', 'Found footage': 'Terror', 'Cine negro': 'Crimen', 'Space opera': 'Ciencia ficción', 'Comedia romántica': 'Comedia', 'Zombis': 'Terror' };
   static F = (id, titulo, orig, anio, dur, pop, generos, subgeneros, tags, paises, dirs, acts, plat, sinopsis) => ({
     id, titulo, titulo_original: orig, anio, duracion_min: dur, popularidad: pop, sinopsis, poster_url: null, generos, subgeneros, tags, paises,
@@ -410,7 +760,7 @@ class Component extends DCLogic {
     return (Component._db = { opts, byCode, filmCodes });
   }
 
-  state = { status: 'loading', tri: {}, hist: [], texto: '', anioMin: '', anioMax: '', durMax: null, sort: 'popular', seed: 0.37, page: 1, open: { genero: true, subgenero: true, tono: true }, more: {}, sheet: false, openId: null, panelIn: false, busy: false, entering: false, w: 420 };
+  state = { status: 'loading', res: null, tri: {}, hist: [], texto: '', anioMin: '', anioMax: '', durMax: null, sort: 'popular', seed: 0.37, page: 1, open: { genero: true, subgenero: true, tono: true }, more: {}, sheet: false, openId: null, panelIn: false, busy: false, entering: false, w: 420 };
   rootRef = React.createRef();
   resultsRef = React.createRef();
   timers = [];
@@ -430,7 +780,7 @@ class Component extends DCLogic {
     const lock = (this.state.sheet && this.state.w < 820) || this.state.openId != null;
     document.body.style.overflow = lock ? 'hidden' : '';
   }
-  componentWillUnmount() { this.ro && this.ro.disconnect(); window.removeEventListener('offline', this.goOff); window.removeEventListener('keydown', this.onKey); this.timers.forEach(clearTimeout); document.body.style.overflow = ''; }
+  componentWillUnmount() { this.ro && this.ro.disconnect(); window.removeEventListener('offline', this.goOff); window.removeEventListener('keydown', this.onKey); this.timers.forEach(clearTimeout); clearTimeout(this.pedirT); document.body.style.overflow = ''; }
   later(fn, ms) { const t = setTimeout(fn, ms); this.timers.push(t); return t; }
   raf2(fn) { requestAnimationFrame(() => requestAnimationFrame(fn)); }
   goOff = () => this.setState({ status: 'offline' });
@@ -445,12 +795,14 @@ class Component extends DCLogic {
     else this.load(base);
   }
   load(extra) {
+    if (this.live()) { this.animar = true; this.setState({ ...(extra || {}), status: 'loading' }); this.pedir(0); return; }
     this.setState({ ...(extra || {}), status: 'loading' });
     this.later(() => this.setState({ status: 'ready', entering: true }, () => this.raf2(() => this.setState({ entering: false }))), 900);
   }
   bump(patch) {
     clearTimeout(this.busyT);
     this.setState({ ...patch, page: 1, busy: true });
+    if (this.live()) { this.pedir('texto' in patch || 'anioMin' in patch || 'anioMax' in patch ? 320 : 120); return; }
     this.busyT = this.later(() => this.setState({ busy: false }), 260);
   }
 
@@ -477,7 +829,8 @@ class Component extends DCLogic {
   closePanel = () => { this.setState({ panelIn: false }); this.later(() => this.setState({ openId: null }), 300); };
   openPanel(id) { this.setState({ openId: id, panelIn: false }, () => this.raf2(() => this.setState({ panelIn: true }))); }
   goPage(p) {
-    this.setState({ page: p, entering: true }, () => this.raf2(() => this.setState({ entering: false })));
+    if (this.live()) { this.animar = true; this.setState({ page: p, busy: true }); this.pedir(0); }
+    else this.setState({ page: p, entering: true }, () => this.raf2(() => this.setState({ entering: false })));
     const r = this.resultsRef.current;
     if (r) window.scrollTo({ top: Math.max(0, r.getBoundingClientRect().top + window.scrollY - 16), behavior: 'smooth' });
   }
@@ -512,8 +865,8 @@ class Component extends DCLogic {
     const byLen = L <= 6 ? 30 : L <= 12 ? 22 : L <= 20 ? 18 : L <= 30 ? 15 : 13;
     return Math.min(byLen, 88 / (w * 0.47)).toFixed(1) + 'cqw';
   }
-  dur(m) { const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; }
-  pbg(f) { const h = Component.HUE[f.generos[0]] ?? 265; return `radial-gradient(ellipse 120% 80% at 50% 35%, oklch(0.34 0.08 ${h}) 0%, oklch(0.19 0.045 ${h}) 68%, #0c1121 100%)`; }
+  dur(m) { if (!m) return ''; const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; }
+  pbg(f) { const h = Component.HUE[(f.generos || [])[0]] ?? 265; return `radial-gradient(ellipse 120% 80% at 50% 35%, oklch(0.34 0.08 ${h}) 0%, oklch(0.19 0.045 ${h}) 68%, #0c1121 100%)`; }
 
   renderVals() {
     const s = this.state, db = Component.build();
@@ -521,21 +874,26 @@ class Component extends DCLogic {
     const contentW = Math.min(s.w, 1360) - (mobile ? 16 : 48) - (mobile ? 0 : 324);
     const cols = mobile ? 2 : contentW >= 880 ? 4 : 3;
     const per = parseInt(this.props.porPagina ?? 24, 10) || 24;
-    const list = this.sorted(this.filtered(s), s);
-    const n = list.length, pages = Math.max(1, Math.ceil(n / per)), page = Math.min(s.page, pages);
-    const slice = list.slice((page - 1) * per, page * per);
+    const L = this.live(), R = L ? (s.res || { total: 0, paginas: 1, resultados: [], facetas: [] }) : null;
+    const list = L ? [] : this.sorted(this.filtered(s), s);
+    const n = L ? R.total : list.length;
+    const pages = L ? Math.max(1, R.paginas || 1) : Math.max(1, Math.ceil(n / per)), page = Math.min(s.page, pages);
+    const slice = L ? R.resultados : list.slice((page - 1) * per, page * per);
     const ready = s.status === 'ready';
 
     const counts = {};
-    list.forEach(f => db.filmCodes[f.id].forEach(c => { counts[c] = (counts[c] || 0) + 1; }));
+    if (L) R.facetas.forEach(g => g.opciones.forEach(o => { counts[o.codigo] = o.n; }));
+    else list.forEach(f => db.filmCodes[f.id].forEach(c => { counts[c] = (counts[c] || 0) + 1; }));
+    const labelOf = c => L ? (this.labels[c] || c) : ((db.byCode[c] || {}).etiqueta || c);
+    const defs = L ? this.gruposVivos(R) : Component.GROUPS.map(g => ({ key: g.key, nombre: g.nombre, long: !!g.long, all: db.opts[g.key] }));
 
     const LILA = { bg: '#c4b5f0', fg: '#0d1224', bd: '#c4b5f0', sh: '0 0 14px -2px rgba(196,176,255,0.55)' };
     const RED = { bg: 'rgba(217,132,132,0.14)', fg: '#f0b4b4', bd: 'rgba(217,132,132,0.55)', sh: 'none' };
     const NEU = { bg: 'rgba(255,255,255,0.04)', fg: '#dfe2ee', bd: 'rgba(255,255,255,0.14)', sh: 'none' };
     const tone = c => s.tri[c] === 1 ? LILA : s.tri[c] === -1 ? RED : NEU;
 
-    const groups = Component.GROUPS.map(g => {
-      const all = db.opts[g.key], open = !!s.open[g.key], showAll = !!s.more[g.key];
+    const groups = defs.map(g => {
+      const all = g.all, open = !!s.open[g.key], showAll = !!s.more[g.key];
       const sel = all.filter(o => s.tri[o.codigo]);
       let vis = all;
       if (g.long && !showAll) { const top = all.slice(0, 8); vis = [...top, ...sel.filter(o => !top.includes(o))]; }
@@ -563,7 +921,7 @@ class Component extends DCLogic {
 
     const yMin = this.year(s.anioMin), yMax = this.year(s.anioMax);
     const durL = (Component.DUR.find(d => d.v === s.durMax) || {}).l;
-    const keyLabel = k => k === 'texto' ? `“${s.texto.trim()}”` : k === 'anios' ? (yMin && yMax ? `${yMin}–${yMax}` : yMin ? `Desde ${yMin}` : `Hasta ${yMax}`) : k === 'dur' ? durL : (db.byCode[k] || {}).etiqueta || k;
+    const keyLabel = k => k === 'texto' ? `“${s.texto.trim()}”` : k === 'anios' ? (yMin && yMax ? `${yMin}–${yMax}` : yMin ? `Desde ${yMin}` : `Hasta ${yMax}`) : k === 'dur' ? durL : labelOf(k);
     const activeKeys = s.hist.filter(k => k === 'texto' ? s.texto.trim() : k === 'anios' ? (yMin || yMax) : k === 'dur' ? s.durMax : s.tri[k]);
     const activeChips = activeKeys.map(k => {
       const t = s.tri[k] || 0, c = t === 1 ? LILA : t === -1 ? RED : { bg: 'rgba(196,181,240,0.08)', fg: '#e8e1ff', bd: 'rgba(196,181,240,0.4)', sh: 'none' };
@@ -572,15 +930,15 @@ class Component extends DCLogic {
     });
     const last = activeKeys[activeKeys.length - 1];
 
-    const mkTag = c => { const t = tone(c); return { label: (db.byCode[c] || {}).etiqueta, isInc: s.tri[c] === 1, bg: t.bg, fg: t.fg, bd: t.bd, onClick: () => this.include(c) }; };
+    const mkTag = c => { const t = tone(c); return { label: labelOf(c), isInc: s.tri[c] === 1, bg: t.bg, fg: t.fg, bd: t.bd, onClick: () => this.include(c) }; };
     const cg = (g, v) => Component.GROUPS.find(x => x.key === g).sub ? `s:${Component.slug(Component.SUBP[v] || 'otro')}:${Component.slug(v)}` : Component.GROUPS.find(x => x.key === g).pre + Component.slug(v);
 
     const ease = 'cubic-bezier(.2,.8,.2,1)';
     const cards = slice.map((f, i) => ({
-      titulo: f.titulo, anio: f.anio, meta: `${f.anio} · ${this.dur(f.duracion_min)}`, aria: `${f.titulo}, ${f.anio}. Ver ficha`,
-      generos: f.generos.map(g => { const c = 'g:' + Component.slug(g), on = s.tri[c] === 1; return { label: g, bg: on ? '#c4b5f0' : 'rgba(196,181,240,0.1)', fg: on ? '#0d1224' : '#ddd5fb', bd: on ? '#c4b5f0' : 'rgba(196,181,240,0.25)' }; }),
+      titulo: f.titulo, anio: f.anio, meta: [f.anio, this.dur(f.duracion_min)].filter(Boolean).join(' · '), aria: `${f.titulo}, ${f.anio}. Ver ficha`,
+      generos: (f.generos || []).map(g => { const c = 'g:' + Component.slug(g), on = s.tri[c] === 1; return { label: g, bg: on ? '#c4b5f0' : 'rgba(196,181,240,0.1)', fg: on ? '#0d1224' : '#ddd5fb', bd: on ? '#c4b5f0' : 'rgba(196,181,240,0.25)' }; }),
       hasPoster: !!f.poster_url, noPoster: !f.poster_url, posterCss: f.poster_url ? `url("${f.poster_url}")` : 'none',
-      posterBg: this.pbg(f), posterFs: this.posterFs(f.titulo),
+      posterBg: this.pbg(f), posterFs: this.posterFs(f.titulo || ''),
       op: s.entering ? 0 : 1, tf: s.entering ? 'translate3d(0,16px,0) scale(.95)' : 'none',
       tr: s.entering ? 'none' : `transform .5s ${ease} ${Math.min(i, 11) * 40}ms, opacity .45s ${Math.min(i, 11) * 40}ms`,
       onOpen: () => this.openPanel(f.id)
@@ -598,9 +956,28 @@ class Component extends DCLogic {
       });
     }
 
-    const f = s.openId != null ? Component.FILMS.find(x => x.id === s.openId) : null;
+    const f = s.openId != null ? ((L ? this.films[s.openId] : Component.FILMS.find(x => x.id === s.openId)) || null) : null;
     let d = {};
-    if (f) {
+    if (f && L) {
+      // Cada etiqueta de la ficha trae su código, así que un clic la agrega como filtro
+      const porGrupo = {}, ordenG = [];
+      (f.etiquetas || []).forEach(e => {
+        if (!porGrupo[e.grupo]) { porGrupo[e.grupo] = { nombre: Component.NOMBRES[e.grupo] || e.nombre, cods: [] }; ordenG.push(e.grupo); }
+        porGrupo[e.grupo].cods.push(e.codigo);
+      });
+      const gen = porGrupo.genero ? porGrupo.genero.cods
+        : (f.generos || []).map(g => { const c = 'g:' + Component.slug(g); this.labels[c] = this.labels[c] || g; return c; });
+      d = {
+        titulo: f.titulo, orig: f.titulo_original, showOrig: !!f.titulo_original && f.titulo_original !== f.titulo, anio: f.anio,
+        meta: [f.anio, this.dur(f.duracion_min)].filter(Boolean).join(' · '), sinopsis: f.sinopsis || '',
+        hasPoster: !!f.poster_url, noPoster: !f.poster_url, posterCss: f.poster_url ? `url("${f.poster_url}")` : 'none', posterBg: this.pbg(f), posterFs: this.posterFs(f.titulo || ''),
+        generos: gen.map(mkTag),
+        directores: (f.directores || []).map(x => mkTag('d:' + x.id)),
+        plataformas: (porGrupo.plataforma ? porGrupo.plataforma.cods : []).map(mkTag), noPlat: !(f.plataformas || []).length,
+        actores: (f.actores || []).map(a => { const c = 'a:' + a.id; return { label: a.nombre, personaje: a.personaje || '', fg: s.tri[c] === 1 ? '#c4b5f0' : '#eef0f6', onClick: () => this.include(c) }; }),
+        tagGroups: ordenG.filter(k => k !== 'genero' && k !== 'plataforma').map(k => ({ nombre: porGrupo[k].nombre, chips: porGrupo[k].cods.map(mkTag) }))
+      };
+    } else if (f) {
       const tagGroups = [['subgenero', 'Subgénero', f.subgeneros], ...['Formato', 'Audiencia', 'Basado en', 'Época', 'Lugar', 'Temática', 'Tono', 'Escala'].map(k => [Component.GROUPS.find(g => g.nombre === k).key, k, f.tags[k] || []]), ['pais', 'País', f.paises]]
         .filter(x => x[2].length).map(([key, nombre, vals]) => ({ nombre, chips: vals.map(v => mkTag(cg(key, v))) }));
       d = {
@@ -635,7 +1012,9 @@ class Component extends DCLogic {
       groups,
       hasActive: activeChips.length > 0, activeChips, clearAll: this.clearAll, clearOp: filtersN ? 1 : 0.4,
       countNum: ready ? n : '—', countWord: word, sort: s.sort,
-      onSort: e => { const v = e.target.value; this.setState({ sort: v, seed: v === 'azar' ? Math.random() : s.seed, page: 1, entering: true }, () => this.raf2(() => this.setState({ entering: false }))); },
+      onSort: e => { const v = e.target.value;
+        if (this.live()) { this.animar = true; this.setState({ sort: v, seed: v === 'azar' ? Math.random() : s.seed, page: 1, busy: true }); this.pedir(0); return; }
+        this.setState({ sort: v, seed: v === 'azar' ? Math.random() : s.seed, page: 1, entering: true }, () => this.raf2(() => this.setState({ entering: false }))); },
       isLoading: s.status === 'loading', isOffline: s.status === 'offline', isEmpty: ready && n === 0, showGrid: ready && n > 0,
       skeletons: Array.from({ length: cols * 2 }, (_, i) => ({ delay: (i * 0.08).toFixed(2) + 's' })),
       gridCols: `repeat(${cols}, minmax(0, 1fr))`, gridGap: mobile ? '18px 12px' : '26px 18px', gridOp: s.busy ? 0.5 : 1,
@@ -661,4 +1040,5 @@ class Component extends DCLogic {
 }
 </script>
 </body>
+
 </html>
