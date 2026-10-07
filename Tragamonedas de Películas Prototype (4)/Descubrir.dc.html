@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#0a0f1d;}
+*{box-sizing:border-box;}
+a{color:#c4b5f0;}
+a:hover{color:#e2d9ff;}
+button{font-family:inherit;}
+*{scrollbar-width:thin;scrollbar-color:rgba(196,181,240,0.45) transparent;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(196,181,240,0.4);border-radius:3px;}
+@keyframes skPulse{0%,100%{opacity:.45;}50%{opacity:.9;}}
+@keyframes bulbChase{0%,100%{background:rgba(214,200,255,0.16);box-shadow:none;}50%{background:rgba(214,200,255,1);box-shadow:0 0 8px 2px rgba(196,176,255,0.75);}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="min-height:100vh;overflow:hidden;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
+  <div style="max-width:460px;margin:0 auto;padding:clamp(16px,4vw,40px) 14px 48px;display:flex;flex-direction:column;gap:18px;">
+
+    <nav style="display:flex;justify-content:center;">
+      <div style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+        <a href="Tragamonedas%20de%20Peliculas.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Tragamonedas</a>
+        <a href="Descubrir.dc.html" aria-current="page" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;">Descubrir</a>
+        <a href="Para%20ti.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Para ti</a>
+        <a href="Explorar.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Explorar</a>
+      </div>
+    </nav>
+
+    <div style="border-radius:20px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+      <div style="background:#121724;border-radius:12px;padding:14px 14px 13px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;gap:12px;">
+        <sc-if value="{{ under30 }}" hint-placeholder-val="{{ true }}">
+          <div style="font:600 19px/1.15 'Barlow Condensed',sans-serif;letter-spacing:.04em;text-align:center;color:#eef0f6;text-wrap:balance;">Llevas <span style="color:#c4b5f0;">{{ total }}</span> de 30 para tus primeras recomendaciones</div>
+        </sc-if>
+        <sc-if value="{{ over30 }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;">
+            <div style="font:600 19px/1.15 'Barlow Condensed',sans-serif;letter-spacing:.04em;color:#eef0f6;text-wrap:balance;">¡Ya te conocemos un poco! Sigue para afinar tus gustos</div>
+            <div style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#c4b5f0;">{{ total }} calificadas</div>
+          </div>
+        </sc-if>
+        <div style="display:flex;justify-content:space-between;padding:0 2px;">
+          <sc-for list="{{ bulbs }}" as="b" hint-placeholder-count="30">
+            <div style="width:6px;height:6px;border-radius:50%;background:{{ b.bg }};box-shadow:{{ b.sh }};transition:background .4s, box-shadow .4s;"></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+      <sc-for list="{{ genreChips }}" as="g" hint-placeholder-count="8">
+        <button onClick="{{ g.onClick }}" style="flex:none;min-height:38px;padding:0 15px;border-radius:999px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};transition:background .2s,color .2s;">{{ g.label }}</button>
+      </sc-for>
+    </div>
+
+    <div style="position:relative;width:100%;max-width:380px;height:clamp(480px,64vh,580px);margin:0 auto 26px;">
+
+      <sc-if value="{{ showDeck }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ slots }}" as="c" hint-placeholder-count="3">
+          <div onPointerDown="{{ c.onDown }}" onPointerMove="{{ c.onMove }}" onPointerUp="{{ c.onUp }}" onPointerCancel="{{ c.onCancel }}" style="position:absolute;inset:0;transform:{{ c.tf }};transition:{{ c.tr }};opacity:{{ c.op }};z-index:{{ c.z }};touch-action:none;user-select:none;-webkit-user-select:none;cursor:{{ c.cursor }};perspective:1600px;">
+            <div style="position:absolute;inset:0;transform-style:preserve-3d;transform:{{ c.flipTf }};transition:{{ c.flipTr }};">
+
+              <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);box-shadow:0 30px 60px -28px rgba(0,0,0,0.9);">
+                <div style="flex:1;min-height:0;position:relative;container-type:inline-size;background:{{ c.posterBg }};">
+                  <sc-if value="{{ c.hasPoster }}" hint-placeholder-val="{{ false }}">
+                    <div role="img" aria-label="{{ c.titulo }}" style="position:absolute;inset:0;background-image:{{ c.posterCss }};background-size:cover;background-position:center;pointer-events:none;"></div>
+                  </sc-if>
+                  <sc-if value="{{ c.noPoster }}" hint-placeholder-val="{{ true }}">
+                    <div style="position:absolute;inset:9px;border:1px solid rgba(214,200,255,0.2);border-radius:14px;display:flex;flex-direction:column;padding:12px 14px;">
+                      <div style="display:flex;justify-content:space-between;padding:0 4px;">
+                        <sc-for list="{{ c.bulbs }}" as="d" hint-placeholder-count="9">
+                          <div style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);"></div>
+                        </sc-for>
+                      </div>
+                      <div style="margin-top:14px;text-align:center;font:600 11px/1.3 'Barlow Condensed',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:rgba(236,230,255,0.78);">{{ c.genreLine }}</div>
+                      <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+                        <h3 style="margin:0;text-align:center;font:600 {{ c.posterFs }}/0.92 'Barlow Condensed',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 28px rgba(196,181,240,0.3);">{{ c.titulo }}</h3>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;color:#e2d9ff;">
+                        <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                        <span style="font:600 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;">{{ c.anio }}</span>
+                        <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                      </div>
+                      <div style="margin:10px 0 12px;text-align:center;display:flex;flex-direction:column;gap:4px;">
+                        <span style="font:500 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:rgba(236,230,255,0.6);">Una película de</span>
+                        <span style="font:600 14px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#f4f2ec;">{{ c.director }}</span>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;padding:0 4px;">
+                        <sc-for list="{{ c.bulbs }}" as="d" hint-placeholder-count="9">
+                          <div style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);"></div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+                <div style="padding:13px 16px 15px;display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(255,255,255,0.06);">
+                  <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <h2 style="margin:0;flex:1;min-width:0;font:600 25px/1.02 'Barlow Condensed',sans-serif;color:#f6f4ee;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ c.titulo }}</h2>
+                    <button onPointerDown="{{ stopPD }}" onClick="{{ c.onFlip }}" style="flex:none;height:30px;padding:0 12px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);background:transparent;color:#ddd5fb;font:600 13px/1 'Barlow',sans-serif;cursor:pointer;" style-hover="background:rgba(196,181,240,0.12);">Ver más</button>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:14px;color:#a8b0c4;">
+                    <span>{{ c.anio }}</span>
+                    <span>{{ c.dur }}</span>
+                    <sc-for list="{{ c.generos }}" as="g" hint-placeholder-count="1">
+                      <span style="padding:4px 10px;border-radius:999px;background:#c4b5f0;color:#0d1224;font:600 12px/1 'Barlow',sans-serif;">{{ g }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:3px;font-size:14px;line-height:1.35;">
+                    <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span style="color:#7c859c;">Dirección </span><span style="color:#eef0f6;">{{ c.director }}</span></div>
+                    <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span style="color:#7c859c;">Con </span><span style="color:#eef0f6;">{{ c.actors }}</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.22);box-shadow:0 30px 60px -28px rgba(0,0,0,0.9);display:flex;flex-direction:column;">
+                <div style="flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;padding:20px 18px 12px;display:flex;flex-direction:column;gap:14px;">
+                  <div style="display:flex;flex-direction:column;gap:4px;">
+                    <h2 style="margin:0;font:600 28px/1.02 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ c.titulo }}</h2>
+                    <sc-if value="{{ c.showOrig }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:14px;font-style:italic;color:#a8b0c4;">{{ c.orig }}</span>
+                    </sc-if>
+                  </div>
+                  <p style="margin:0;font-size:15px;line-height:1.5;color:#d8dcea;text-wrap:pretty;">{{ c.sinopsis }}</p>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <sc-for list="{{ c.subs }}" as="sg" hint-placeholder-count="2">
+                      <span style="padding:5px 11px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);color:#ddd5fb;font:500 13px/1 'Barlow',sans-serif;white-space:nowrap;">{{ sg }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
+                    <sc-for list="{{ c.tags }}" as="t" hint-placeholder-count="4">
+                      <div style="display:flex;flex-direction:column;gap:4px;">
+                        <span style="font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;">{{ t.k }}</span>
+                        <span style="font-size:14px;color:#eef0f6;">{{ t.v }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <sc-if value="{{ c.hasPlat }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
+                      <span style="font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;margin-right:4px;">Dónde verla</span>
+                      <sc-for list="{{ c.plataformas }}" as="p" hint-placeholder-count="1">
+                        <span style="padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);font:600 13px/1 'Barlow',sans-serif;color:#f4f2ec;">{{ p }}</span>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+                <div style="padding:10px 18px 16px;display:flex;justify-content:center;">
+                  <button onPointerDown="{{ stopPD }}" onClick="{{ c.onFlip }}" style="min-height:40px;padding:0 20px;border-radius:999px;border:1px solid rgba(255,255,255,0.22);background:transparent;color:#eef0f6;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,0.06);">Volver</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="position:absolute;inset:0;border-radius:22px;background:#0a0f1d;opacity:{{ c.dim }};pointer-events:none;transition:{{ c.tr }};"></div>
+
+            <sc-if value="{{ c.isTop }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:30px;left:20px;transform:rotate(-14deg);opacity:{{ c.sLike }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #7ee0a6;border-radius:10px;color:#7ee0a6;font:700 40px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.4);white-space:nowrap;">ME LATE</div>
+              <div style="position:absolute;top:30px;right:20px;transform:rotate(14deg);opacity:{{ c.sNope }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #ff7b7b;border-radius:10px;color:#ff7b7b;font:700 34px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.4);white-space:nowrap;">NO ME LATE</div>
+              <div style="position:absolute;bottom:42%;left:50%;transform:translateX(-50%) rotate(-6deg);opacity:{{ c.sSeen }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #c4b5f0;border-radius:10px;color:#c4b5f0;font:700 40px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.4);white-space:nowrap;">YA LA VI</div>
+              <div style="position:absolute;top:34px;left:50%;transform:translateX(-50%) rotate(-3deg);opacity:{{ c.sSkip }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #a3abbf;border-radius:10px;color:#a3abbf;font:700 30px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.4);white-space:nowrap;">NO ME INTERESA</div>
+            </sc-if>
+
+            <sc-if value="{{ c.asking }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;z-index:6;border-radius:22px;background:rgba(10,15,29,0.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px;cursor:default;">
+                <div style="font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#c4b5f0;">Ya la vi</div>
+                <h3 style="margin:0;font:600 46px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">¿Te gustó?</h3>
+                <div style="display:flex;gap:12px;width:100%;">
+                  <button onClick="{{ answerYes }}" style="flex:1;min-height:68px;border-radius:18px;border:none;background:#7ee0a6;color:#0c1a12;font:700 24px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;" style-hover="background:#97eab8;">Sí</button>
+                  <button onClick="{{ answerNo }}" style="flex:1;min-height:68px;border-radius:18px;border:2px solid #ff7b7b;background:transparent;color:#ff9a9a;font:700 24px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,123,123,0.1);">No</button>
+                </div>
+                <button onClick="{{ cancelAsk }}" style="border:none;background:transparent;color:#8e97ad;font:500 14px/1 'Barlow',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:8px;">Cancelar</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <sc-if value="{{ showLoading }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;transform:translateY(32px) scale(.9);border-radius:22px;background:#111829;border:1px solid rgba(196,181,240,0.08);"></div>
+        <div style="position:absolute;inset:0;transform:translateY(16px) scale(.95);border-radius:22px;background:#121a2d;border:1px solid rgba(196,181,240,0.1);"></div>
+        <div style="position:absolute;inset:0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;overflow:hidden;">
+          <div style="flex:1;margin:9px;border:1px solid rgba(214,200,255,0.14);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+            <div style="display:flex;gap:10px;">
+              <sc-for list="{{ loadBulbs }}" as="d" hint-placeholder-count="5">
+                <div style="width:8px;height:8px;border-radius:50%;animation:bulbChase 1.1s ease-in-out infinite;animation-delay:{{ d.delay }};"></div>
+              </sc-for>
+            </div>
+            <div style="font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#8e97ad;">Barajando el mazo</div>
+          </div>
+          <div style="padding:14px 16px 18px;display:flex;flex-direction:column;gap:10px;">
+            <div style="height:22px;width:70%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out infinite;"></div>
+            <div style="height:14px;width:45%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out .15s infinite;"></div>
+            <div style="height:14px;width:85%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out .3s infinite;"></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showOffline }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px;text-align:center;">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path><path d="M10 5.1A15 15 0 0 1 22 8.8"></path><path d="M5 12.5a10 10 0 0 1 5.2-2.8"></path><path d="M14.5 9.9A10 10 0 0 1 19 12.5"></path><path d="M8.5 16a5 5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r="0.8" fill="#c4b5f0"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>
+          <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sin conexión</h2>
+          <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">No pudimos cargar más películas. Lo que ya calificaste está guardado.</p>
+          <button onClick="{{ retry }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Reintentar</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px;text-align:center;">
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{ loadBulbs }}" as="d" hint-placeholder-count="5">
+              <div style="width:7px;height:7px;border-radius:50%;background:rgba(214,200,255,0.9);box-shadow:0 0 8px 2px rgba(196,176,255,0.6);"></div>
+            </sc-for>
+          </div>
+          <h2 style="margin:0;font:600 32px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ emptyTitle }}</h2>
+          <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">{{ emptyText }}</p>
+          <sc-if value="{{ emptyHasFilter }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ clearGenre }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Quitar filtros</button>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:clamp(12px,4vw,18px);">
+      <button onClick="{{ undo }}" aria-label="Deshacer" title="Deshacer (Ctrl+Z)" style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,0.16);background:rgba(18,26,44,0.9);color:#c9cedd;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ undoOp }};transition:opacity .2s;" style-hover="background:rgba(196,181,240,0.12);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8v5h5"></path><path d="M4.6 13A8 8 0 1 0 6.5 6.5L4 9"></path></svg>
+      </button>
+      <button onClick="{{ actNope }}" aria-label="No me late" title="No me late (←)" style="width:66px;height:66px;border-radius:50%;border:1.5px solid rgba(255,123,123,0.55);background:rgba(18,26,44,0.9);color:#ff7b7b;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ actOp }};box-shadow:0 12px 26px -12px rgba(0,0,0,0.8);" style-hover="background:rgba(255,123,123,0.12);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+      </button>
+      <button onClick="{{ actSeen }}" aria-label="Ya la vi" title="Ya la vi (↑)" style="width:54px;height:54px;border-radius:50%;border:1.5px solid rgba(196,181,240,0.55);background:rgba(18,26,44,0.9);color:#c4b5f0;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ actOp }};box-shadow:0 12px 26px -12px rgba(0,0,0,0.8);" style-hover="background:rgba(196,181,240,0.12);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      </button>
+      <button onClick="{{ actLike }}" aria-label="Me late" title="Me late (→)" style="width:66px;height:66px;border-radius:50%;border:1.5px solid rgba(126,224,166,0.55);background:rgba(18,26,44,0.9);color:#7ee0a6;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ actOp }};box-shadow:0 12px 26px -12px rgba(0,0,0,0.8);" style-hover="background:rgba(126,224,166,0.12);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.7 4.5c2.2 0 3.6 1.2 5.3 3.1 1.7-1.9 3.1-3.1 5.3-3.1 3.7 0 5.8 3.7 4.3 7.2C19.5 16.4 12 21 12 21z"></path></svg>
+      </button>
+    </div>
+
+    <sc-if value="{{ compact }}" hint-placeholder-val="{{ true }}">
+      <div style="text-align:center;font-size:13px;color:#7c859c;">Desliza la tarjeta hacia abajo para descartarla sin opinar</div>
+    </sc-if>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;font-size:13px;color:#7c859c;">
+        <span style="display:flex;align-items:center;gap:6px;"><span style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">←</span>No me late</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">→</span>Me late</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">↑</span>Ya la vi</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">↓</span>No me interesa</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">Ctrl+Z</span>Deshacer</span>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;cargando&quot;,&quot;mazo terminado&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;progresoInicial&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:40,&quot;step&quot;:1,&quot;default&quot;:12,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  static GENRES = ['Acción', 'Aventura', 'Ciencia ficción', 'Comedia', 'Crimen', 'Drama', 'Fantasía', 'Musical', 'Romance', 'Terror', 'Thriller', 'Western', 'Bélico', 'Misterio'];
+  static HUE = { 'Acción': 35, 'Aventura': 75, 'Ciencia ficción': 210, 'Comedia': 60, 'Crimen': 15, 'Drama': 265, 'Fantasía': 300, 'Musical': 330, 'Romance': 350, 'Terror': 25, 'Thriller': 185, 'Western': 50, 'Bélico': 120, 'Misterio': 240 };
+  static SAMPLE = { total: 12, like: 5, dislike: 3, vista_gusto: 2, vista_no_gusto: 1, no_interesa: 1 };
+  static MOVIES = [
+    { id: 1, titulo: 'Son como niños 2', titulo_original: 'Grown Ups 2', anio: 2013, duracion_min: 101,
+      sinopsis: 'Lenny regresa con su familia a su pueblo natal, donde él y sus amigos de toda la vida descubren que crecer no los ha vuelto más sensatos.',
+      poster_url: null, generos: ['Comedia'], subgeneros: ['Slapstick', 'Comedia sexual'],
+      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adolescente'], 'Basado en': ['Original'], 'Época': ['Contemporánea'], 'Tono': ['Ligero'] },
+      directores: [{ id: 3, nombre: 'Dennis Dugan' }],
+      actores: [{ id: 4, nombre: 'Adam Sandler', personaje: 'Lenny Feder' }, { id: 5, nombre: 'Kevin James', personaje: 'Eric Lamonsoff' }, { id: 6, nombre: 'Chris Rock', personaje: 'Kurt McKenzie' }],
+      plataformas: ['Netflix'] },
+    { id: 2, titulo: 'Roma', titulo_original: 'Roma', anio: 2018, duracion_min: 135,
+      sinopsis: 'En la Ciudad de México de 1970, Cleo trabaja como empleada doméstica para una familia de clase media mientras ambas vidas atraviesan rupturas personales y un país convulsionado.',
+      poster_url: null, generos: ['Drama'], subgeneros: ['Drama social', 'Melodrama'],
+      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Siglo XX'], 'Lugar': ['Urbano'], 'Temática': ['Familia'], 'Tono': ['Agridulce'], 'Escala': ['Íntima'] },
+      directores: [{ id: 10, nombre: 'Alfonso Cuarón' }],
+      actores: [{ id: 11, nombre: 'Yalitza Aparicio', personaje: 'Cleo' }, { id: 12, nombre: 'Marina de Tavira', personaje: 'Sofía' }, { id: 13, nombre: 'Jorge Antonio Guerrero', personaje: 'Fermín' }],
+      plataformas: ['Netflix'] },
+    { id: 3, titulo: 'Coco', titulo_original: 'Coco', anio: 2017, duracion_min: 105,
+      sinopsis: 'Miguel sueña con ser músico aunque su familia lo prohíbe. En Día de Muertos cruza a la Tierra de los Muertos y busca a su tatarabuelo para volver a casa.',
+      poster_url: null, generos: ['Fantasía', 'Musical'], subgeneros: ['Mitología', 'Musical contemporáneo'],
+      tags: { 'Formato': ['CGI/3D'], 'Audiencia': ['Familiar'], 'Basado en': ['Original'], 'Lugar': ['Pueblo pequeño'], 'Temática': ['Familia', 'Crecer'], 'Tono': ['Agridulce', 'Inspirador'] },
+      directores: [{ id: 20, nombre: 'Lee Unkrich' }, { id: 21, nombre: 'Adrian Molina' }],
+      actores: [{ id: 22, nombre: 'Anthony Gonzalez', personaje: 'Miguel' }, { id: 23, nombre: 'Gael García Bernal', personaje: 'Héctor' }, { id: 24, nombre: 'Benjamin Bratt', personaje: 'Ernesto de la Cruz' }],
+      plataformas: ['Disney+'] },
+    { id: 4, titulo: 'El laberinto del fauno', titulo_original: "Pan's Labyrinth", anio: 2006, duracion_min: 118,
+      sinopsis: 'En la España de la posguerra, Ofelia se muda con su madre a la casa de su cruel padrastro, un capitán franquista, y encuentra a un fauno que le encarga tres pruebas.',
+      poster_url: null, generos: ['Fantasía', 'Bélico'], subgeneros: ['Fantasía oscura', 'Cuentos de hadas', 'Guerra civil'],
+      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Siglo XX'], 'Lugar': ['Bosque'], 'Temática': ['Crecer'], 'Tono': ['Oscuro'], 'Escala': ['Íntima'] },
+      directores: [{ id: 30, nombre: 'Guillermo del Toro' }],
+      actores: [{ id: 31, nombre: 'Ivana Baquero', personaje: 'Ofelia' }, { id: 32, nombre: 'Sergi López', personaje: 'Capitán Vidal' }, { id: 33, nombre: 'Maribel Verdú', personaje: 'Mercedes' }],
+      plataformas: ['Prime Video'] },
+    { id: 5, titulo: 'Mad Max: Furia en el camino', titulo_original: 'Mad Max: Fury Road', anio: 2015, duracion_min: 120,
+      sinopsis: 'En un desierto postapocalíptico, Furiosa huye de un tirano con sus cinco esposas, y Max, un vagabundo capturado, termina en medio de la persecución.',
+      poster_url: null, generos: ['Acción', 'Ciencia ficción'], subgeneros: ['Persecuciones', 'Distopía'],
+      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Futuro'], 'Lugar': ['Desierto'], 'Temática': ['Supervivencia'], 'Tono': ['Tenso'], 'Escala': ['Épica'] },
+      directores: [{ id: 40, nombre: 'George Miller' }],
+      actores: [{ id: 41, nombre: 'Tom Hardy', personaje: 'Max Rockatansky' }, { id: 42, nombre: 'Charlize Theron', personaje: 'Furiosa' }, { id: 43, nombre: 'Nicholas Hoult', personaje: 'Nux' }],
+      plataformas: ['Max'] },
+    { id: 6, titulo: 'Eterno resplandor de una mente sin recuerdos', titulo_original: 'Eternal Sunshine of the Spotless Mind', anio: 2004, duracion_min: 108,
+      sinopsis: 'Tras una ruptura dolorosa, Joel descubre que Clementine borró de su memoria todo rastro de él, y decide someterse al mismo procedimiento.',
+      poster_url: null, generos: ['Romance', 'Ciencia ficción', 'Drama'], subgeneros: ['Segunda oportunidad', 'Biotecnología'],
+      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Contemporánea'], 'Temática': ['Memoria'], 'Tono': ['Agridulce'], 'Escala': ['Íntima'] },
+      directores: [{ id: 50, nombre: 'Michel Gondry' }],
+      actores: [{ id: 51, nombre: 'Jim Carrey', personaje: 'Joel Barish' }, { id: 52, nombre: 'Kate Winslet', personaje: 'Clementine Kruczynski' }, { id: 53, nombre: 'Kirsten Dunst', personaje: 'Mary' }],
+      plataformas: [] },
+    { id: 7, titulo: 'El silencio de los inocentes', titulo_original: 'The Silence of the Lambs', anio: 1991, duracion_min: 118,
+      sinopsis: 'Clarice Starling, aprendiz del FBI, busca la ayuda de Hannibal Lecter, un brillante psiquiatra encarcelado, para atrapar a un asesino serial.',
+      poster_url: null, generos: ['Thriller', 'Crimen'], subgeneros: ['Gato y ratón', 'Asesinos seriales'],
+      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Novela'], 'Época': ['Contemporánea'], 'Tono': ['Oscuro', 'Tenso'] },
+      directores: [{ id: 60, nombre: 'Jonathan Demme' }],
+      actores: [{ id: 61, nombre: 'Jodie Foster', personaje: 'Clarice Starling' }, { id: 62, nombre: 'Anthony Hopkins', personaje: 'Hannibal Lecter' }, { id: 63, nombre: 'Scott Glenn', personaje: 'Jack Crawford' }],
+      plataformas: ['Prime Video'] },
+    { id: 8, titulo: 'Alien: el octavo pasajero', titulo_original: 'Alien', anio: 1979, duracion_min: 117,
+      sinopsis: 'La tripulación de una nave de carga responde a una señal en un planeta desconocido y sube a bordo, sin saberlo, a una criatura letal.',
+      poster_url: null, generos: ['Terror', 'Ciencia ficción'], subgeneros: ['Criaturas y monstruos', 'Extraterrestres'],
+      tags: { 'Formato': ['Live action'], 'Audiencia': ['Adultos'], 'Basado en': ['Original'], 'Época': ['Futuro'], 'Lugar': ['Espacio'], 'Temática': ['Supervivencia'], 'Tono': ['Tenso'] },
+      directores: [{ id: 70, nombre: 'Ridley Scott' }],
+      actores: [{ id: 71, nombre: 'Sigourney Weaver', personaje: 'Ellen Ripley' }, { id: 72, nombre: 'Tom Skerritt', personaje: 'Dallas' }, { id: 73, nombre: 'John Hurt', personaje: 'Kane' }],
+      plataformas: ['Disney+'] }
+  ];
+
+  state = { loading: true, offline: false, genre: null, rated: [], front: null, history: [], prog: { ...Component.SAMPLE }, phase: 'idle', drag: null, flyDir: null, flyTf: null, retTf: null, noTr: false, flipped: false, compact: true };
+  rootRef = React.createRef();
+  timers = [];
+
+  componentDidMount() {
+    const el = this.rootRef.current;
+    if (el && window.ResizeObserver) {
+      this.ro = new ResizeObserver(e => { const c = e[0].contentRect.width < 640; if (c !== this.state.compact) this.setState({ compact: c }); });
+      this.ro.observe(el);
+    }
+    window.addEventListener('keydown', this.onKey);
+    window.addEventListener('offline', this.goOff);
+    window.addEventListener('online', this.goOn);
+    this.applyEstado(this.props.estado);
+  }
+  componentDidUpdate(pp) {
+    if (pp.estado !== this.props.estado) this.applyEstado(this.props.estado);
+    else if (pp.progresoInicial !== this.props.progresoInicial) this.setState({ prog: this.baseProg() });
+  }
+  componentWillUnmount() {
+    this.ro && this.ro.disconnect();
+    window.removeEventListener('keydown', this.onKey);
+    window.removeEventListener('offline', this.goOff);
+    window.removeEventListener('online', this.goOn);
+    this.timers.forEach(clearTimeout);
+  }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  raf2(fn) { requestAnimationFrame(() => requestAnimationFrame(fn)); }
+  goOff = () => this.setState({ offline: true });
+  goOn = () => this.setState({ offline: false });
+  baseProg() { const p = this.props.progresoInicial ?? 12; return { ...Component.SAMPLE, total: p }; }
+
+  applyEstado(e) {
+    this.timers.forEach(clearTimeout); this.timers = [];
+    const base = { genre: null, rated: [], front: null, history: [], prog: this.baseProg(), phase: 'idle', drag: null, flipped: false, noTr: false, loading: false, offline: false };
+    if (e === 'cargando') this.setState({ ...base, loading: true });
+    else if (e === 'sin conexión') this.setState({ ...base, offline: true });
+    else if (e === 'mazo terminado') this.setState({ ...base, genre: 'Terror', rated: Component.MOVIES.filter(m => m.generos.includes('Terror')).map(m => m.id) });
+    else { this.setState({ ...base, loading: true }); this.later(() => this.setState({ loading: false }), 1100); }
+  }
+
+  queue(s) {
+    const q = Component.MOVIES.filter(m => !s.rated.includes(m.id) && (!s.genre || m.generos.includes(s.genre)));
+    if (s.front) { const i = q.findIndex(m => m.id === s.front); if (i > 0) q.unshift(q.splice(i, 1)[0]); }
+    return q;
+  }
+  canAct() { const s = this.state; return s.phase === 'idle' && !s.loading && !s.offline && this.queue(s).length > 0; }
+
+  flyTarget(dir, x, y, g) {
+    const W = Math.max(window.innerWidth, 480) * 1.15, H = Math.max(window.innerHeight, 700) * 1.15;
+    if (dir === 'right') return `translate(${W}px, ${y * 1.5 + 50}px) rotate(${28 * g}deg)`;
+    if (dir === 'left') return `translate(${-W}px, ${y * 1.5 + 50}px) rotate(${-28 * g}deg)`;
+    if (dir === 'up') return `translate(${x * 1.5}px, ${-H}px) rotate(${x * 0.06}deg)`;
+    return `translate(${x * 1.5}px, ${H}px) rotate(${-x * 0.06}deg)`;
+  }
+
+  commit(dir, liked) {
+    const s = this.state;
+    if (!['idle', 'drag', 'ask'].includes(s.phase)) return;
+    const m = this.queue(s)[0]; if (!m) return;
+    const d = s.drag || { x: 0, y: 0 };
+    this.setState({ phase: 'fly', flyDir: dir, flyTf: this.flyTarget(dir, d.x, d.y, this.grab || 1), drag: null });
+    this.later(() => this.finalize(m, dir, liked), 430);
+  }
+  finalize(m, dir, liked) {
+    const kind = { right: 'like', left: 'dislike', down: 'no_interesa' }[dir] || (liked ? 'vista_gusto' : 'vista_no_gusto');
+    this.grab = 1;
+    this.setState(st => ({
+      rated: [...st.rated, m.id], front: st.front === m.id ? null : st.front,
+      history: [...st.history, { id: m.id, dir, kind }],
+      prog: { ...st.prog, total: st.prog.total + 1, [kind]: (st.prog[kind] || 0) + 1 },
+      phase: 'idle', flyTf: null, flyDir: null, flipped: false, noTr: true
+    }), () => this.raf2(() => this.setState({ noTr: false })));
+  }
+  undo = () => {
+    const s = this.state;
+    if (!s.history.length || !['idle', 'ask'].includes(s.phase)) return;
+    const h = s.history[s.history.length - 1];
+    const m = Component.MOVIES.find(x => x.id === h.id);
+    this.setState(st => ({
+      rated: st.rated.filter(id => id !== h.id), history: st.history.slice(0, -1),
+      prog: { ...st.prog, total: Math.max(0, st.prog.total - 1), [h.kind]: Math.max(0, (st.prog[h.kind] || 0) - 1) },
+      front: h.id, genre: !st.genre || m.generos.includes(st.genre) ? st.genre : null,
+      phase: 'return', retTf: this.flyTarget(h.dir, 0, 0, 1), noTr: true, flipped: false
+    }), () => this.raf2(() => this.setState({ phase: 'idle', noTr: false, retTf: null })));
+  };
+  act(dir) {
+    if (!this.canAct()) return;
+    if (dir === 'up') this.setState({ phase: 'ask' });
+    else this.commit(dir);
+  }
+
+  onKey = e => {
+    const t = e.target && e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); this.undo(); return; }
+    if (this.state.phase === 'ask') {
+      if (e.key === 'Escape') this.setState({ phase: 'idle' });
+      else if (e.key === 's' || e.key === 'S') this.commit('up', true);
+      else if (e.key === 'n' || e.key === 'N') this.commit('up', false);
+      return;
+    }
+    const map = { ArrowRight: 'right', ArrowLeft: 'left', ArrowUp: 'up', ArrowDown: 'down' };
+    if (map[e.key]) { e.preventDefault(); this.act(map[e.key]); }
+  };
+
+  onDown = e => {
+    if (this.state.phase !== 'idle' || (e.button != null && e.button > 0)) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    this.grab = (e.clientY - r.top) < r.height / 2 ? 1 : -1;
+    this.ptr = { x: e.clientX, y: e.clientY, moved: false, hist: [{ x: 0, y: 0, t: performance.now() }] };
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {}
+  };
+  onMove = e => {
+    const p = this.ptr; if (!p) return;
+    const x = e.clientX - p.x, y = e.clientY - p.y;
+    if (!p.moved && Math.hypot(x, y) < 6) return;
+    p.moved = true; p.hist.push({ x, y, t: performance.now() }); if (p.hist.length > 5) p.hist.shift();
+    this.setState({ phase: 'drag', drag: { x, y } });
+  };
+  onUp = e => {
+    const p = this.ptr; if (!p) return; this.ptr = null;
+    if (!p.moved) { this.setState(s => ({ flipped: !s.flipped })); return; }
+    const x = e.clientX - p.x, y = e.clientY - p.y, a = p.hist[0];
+    const dt = Math.max(performance.now() - a.t, 1), vx = (x - a.x) / dt, vy = (y - a.y) / dt;
+    let dir = null;
+    if (Math.abs(x) >= Math.abs(y)) { if (x > 110 || (vx > 0.55 && x > 35)) dir = 'right'; else if (x < -110 || (vx < -0.55 && x < -35)) dir = 'left'; }
+    else { if (y < -100 || (vy < -0.55 && y < -35)) dir = 'up'; else if (y > 110 || (vy > 0.55 && y > 35)) dir = 'down'; }
+    if (!dir) this.setState({ phase: 'idle', drag: null });
+    else if (dir === 'up') this.setState({ phase: 'ask', drag: null });
+    else this.commit(dir);
+  };
+  onCancel = () => { if (!this.ptr) return; this.ptr = null; this.setState({ phase: 'idle', drag: null }); };
+
+  posterFs(t) {
+    const L = t.length, w = Math.max(...t.split(/\s+/).map(x => x.length));
+    const byLen = L <= 6 ? 30 : L <= 12 ? 22 : L <= 20 ? 17 : L <= 30 ? 14 : 11.5;
+    return Math.min(byLen, 84 / (w * 0.47)).toFixed(1) + 'cqw';
+  }
+  dur(m) { const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; }
+
+  renderVals() {
+    const s = this.state; const q = this.queue(s);
+    const base = d => `translate3d(0, ${d * 16}px, 0) scale(${1 - d * 0.05})`;
+    const dr = s.drag || { x: 0, y: 0 };
+    const p = s.phase === 'drag' ? Math.min(Math.hypot(dr.x, dr.y) / 180, 1) : 0;
+    const clamp = v => Math.max(0, Math.min(1, v));
+    let st = { like: 0, nope: 0, seen: 0, skip: 0 };
+    if (s.phase === 'drag') {
+      if (Math.abs(dr.x) >= Math.abs(dr.y)) { if (dr.x > 0) st.like = clamp((dr.x - 15) / 95); else st.nope = clamp((-dr.x - 15) / 95); }
+      else { if (dr.y < 0) st.seen = clamp((-dr.y - 15) / 85); else st.skip = clamp((dr.y - 15) / 95); }
+    } else if (s.phase === 'fly') {
+      st = { like: s.flyDir === 'right' ? 1 : 0, nope: s.flyDir === 'left' ? 1 : 0, seen: s.flyDir === 'up' ? 1 : 0, skip: s.flyDir === 'down' ? 1 : 0 };
+    }
+    const BUL = Array.from({ length: 9 }, (_, i) => i);
+    const slots = q.slice(0, 4).map((m, i) => {
+      const top = i === 0; let tf, d = i, tr;
+      if (top) {
+        if (s.phase === 'drag') tf = `translate(${dr.x}px, ${dr.y}px) rotate(${Math.max(-20, Math.min(20, dr.x * 0.075 * (this.grab || 1)))}deg)`;
+        else if (s.phase === 'fly') tf = s.flyTf;
+        else if (s.phase === 'return' && s.noTr) tf = s.retTf;
+        else tf = base(0);
+        d = 0;
+      } else {
+        d = s.phase === 'fly' || (s.phase === 'return' && s.noTr) ? i - 1 : i - p * 0.5;
+        tf = base(d);
+      }
+      if (s.noTr || s.phase === 'drag') tr = 'none';
+      else if (top) tr = s.phase === 'fly' ? 'transform .43s cubic-bezier(.3,.5,.45,1)' : 'transform .55s cubic-bezier(.25,1.35,.5,1)';
+      else tr = 'transform .42s cubic-bezier(.2,.8,.2,1), opacity .42s';
+      const h = Component.HUE[m.generos[0]] ?? 265;
+      return {
+        isTop: top, tf, tr, op: d <= 2.01 ? 1 : 0, z: 10 - i, dim: Math.max(0, d) * 0.22,
+        cursor: top ? (s.phase === 'drag' ? 'grabbing' : 'grab') : 'default',
+        onDown: top ? this.onDown : undefined, onMove: top ? this.onMove : undefined, onUp: top ? this.onUp : undefined, onCancel: top ? this.onCancel : undefined,
+        flipTf: top && s.flipped ? 'rotateY(180deg)' : 'none',
+        flipTr: s.noTr ? 'none' : 'transform .6s cubic-bezier(.2,.8,.2,1)',
+        onFlip: () => this.setState(x => ({ flipped: !x.flipped })),
+        sLike: st.like, sNope: st.nope, sSeen: st.seen, sSkip: st.skip, sTr: s.phase === 'drag' ? 'none' : 'opacity .2s',
+        asking: top && s.phase === 'ask',
+        titulo: m.titulo, orig: m.titulo_original, showOrig: !!m.titulo_original && m.titulo_original !== m.titulo,
+        anio: m.anio, dur: this.dur(m.duracion_min), generos: m.generos, genreLine: m.generos.join(' · '),
+        director: m.directores.map(x => x.nombre).join(' y '), actors: m.actores.slice(0, 3).map(a => a.nombre).join(', '),
+        sinopsis: m.sinopsis, subs: m.subgeneros,
+        tags: Object.keys(m.tags).filter(k => m.tags[k] && m.tags[k].length).map(k => ({ k, v: m.tags[k].join(', ') })),
+        plataformas: m.plataformas, hasPlat: m.plataformas.length > 0,
+        hasPoster: !!m.poster_url, noPoster: !m.poster_url, posterCss: m.poster_url ? `url("${m.poster_url}")` : 'none',
+        posterBg: `radial-gradient(ellipse 120% 80% at 50% 35%, oklch(0.34 0.08 ${h}) 0%, oklch(0.19 0.045 ${h}) 68%, #0c1121 100%)`,
+        posterFs: this.posterFs(m.titulo), bulbs: BUL
+      };
+    });
+
+    const total = s.prog.total; const lit = Math.min(total, 30);
+    const bulbs = Array.from({ length: 30 }, (_, i) => i < lit
+      ? { bg: 'rgba(226,216,255,1)', sh: '0 0 8px 2px rgba(196,176,255,0.7)' }
+      : { bg: 'rgba(214,200,255,0.14)', sh: 'none' });
+
+    const ready = !s.loading && !s.offline;
+    const empty = ready && q.length === 0;
+    const anyInGenre = s.genre && Component.MOVIES.some(m => m.generos.includes(s.genre));
+    const chip = sel => sel ? { bg: '#c4b5f0', fg: '#0c1122', bd: '#c4b5f0' } : { bg: 'rgba(255,255,255,0.03)', fg: '#dfe2ee', bd: 'rgba(255,255,255,0.14)' };
+    const setGenre = g => { if (s.phase === 'idle' || s.phase === 'ask') this.setState({ genre: g, front: null, flipped: false, phase: 'idle' }); };
+    const can = this.canAct();
+
+    return {
+      rootRef: this.rootRef, total, under30: total < 30, over30: total >= 30, bulbs,
+      genreChips: [{ label: 'Todos', ...chip(!s.genre), onClick: () => setGenre(null) },
+        ...Component.GENRES.map(g => ({ label: g, ...chip(s.genre === g), onClick: () => setGenre(g) }))],
+      showDeck: ready && q.length > 0, slots, stopPD: e => e.stopPropagation(),
+      answerYes: () => this.commit('up', true), answerNo: () => this.commit('up', false), cancelAsk: () => this.setState({ phase: 'idle' }),
+      showLoading: s.loading && !s.offline, showOffline: s.offline,
+      loadBulbs: Array.from({ length: 5 }, (_, i) => ({ delay: (i * 0.14).toFixed(2) + 's' })),
+      showEmpty: empty, emptyHasFilter: !!s.genre,
+      emptyTitle: s.genre ? (anyInGenre ? 'Ya calificaste todo lo de este filtro' : `Aún no hay películas de ${s.genre}`) : 'Ya calificaste todo el catálogo',
+      emptyText: s.genre ? 'Quita el filtro de género para seguir calificando películas.' : 'Pronto agregaremos más películas. Puedes deshacer la última si cambiaste de opinión.',
+      clearGenre: () => setGenre(null),
+      retry: () => { if (navigator.onLine === false) return; this.setState({ offline: false, loading: true }); this.later(() => this.setState({ loading: false }), 900); },
+      undo: this.undo, undoOp: s.history.length && s.phase === 'idle' ? 1 : 0.35, actOp: can ? 1 : 0.35,
+      actNope: () => this.act('left'), actSeen: () => this.act('up'), actLike: () => this.act('right'),
+      compact: s.compact, wide: !s.compact
+    };
+  }
+}
+</script>
+</body>
+</html>

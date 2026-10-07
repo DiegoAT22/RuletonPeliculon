@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#0a0f1d;}
+*{box-sizing:border-box;}
+a{color:#c4b5f0;}
+a:hover{color:#e2d9ff;}
+button,input,select{font-family:inherit;}
+input::placeholder{color:#6f7891;}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+input[type=number]{-moz-appearance:textfield;}
+*{scrollbar-width:thin;scrollbar-color:rgba(196,181,240,0.45) transparent;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(196,181,240,0.4);border-radius:3px;}
+@keyframes skPulse{0%,100%{opacity:.45;}50%{opacity:.9;}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="min-height:100vh;overflow-x:clip;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
+  <div style="max-width:1360px;margin:0 auto;padding:clamp(16px,4vw,40px) clamp(8px,2.4vw,24px) {{ padBottom }};display:flex;flex-direction:column;gap:20px;">
+
+    <nav style="display:flex;justify-content:center;">
+      <div style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+        <a href="Tragamonedas%20de%20Peliculas.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Tragamonedas</a>
+        <a href="Descubrir.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Descubrir</a>
+        <a href="Para%20ti.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Para ti</a>
+        <a href="Explorar.dc.html" aria-current="page" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;">Explorar</a>
+      </div>
+    </nav>
+
+    <header style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding-top:4px;">
+      <h1 style="margin:0;font:600 clamp(48px,12vw,64px)/0.95 'Barlow Condensed',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#f6f4ee;text-shadow:0 0 28px rgba(196,181,240,0.35);">Explorar</h1>
+      <p style="margin:0;font-size:15px;line-height:1.45;color:#a8b0c4;max-width:36ch;text-wrap:pretty;">Combina etiquetas para incluir o descartar películas de todo el catálogo.</p>
+    </header>
+
+    <div style="display:grid;grid-template-columns:{{ layoutCols }};gap:24px;align-items:start;">
+
+      <aside aria-label="Filtros" style="position:{{ sb.pos }};top:{{ sb.top }};left:0;right:0;bottom:0;z-index:{{ sb.z }};height:{{ sb.h }};transform:{{ sb.tf }};visibility:{{ sb.vis }};transition:{{ sb.tr }};display:flex;flex-direction:column;background:{{ sb.bg }};border:{{ sb.bd }};border-radius:{{ sb.rad }};overflow:hidden;">
+        <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:none;display:flex;align-items:center;gap:8px;padding:10px 8px 10px 18px;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <h2 style="margin:0;flex:1;font:600 26px/1 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.04em;color:#f6f4ee;">Filtros</h2>
+            <button onClick="{{ clearAll }}" style="min-height:44px;padding:0 12px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ clearOp }};">Limpiar todo</button>
+            <button onClick="{{ closeSheet }}" aria-label="Cerrar filtros" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;cursor:pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
+          </div>
+        </sc-if>
+
+        <div style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 12px 18px;display:flex;flex-direction:column;gap:16px;">
+          <div style="border-radius:16px;padding:8px 9px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 18px 40px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+            <div style="background:#121724;border-radius:10px;padding:12px 12px 14px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                <sc-for list="{{ plateBulbs }}" as="d" hint-placeholder-count="16">
+                  <div style="width:4px;height:4px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 6px 1px rgba(196,176,255,0.6);"></div>
+                </sc-for>
+              </div>
+              <label style="position:relative;display:flex;align-items:center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8e97ad" stroke-width="2" stroke-linecap="round" style="position:absolute;left:13px;pointer-events:none;"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+                <input type="search" value="{{ texto }}" onChange="{{ onTexto }}" placeholder="Título, director o actor" aria-label="Buscar" style="width:100%;min-height:44px;padding:0 12px 0 38px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;" style-focus="border-color:#c4b5f0;"></input>
+              </label>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Años</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <input type="number" inputmode="numeric" value="{{ anioMin }}" onChange="{{ onAnioMin }}" placeholder="1950" aria-label="Desde el año" style="flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;text-align:center;" style-focus="border-color:#c4b5f0;"></input>
+                  <span style="color:#6f7891;">–</span>
+                  <input type="number" inputmode="numeric" value="{{ anioMax }}" onChange="{{ onAnioMax }}" placeholder="2026" aria-label="Hasta el año" style="flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#eef0f6;font:500 15px/1 'Barlow',sans-serif;outline:none;text-align:center;" style-focus="border-color:#c4b5f0;"></input>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Duración máxima</span>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                  <sc-for list="{{ durChips }}" as="c" hint-placeholder-count="4">
+                    <button onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" style="min-height:36px;padding:0 12px;border-radius:999px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }};transition:background .2s,color .2s;">{{ c.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;">
+            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="14">
+              <section style="border-top:1px solid rgba(255,255,255,0.07);">
+                <button onClick="{{ g.onToggle }}" aria-expanded="{{ g.expanded }}" style="width:100%;min-height:46px;display:flex;align-items:center;gap:10px;padding:0 6px;border:none;background:transparent;color:#dfe2ee;cursor:pointer;text-align:left;" style-hover="color:#ffffff;">
+                  <span style="flex:1;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;">{{ g.nombre }}</span>
+                  <sc-if value="{{ g.hasSel }}" hint-placeholder-val="{{ false }}">
+                    <span style="min-width:22px;height:22px;padding:0 7px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#c4b5f0;color:#0d1224;font:700 12px/1 'Barlow',sans-serif;box-shadow:0 0 10px rgba(196,176,255,0.5);">{{ g.selCount }}</span>
+                  </sc-if>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transform:{{ g.chev }};transition:transform .3s;color:#8e97ad;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div style="display:grid;grid-template-rows:{{ g.rows }};transition:grid-template-rows .38s cubic-bezier(.2,.8,.2,1);">
+                  <div style="min-height:0;overflow:hidden;">
+                    <div style="display:flex;flex-direction:column;padding:0 0 10px;">
+                      <sc-for list="{{ g.options }}" as="o" hint-placeholder-count="5">
+                        <button onClick="{{ o.onClick }}" title="{{ o.title }}" style="min-height:{{ optH }};display:flex;align-items:center;gap:10px;padding:0 6px;border:none;border-radius:8px;background:transparent;cursor:pointer;text-align:left;opacity:{{ o.op }};transition:opacity .2s;" style-hover="background:rgba(255,255,255,0.05);">
+                          <span style="width:20px;height:20px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:6px;background:{{ o.boxBg }};border:1.5px solid {{ o.boxBd }};box-shadow:{{ o.boxSh }};color:#0d1224;transition:background .18s,border-color .18s,box-shadow .18s;">
+                            <sc-if value="{{ o.isInc }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d1224" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 10 18 20 6"></polyline></svg></sc-if>
+                            <sc-if value="{{ o.isExc }}" hint-placeholder-val="{{ false }}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f3c2c2" stroke-width="3.6" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg></sc-if>
+                          </span>
+                          <span style="flex:1;min-width:0;font-size:14px;line-height:1.25;color:{{ o.fg }};text-decoration:{{ o.strike }};text-decoration-color:rgba(217,132,132,0.7);">{{ o.label }}<sc-if value="{{ o.hasPadre }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#7c859c;"> · {{ o.padre }}</span></sc-if></span>
+                          <span style="flex:none;font:400 12px/1 'JetBrains Mono',monospace;color:#8e97ad;">{{ o.n }}</span>
+                        </button>
+                      </sc-for>
+                      <sc-if value="{{ g.hasMore }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ g.onMore }}" style="align-self:flex-start;min-height:40px;padding:0 6px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;" style-hover="color:#ffffff;">{{ g.moreLabel }}</button>
+                      </sc-if>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </sc-for>
+          </div>
+        </div>
+
+        <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:none;padding:12px 14px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,0.08);background:#0c1222;">
+            <button onClick="{{ closeSheet }}" style="width:100%;min-height:56px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 19px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 28px -6px rgba(196,181,240,0.6);">{{ verLabel }}</button>
+          </div>
+        </sc-if>
+      </aside>
+
+      <main ref="{{ resultsRef }}" style="min-width:0;display:flex;flex-direction:column;gap:16px;">
+        <sc-if value="{{ hasActive }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
+            <sc-for list="{{ activeChips }}" as="c" hint-placeholder-count="3">
+              <span style="display:flex;align-items:center;gap:6px;min-height:36px;padding:0 4px 0 12px;border-radius:999px;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }};box-shadow:{{ c.sh }};font:600 14px/1 'Barlow',sans-serif;">
+                <sc-if value="{{ c.isInc }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 10 18 20 6"></polyline></svg></sc-if>
+                <sc-if value="{{ c.isExc }}" hint-placeholder-val="{{ false }}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg></sc-if>
+                <span style="white-space:nowrap;">{{ c.label }}</span>
+                <button onClick="{{ c.onRemove }}" aria-label="{{ c.removeLabel }}" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:none;background:transparent;color:inherit;cursor:pointer;opacity:.75;" style-hover="opacity:1;background:rgba(0,0,0,0.12);">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
+              </span>
+            </sc-for>
+            <button onClick="{{ clearAll }}" style="min-height:36px;padding:0 10px;border:none;background:transparent;color:#ddd5fb;font:600 14px/1 'Barlow',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;" style-hover="color:#ffffff;">Limpiar todo</button>
+          </div>
+        </sc-if>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;">
+          <div style="display:flex;align-items:baseline;gap:8px;">
+            <span style="font:600 clamp(28px,6vw,34px)/1 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 18px rgba(196,181,240,0.3);">{{ countNum }}</span>
+            <span style="font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">{{ countWord }}</span>
+          </div>
+          <label style="position:relative;display:flex;align-items:center;gap:8px;">
+            <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8e97ad;">Orden</span>
+            <select value="{{ sort }}" onChange="{{ onSort }}" style="appearance:none;-webkit-appearance:none;min-height:40px;padding:0 34px 0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#eef0f6;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;outline:none;" style-focus="border-color:#c4b5f0;">
+              <option value="popular">Más populares</option>
+              <option value="recientes">Más recientes</option>
+              <option value="antiguas">Más antiguas</option>
+              <option value="cortas">Más cortas</option>
+              <option value="titulo">A–Z</option>
+              <option value="azar">Al azar</option>
+            </select>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:14px;pointer-events:none;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </label>
+        </div>
+
+        <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:{{ gridCols }};gap:{{ gridGap }};">
+            <sc-for list="{{ skeletons }}" as="k" hint-placeholder-count="8">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="aspect-ratio:2/3;border-radius:14px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};"></div>
+                <div style="height:16px;width:85%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};"></div>
+                <div style="height:12px;width:55%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out infinite;animation-delay:{{ k.delay }};"></div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isOffline }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;max-width:460px;margin:12px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 28px;text-align:center;">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path><path d="M10 5.1A15 15 0 0 1 22 8.8"></path><path d="M5 12.5a10 10 0 0 1 5.2-2.8"></path><path d="M14.5 9.9A10 10 0 0 1 19 12.5"></path><path d="M8.5 16a5 5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r="0.8" fill="#c4b5f0"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>
+            <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sin conexión</h2>
+            <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">No pudimos cargar el catálogo. Revisa tu conexión e inténtalo de nuevo.</p>
+            <button onClick="{{ retry }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Reintentar</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;max-width:480px;margin:12px auto 0;border-radius:20px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+            <div style="background:#121724;border-radius:12px;padding:26px 20px 22px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+              <div style="display:flex;gap:10px;">
+                <sc-for list="{{ deadBulbs }}" as="d" hint-placeholder-count="7">
+                  <div style="width:6px;height:6px;border-radius:50%;background:{{ d.bg }};box-shadow:{{ d.sh }};"></div>
+                </sc-for>
+              </div>
+              <h2 style="margin:0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">Ninguna película cumple todo esto</h2>
+              <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:32ch;text-wrap:pretty;">{{ emptyHint }}</p>
+              <sc-if value="{{ canUndoLast }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ removeLast }}" style="margin-top:6px;min-height:50px;padding:0 24px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 17px/1 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 24px -6px rgba(196,181,240,0.6);" style-hover="background:#d6cbfa;">{{ removeLastLabel }}</button>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:{{ gridCols }};gap:{{ gridGap }};opacity:{{ gridOp }};transition:opacity .2s;">
+            <sc-for list="{{ cards }}" as="r" hint-placeholder-count="8">
+              <button onClick="{{ r.onOpen }}" aria-label="{{ r.aria }}" style="display:flex;flex-direction:column;gap:9px;padding:0;border:none;background:transparent;color:inherit;text-align:left;cursor:pointer;opacity:{{ r.op }};transform:{{ r.tf }};transition:{{ r.tr }};">
+                <div style="width:100%;aspect-ratio:2/3;position:relative;border-radius:14px;overflow:hidden;container-type:inline-size;background:{{ r.posterBg }};border:1px solid rgba(196,181,240,0.14);box-shadow:0 18px 34px -20px rgba(0,0,0,0.95);transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s;" style-hover="transform:translateY(-4px);border-color:rgba(214,200,255,0.5);box-shadow:0 22px 40px -18px rgba(0,0,0,0.95), 0 0 24px -6px rgba(196,176,255,0.45);">
+                  <sc-if value="{{ r.hasPoster }}" hint-placeholder-val="{{ false }}">
+                    <div role="img" aria-label="{{ r.titulo }}" style="position:absolute;inset:0;background-image:{{ r.posterCss }};background-size:cover;background-position:center;"></div>
+                  </sc-if>
+                  <sc-if value="{{ r.noPoster }}" hint-placeholder-val="{{ true }}">
+                    <div style="position:absolute;inset:5px;border:1px solid rgba(214,200,255,0.2);border-radius:10px;display:flex;flex-direction:column;padding:8px 8px 9px;">
+                      <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                        <sc-for list="{{ posterBulbs }}" as="d" hint-placeholder-count="7">
+                          <div style="width:3px;height:3px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 4px 1px rgba(196,176,255,0.55);"></div>
+                        </sc-for>
+                      </div>
+                      <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                        <span style="text-align:center;font:600 {{ r.posterFs }}/0.92 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 16px rgba(196,181,240,0.3);">{{ r.titulo }}</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:5px;color:#e2d9ff;">
+                        <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                        <span style="font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;">{{ r.anio }}</span>
+                        <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;padding:0 2px;">
+                  <span style="font:600 18px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ r.titulo }}</span>
+                  <span style="font-size:13px;color:#a8b0c4;">{{ r.meta }}</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:4px;padding-top:2px;">
+                    <sc-for list="{{ r.generos }}" as="g" hint-placeholder-count="2">
+                      <span style="padding:3px 8px;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};font:600 11px/1.1 'Barlow',sans-serif;">{{ g.label }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ hasPages }}" hint-placeholder-val="{{ false }}">
+            <nav aria-label="Páginas" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;padding-top:12px;">
+              <button onClick="{{ prevPage }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#dfe2ee;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ prevOp }};">Anterior</button>
+              <sc-for list="{{ pageItems }}" as="p" hint-placeholder-count="5">
+                <button onClick="{{ p.onClick }}" aria-current="{{ p.current }}" style="min-width:44px;min-height:44px;padding:0 6px;border-radius:999px;border:1px solid {{ p.bd }};background:{{ p.bg }};color:{{ p.fg }};box-shadow:{{ p.sh }};font:600 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;cursor:{{ p.cursor }};">{{ p.label }}</button>
+              </sc-for>
+              <button onClick="{{ nextPage }}" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(18,26,44,0.9);color:#dfe2ee;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ nextOp }};">Siguiente</button>
+            </nav>
+          </sc-if>
+        </sc-if>
+      </main>
+    </div>
+  </div>
+
+  <sc-if value="{{ showFab }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));z-index:30;display:flex;justify-content:center;pointer-events:none;">
+      <button onClick="{{ openSheet }}" style="pointer-events:auto;min-height:54px;padding:0 26px;display:flex;align-items:center;gap:10px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 18px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 14px 30px -10px rgba(0,0,0,0.9), 0 0 26px -4px rgba(196,181,240,0.65);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="10" y1="17" x2="14" y2="17"></line></svg>{{ fabLabel }}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasPanel }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePanel }}" style="position:fixed;inset:0;z-index:60;background:rgba(5,8,16,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:{{ pn.align }};justify-content:center;padding:{{ pn.pad }};opacity:{{ pn.op }};transition:opacity .3s;">
+      <div role="dialog" aria-modal="true" aria-label="{{ d.titulo }}" onClick="{{ stop }}" style="position:relative;width:100%;max-width:780px;max-height:{{ pn.maxH }};overflow-y:auto;overscroll-behavior:contain;border-radius:{{ pn.rad }};background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.18);box-shadow:0 40px 80px -30px rgba(0,0,0,0.95);transform:{{ pn.tf }};transition:transform .38s cubic-bezier(.2,.8,.2,1);">
+        <button onClick="{{ closePanel }}" aria-label="Cerrar" style="position:absolute;top:10px;right:10px;z-index:2;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,0.14);background:rgba(10,15,29,0.75);color:#eef0f6;cursor:pointer;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
+        <div style="padding:clamp(16px,3.5vw,28px);display:flex;flex-direction:column;gap:18px;">
+          <div style="display:flex;gap:clamp(14px,3vw,24px);align-items:flex-start;padding-right:40px;">
+            <div style="width:{{ pn.posterW }};flex:none;aspect-ratio:2/3;position:relative;border-radius:14px;overflow:hidden;container-type:inline-size;background:{{ d.posterBg }};box-shadow:0 14px 30px -14px rgba(0,0,0,0.95);">
+              <sc-if value="{{ d.hasPoster }}" hint-placeholder-val="{{ false }}">
+                <div role="img" aria-label="{{ d.titulo }}" style="position:absolute;inset:0;background-image:{{ d.posterCss }};background-size:cover;background-position:center;"></div>
+              </sc-if>
+              <sc-if value="{{ d.noPoster }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;inset:5px;border:1px solid rgba(214,200,255,0.2);border-radius:10px;display:flex;flex-direction:column;padding:7px 7px 8px;">
+                  <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                    <sc-for list="{{ posterBulbs }}" as="b" hint-placeholder-count="7">
+                      <div style="width:3px;height:3px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 4px 1px rgba(196,176,255,0.55);"></div>
+                    </sc-for>
+                  </div>
+                  <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                    <span style="text-align:center;font:600 {{ d.posterFs }}/0.92 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 16px rgba(196,181,240,0.3);">{{ d.titulo }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:4px;color:#e2d9ff;">
+                    <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                    <span style="font:600 9px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;">{{ d.anio }}</span>
+                    <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;">
+              <h2 style="margin:0;font:600 clamp(26px,5.4vw,40px)/1 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ d.titulo }}</h2>
+              <sc-if value="{{ d.showOrig }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:14px;font-style:italic;color:#a8b0c4;">{{ d.orig }}</span>
+              </sc-if>
+              <span style="font-size:14px;color:#a8b0c4;">{{ d.meta }}</span>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <sc-for list="{{ d.generos }}" as="g" hint-placeholder-count="2">
+                  <button onClick="{{ g.onClick }}" style="min-height:30px;padding:0 11px;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};font:600 13px/1 'Barlow',sans-serif;cursor:pointer;">{{ g.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <p style="margin:0;font-size:16px;line-height:1.55;color:#d8dcea;text-wrap:pretty;max-width:62ch;">{{ d.sinopsis }}</p>
+
+          <div style="display:grid;grid-template-columns:{{ pn.infoCols }};gap:16px 24px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;">Dirección</span>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <sc-for list="{{ d.directores }}" as="t" hint-placeholder-count="1">
+                  <button onClick="{{ t.onClick }}" style="min-height:34px;padding:0 12px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:600 14px/1 'Barlow',sans-serif;cursor:pointer;" style-hover="border-color:rgba(214,200,255,0.6);">{{ t.label }}</button>
+                </sc-for>
+              </div>
+              <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;padding-top:10px;">Dónde verla</span>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <sc-for list="{{ d.plataformas }}" as="t" hint-placeholder-count="1">
+                  <button onClick="{{ t.onClick }}" style="min-height:34px;padding:0 12px;border-radius:8px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:600 13px/1 'Barlow',sans-serif;cursor:pointer;" style-hover="border-color:rgba(214,200,255,0.6);">{{ t.label }}</button>
+                </sc-for>
+                <sc-if value="{{ d.noPlat }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:14px;color:#a8b0c4;">Sin plataformas por ahora</span>
+                </sc-if>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#7c859c;padding-bottom:4px;">Reparto</span>
+              <sc-for list="{{ d.actores }}" as="a" hint-placeholder-count="3">
+                <button onClick="{{ a.onClick }}" style="min-height:36px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 8px;margin:0 -8px;border:none;border-radius:8px;background:transparent;font-size:14px;line-height:1.3;cursor:pointer;text-align:left;" style-hover="background:rgba(255,255,255,0.05);">
+                  <span style="color:{{ a.fg }};font-weight:600;">{{ a.label }}</span><span style="color:#8e97ad;text-align:right;">{{ a.personaje }}</span></button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px;">
+              <span style="font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#c4b5f0;">Etiquetas</span>
+              <span style="font-size:13px;color:#8e97ad;">Toca una para filtrar con ella</span>
+            </div>
+            <sc-for list="{{ d.tagGroups }}" as="tg" hint-placeholder-count="5">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;">
+                <span style="width:96px;flex:none;font:600 11px/1.2 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#7c859c;">{{ tg.nombre }}</span>
+                <sc-for list="{{ tg.chips }}" as="t" hint-placeholder-count="2">
+                  <button onClick="{{ t.onClick }}" style="min-height:32px;display:flex;align-items:center;gap:6px;padding:0 11px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};font:500 13px/1 'Barlow',sans-serif;cursor:pointer;transition:background .2s,color .2s;" style-hover="border-color:rgba(214,200,255,0.6);">
+                    <sc-if value="{{ t.isInc }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 10 18 20 6"></polyline></svg></sc-if>{{ t.label }}</button>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;con resultados&quot;,&quot;cargando&quot;,&quot;sin resultados&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;con resultados&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;porPagina&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;4&quot;,&quot;8&quot;,&quot;24&quot;],&quot;default&quot;:&quot;24&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  static HUE = { 'Acción': 35, 'Aventura': 75, 'Ciencia ficción': 210, 'Comedia': 60, 'Crimen': 15, 'Drama': 265, 'Fantasía': 300, 'Musical': 330, 'Romance': 350, 'Terror': 25, 'Thriller': 185, 'Bélico': 120, 'Misterio': 240 };
+  static SUBP = { 'Comedia absurda': 'Comedia', 'Sobrenatural': 'Terror', 'Horror psicológico': 'Terror', 'Thriller psicológico': 'Thriller', 'Slasher': 'Terror', 'Cuento de hadas': 'Fantasía', 'Drama bélico': 'Bélico', 'Whodunit': 'Misterio', 'Sátira social': 'Comedia', 'Postapocalíptico': 'Ciencia ficción', 'Persecución': 'Acción', 'Gore': 'Terror', 'Musical gótico': 'Musical', 'Falso documental': 'Comedia', 'Vampiros': 'Terror', 'Road movie': 'Aventura', 'Coming of age': 'Drama', 'Found footage': 'Terror', 'Cine negro': 'Crimen', 'Space opera': 'Ciencia ficción', 'Comedia romántica': 'Comedia', 'Zombis': 'Terror' };
+  static F = (id, titulo, orig, anio, dur, pop, generos, subgeneros, tags, paises, dirs, acts, plat, sinopsis) => ({
+    id, titulo, titulo_original: orig, anio, duracion_min: dur, popularidad: pop, sinopsis, poster_url: null, generos, subgeneros, tags, paises,
+    directores: dirs.map((n, i) => ({ id: id * 10 + i, nombre: n })), actores: acts.map(([n, p], i) => ({ id: id * 10 + 5 + i, nombre: n, personaje: p })), plataformas: plat });
+  static T = (fo, au, ba, ep, lu, te, to, es) => ({ 'Formato': fo, 'Audiencia': au, 'Basado en': ba, 'Época': ep, 'Lugar': lu, 'Temática': te, 'Tono': to, 'Escala': es });
+  static FILMS = [
+    Component.F(1, 'Beetlejuice Beetlejuice', 'Beetlejuice Beetlejuice', 2024, 104, 92, ['Comedia', 'Terror', 'Fantasía'], ['Comedia absurda', 'Sobrenatural'], Component.T(['Live action'], ['Adolescente'], ['Secuela'], ['Contemporánea'], ['Pueblo'], ['Familia', 'Muerte', 'Más allá'], ['Absurdo', 'Oscuro'], ['Mediana']), ['EE.UU.'], ['Tim Burton'], [['Michael Keaton', 'Beetlejuice'], ['Winona Ryder', 'Lydia Deetz'], ['Jenna Ortega', 'Astrid Deetz']], [], 'Tras una tragedia familiar, tres generaciones de la familia Deetz vuelven a casa a Winter River. Cuando la hija adolescente de Lydia abre por accidente el portal al Más Allá, el bioexorcista vuelve a estar a una palabra de distancia.'),
+    Component.F(2, 'Coraline', 'Coraline', 2009, 100, 81, ['Fantasía', 'Terror'], ['Cuento de hadas', 'Sobrenatural'], Component.T(['Stop-motion'], ['Familiar'], ['Novela'], ['Contemporánea'], ['Casa'], ['Familia', 'Mundos paralelos', 'Infancia'], ['Inquietante'], ['Íntima']), ['EE.UU.'], ['Henry Selick'], [['Dakota Fanning', 'Coraline Jones'], ['Teri Hatcher', 'La Otra Madre'], ['Ian McShane', 'Sr. Bobinsky']], ['Prime Video'], 'Aburrida en su nueva casa, Coraline encuentra una puerta secreta que lleva a una versión ideal de su vida, donde una madre con ojos de botón quiere que se quede para siempre.'),
+    Component.F(3, '¡Huye!', 'Get Out', 2017, 104, 88, ['Terror', 'Misterio', 'Thriller'], ['Horror psicológico', 'Sátira social'], Component.T(['Live action'], ['Adulto'], ['Guion original'], ['Contemporánea'], ['Suburbio', 'Casa'], ['Racismo', 'Familia'], ['Inquietante', 'Satírico'], ['Íntima']), ['EE.UU.'], ['Jordan Peele'], [['Daniel Kaluuya', 'Chris Washington'], ['Allison Williams', 'Rose Armitage'], ['Catherine Keener', 'Missy Armitage']], ['Netflix'], 'Chris viaja a conocer a la familia de su novia. La amabilidad excesiva de sus anfitriones y el comportamiento del personal de la casa empiezan a inquietarlo.'),
+    Component.F(4, 'Scream', 'Scream', 1996, 111, 79, ['Terror', 'Misterio'], ['Slasher', 'Whodunit'], Component.T(['Live action'], ['Adolescente'], ['Guion original'], ['Años 90'], ['Pueblo'], ['Asesino serial', 'Juventud'], ['Satírico', 'Tenso'], ['Íntima']), ['EE.UU.'], ['Wes Craven'], [['Neve Campbell', 'Sidney Prescott'], ['Courteney Cox', 'Gale Weathers'], ['David Arquette', 'Dewey Riley']], ['Paramount+'], 'Un asesino enmascarado aterroriza a los adolescentes de Woodsboro siguiendo al pie de la letra las reglas de las películas de terror que todos conocen.'),
+    Component.F(5, 'El laberinto del fauno', 'El laberinto del fauno', 2006, 118, 84, ['Fantasía', 'Drama', 'Bélico'], ['Cuento de hadas', 'Drama bélico'], Component.T(['Live action'], ['Adulto'], ['Guion original'], ['Años 40'], ['Bosque'], ['Guerra', 'Infancia'], ['Oscuro', 'Poético'], ['Mediana']), ['México', 'España'], ['Guillermo del Toro'], [['Ivana Baquero', 'Ofelia'], ['Sergi López', 'Capitán Vidal'], ['Maribel Verdú', 'Mercedes']], ['Netflix'], 'En la España de 1944, una niña que se muda con su padrastro, un capitán franquista, descubre en un laberinto a un fauno que le encomienda tres pruebas.'),
+    Component.F(6, 'Entre navajas y secretos', 'Knives Out', 2019, 130, 86, ['Misterio', 'Comedia', 'Crimen'], ['Whodunit'], Component.T(['Live action'], ['Adulto'], ['Guion original'], ['Contemporánea'], ['Casa'], ['Herencia', 'Familia'], ['Ingenioso'], ['Íntima']), ['EE.UU.'], ['Rian Johnson'], [['Daniel Craig', 'Benoit Blanc'], ['Ana de Armas', 'Marta Cabrera'], ['Chris Evans', 'Ransom Drysdale']], ['Prime Video'], 'Un famoso novelista de crimen aparece muerto tras su cumpleaños número 85. Un detective excéntrico interroga a una familia en la que todos tenían motivos.'),
+    Component.F(7, 'Parásitos', 'Gisaengchung', 2019, 132, 95, ['Drama', 'Thriller', 'Comedia'], ['Thriller psicológico', 'Sátira social'], Component.T(['Live action'], ['Adulto'], ['Guion original'], ['Contemporánea'], ['Ciudad', 'Casa'], ['Clases sociales', 'Familia'], ['Satírico', 'Tenso'], ['Íntima']), ['Corea del Sur'], ['Bong Joon-ho'], [['Song Kang-ho', 'Kim Ki-taek'], ['Choi Woo-shik', 'Kim Ki-woo'], ['Park So-dam', 'Kim Ki-jung']], ['Max'], 'Una familia sin empleo se infiltra, uno por uno, en la casa de una familia adinerada. El plan funciona hasta que descubren lo que esconde el sótano.'),
+    Component.F(8, 'Mad Max: Furia en el camino', 'Mad Max: Fury Road', 2015, 120, 90, ['Acción', 'Ciencia ficción', 'Aventura'], ['Postapocalíptico', 'Persecución'], Component.T(['Live action'], ['Adulto'], ['Secuela'], ['Futuro'], ['Desierto'], ['Supervivencia', 'Libertad'], ['Frenético'], ['Épica']), ['Australia'], ['George Miller'], [['Tom Hardy', 'Max Rockatansky'], ['Charlize Theron', 'Furiosa'], ['Nicholas Hoult', 'Nux']], ['Max'], 'En un desierto sin ley, la comandante Furiosa huye con las esposas de un tirano y Max se ve arrastrado a una persecución que no da tregua.'),
+    Component.F(9, 'El viaje de Chihiro', 'Sen to Chihiro no Kamikakushi', 2001, 125, 93, ['Fantasía', 'Aventura'], ['Cuento de hadas'], Component.T(['Animación'], ['Familiar'], ['Guion original'], ['Contemporánea'], ['Mundo fantástico'], ['Infancia', 'Mundos paralelos'], ['Poético'], ['Épica']), ['Japón'], ['Hayao Miyazaki'], [['Rumi Hiiragi', 'Chihiro'], ['Miyu Irino', 'Haku'], ['Mari Natsuki', 'Yubaba']], ['Netflix'], 'Durante una mudanza, Chihiro entra a un mundo de espíritus donde sus padres son convertidos en cerdos. Para salvarlos, trabaja en una casa de baños para dioses.'),
+    Component.F(10, 'Sweeney Todd: El barbero demoníaco de la calle Fleet', 'Sweeney Todd: The Demon Barber of Fleet Street', 2007, 116, 70, ['Musical', 'Terror'], ['Musical gótico', 'Gore'], Component.T(['Live action'], ['Adulto'], ['Obra de teatro'], ['Siglo XIX'], ['Ciudad'], ['Venganza', 'Muerte'], ['Oscuro'], ['Mediana']), ['Reino Unido', 'EE.UU.'], ['Tim Burton'], [['Johnny Depp', 'Sweeney Todd'], ['Helena Bonham Carter', 'Mrs. Lovett'], ['Alan Rickman', 'Juez Turpin']], ['Max'], 'Un barbero vuelve a Londres tras años de prisión injusta y abre una barbería sobre la pastelería de Mrs. Lovett, decidido a vengarse del juez que le arrebató a su familia.'),
+    Component.F(11, 'Lo que hacemos en las sombras', 'What We Do in the Shadows', 2014, 86, 68, ['Comedia', 'Terror'], ['Falso documental', 'Vampiros'], Component.T(['Live action'], ['Adulto'], ['Guion original'], ['Contemporánea'], ['Ciudad'], ['Amistad', 'Muerte'], ['Absurdo'], ['Íntima']), ['Nueva Zelanda'], ['Jemaine Clement', 'Taika Waititi'], [['Jemaine Clement', 'Vladislav'], ['Taika Waititi', 'Viago'], ['Jonathan Brugh', 'Deacon']], ['Max'], 'Un equipo de documental sigue a cuatro vampiros que comparten casa en Wellington y lidian con las tareas domésticas, la vida nocturna y un vecino recién convertido.'),
+    Component.F(12, 'Y tu mamá también', 'Y tu mamá también', 2001, 106, 74, ['Drama', 'Comedia', 'Romance'], ['Road movie', 'Coming of age'], Component.T(['Live action'], ['Adulto'], ['Guion original'], ['Años 2000'], ['Carretera'], ['Amistad', 'Juventud'], ['Melancólico'], ['Íntima']), ['México'], ['Alfonso Cuarón'], [['Gael García Bernal', 'Julio Zapata'], ['Diego Luna', 'Tenoch Iturbide'], ['Maribel Verdú', 'Luisa Cortés']], ['Prime Video'], 'Dos amigos adolescentes emprenden un viaje por carretera hacia una playa que quizá no existe, acompañados por una mujer mayor que ellos que huye de su propia vida.')
+  ];
+  static GROUPS = [
+    { key: 'genero', nombre: 'Género', pre: 'g:', get: f => f.generos, extra: ['Western', 'Documental', 'Deportes'] },
+    { key: 'subgenero', nombre: 'Subgénero', long: true, sub: true, get: f => f.subgeneros, extra: ['Found footage', 'Cine negro', 'Space opera', 'Comedia romántica', 'Zombis'] },
+    { key: 'formato', nombre: 'Formato', pre: 't:formato:', get: f => f.tags['Formato'], extra: ['Rotoscopia'] },
+    { key: 'audiencia', nombre: 'Audiencia', pre: 't:audiencia:', get: f => f.tags['Audiencia'], extra: ['Infantil'] },
+    { key: 'basado', nombre: 'Basado en', pre: 't:basado:', get: f => f.tags['Basado en'], extra: ['Cómic', 'Hechos reales', 'Videojuego'] },
+    { key: 'epoca', nombre: 'Época', pre: 't:epoca:', get: f => f.tags['Época'], extra: ['Edad Media', 'Años 80'] },
+    { key: 'lugar', nombre: 'Lugar', pre: 't:lugar:', get: f => f.tags['Lugar'], extra: ['Espacio', 'Isla'] },
+    { key: 'tematica', nombre: 'Temática', long: true, pre: 't:tematica:', get: f => f.tags['Temática'], extra: ['Viajes en el tiempo', 'Inteligencia artificial'] },
+    { key: 'tono', nombre: 'Tono', pre: 'v:tono:', get: f => f.tags['Tono'], extra: ['Luminoso'] },
+    { key: 'escala', nombre: 'Escala', pre: 't:escala:', get: f => f.tags['Escala'], extra: [] },
+    { key: 'plataforma', nombre: 'Plataforma', pre: 'p:', get: f => f.plataformas, extra: ['Apple TV+'] },
+    { key: 'pais', nombre: 'País de origen', pre: 'c:', get: f => f.paises, extra: ['Francia'] },
+    { key: 'director', nombre: 'Director', long: true, pre: 'd:', get: f => f.directores.map(d => d.nombre), extra: [] },
+    { key: 'reparto', nombre: 'Reparto', long: true, pre: 'a:', get: f => f.actores.map(a => a.nombre), extra: [] }
+  ];
+  static DUR = [{ v: null, l: 'Cualquiera' }, { v: 90, l: '< 90 min' }, { v: 120, l: '< 2 h' }, { v: 150, l: '< 2 h 30' }];
+  static slug(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  static build() {
+    if (Component._db) return Component._db;
+    const S = Component.slug, opts = {}, byCode = {}, filmCodes = {};
+    const code = (g, v) => g.sub ? `s:${S(Component.SUBP[v] || 'otro')}:${S(v)}` : g.pre + S(v);
+    Component.FILMS.forEach(f => { filmCodes[f.id] = new Set(); });
+    Component.GROUPS.forEach(g => {
+      const m = new Map();
+      const add = v => { const c = code(g, v); if (!m.has(c)) m.set(c, { codigo: c, etiqueta: v, padre: g.sub ? Component.SUBP[v] : null, grupo: g.key, grupoNombre: g.nombre, total: 0 }); return m.get(c); };
+      Component.FILMS.forEach(f => (g.get(f) || []).forEach(v => { const o = add(v); o.total++; filmCodes[f.id].add(o.codigo); }));
+      g.extra.forEach(add);
+      opts[g.key] = [...m.values()].sort((a, b) => b.total - a.total || a.etiqueta.localeCompare(b.etiqueta, 'es'));
+      opts[g.key].forEach(o => { byCode[o.codigo] = o; });
+    });
+    return (Component._db = { opts, byCode, filmCodes });
+  }
+
+  state = { status: 'loading', tri: {}, hist: [], texto: '', anioMin: '', anioMax: '', durMax: null, sort: 'popular', seed: 0.37, page: 1, open: { genero: true, subgenero: true, tono: true }, more: {}, sheet: false, openId: null, panelIn: false, busy: false, entering: false, w: 420 };
+  rootRef = React.createRef();
+  resultsRef = React.createRef();
+  timers = [];
+
+  componentDidMount() {
+    const el = this.rootRef.current;
+    if (el && window.ResizeObserver) {
+      this.ro = new ResizeObserver(e => { const w = Math.round(e[0].contentRect.width); if (Math.abs(w - this.state.w) > 4) this.setState({ w }); });
+      this.ro.observe(el);
+    }
+    window.addEventListener('offline', this.goOff);
+    window.addEventListener('keydown', this.onKey);
+    this.applyEstado(this.props.estado);
+  }
+  componentDidUpdate(pp) {
+    if (pp.estado !== this.props.estado) this.applyEstado(this.props.estado);
+    const lock = (this.state.sheet && this.state.w < 820) || this.state.openId != null;
+    document.body.style.overflow = lock ? 'hidden' : '';
+  }
+  componentWillUnmount() { this.ro && this.ro.disconnect(); window.removeEventListener('offline', this.goOff); window.removeEventListener('keydown', this.onKey); this.timers.forEach(clearTimeout); document.body.style.overflow = ''; }
+  later(fn, ms) { const t = setTimeout(fn, ms); this.timers.push(t); return t; }
+  raf2(fn) { requestAnimationFrame(() => requestAnimationFrame(fn)); }
+  goOff = () => this.setState({ status: 'offline' });
+  onKey = e => { if (e.key !== 'Escape') return; if (this.state.openId != null) this.closePanel(); else if (this.state.sheet) this.setState({ sheet: false }); };
+
+  applyEstado(e) {
+    this.timers.forEach(clearTimeout); this.timers = [];
+    const base = { tri: {}, hist: [], texto: '', anioMin: '', anioMax: '', durMax: null, page: 1, openId: null, panelIn: false, busy: false };
+    if (e === 'cargando') this.setState({ ...base, status: 'loading' });
+    else if (e === 'sin conexión') this.setState({ ...base, status: 'offline' });
+    else if (e === 'sin resultados') this.setState({ ...base, status: 'ready', tri: { 'g:terror': 1, 'g:musical': 1, 'v:tono:absurdo': 1 }, hist: ['g:terror', 'g:musical', 'v:tono:absurdo'] });
+    else this.load(base);
+  }
+  load(extra) {
+    this.setState({ ...(extra || {}), status: 'loading' });
+    this.later(() => this.setState({ status: 'ready', entering: true }, () => this.raf2(() => this.setState({ entering: false }))), 900);
+  }
+  bump(patch) {
+    clearTimeout(this.busyT);
+    this.setState({ ...patch, page: 1, busy: true });
+    this.busyT = this.later(() => this.setState({ busy: false }), 260);
+  }
+
+  histSet(hist, key, on) { const h = hist.filter(k => k !== key); return on ? [...h, key] : h; }
+  cycle = c => {
+    const cur = this.state.tri[c] || 0, nx = cur === 0 ? 1 : cur === 1 ? -1 : 0;
+    const tri = { ...this.state.tri }; if (nx) tri[c] = nx; else delete tri[c];
+    this.bump({ tri, hist: this.histSet(this.state.hist, c, !!nx) });
+  };
+  include = c => {
+    if (this.state.tri[c] === 1) return;
+    this.bump({ tri: { ...this.state.tri, [c]: 1 }, hist: this.histSet(this.state.hist, c, true) });
+  };
+  removeKey = k => {
+    const s = this.state, p = { hist: this.histSet(s.hist, k, false) };
+    if (k === 'texto') p.texto = '';
+    else if (k === 'anios') { p.anioMin = ''; p.anioMax = ''; }
+    else if (k === 'dur') p.durMax = null;
+    else { const tri = { ...s.tri }; delete tri[k]; p.tri = tri; }
+    this.bump(p);
+  };
+  clearAll = () => this.bump({ tri: {}, hist: [], texto: '', anioMin: '', anioMax: '', durMax: null });
+  year(v) { const n = parseInt(v, 10); return v.length === 4 && n >= 1900 && n <= 2030 ? n : null; }
+  closePanel = () => { this.setState({ panelIn: false }); this.later(() => this.setState({ openId: null }), 300); };
+  openPanel(id) { this.setState({ openId: id, panelIn: false }, () => this.raf2(() => this.setState({ panelIn: true }))); }
+  goPage(p) {
+    this.setState({ page: p, entering: true }, () => this.raf2(() => this.setState({ entering: false })));
+    const r = this.resultsRef.current;
+    if (r) window.scrollTo({ top: Math.max(0, r.getBoundingClientRect().top + window.scrollY - 16), behavior: 'smooth' });
+  }
+
+  filtered(s) {
+    const db = Component.build(), q = Component.slug(s.texto.trim()).replace(/-/g, ' ');
+    const inc = Object.keys(s.tri).filter(k => s.tri[k] === 1), exc = Object.keys(s.tri).filter(k => s.tri[k] === -1);
+    const yMin = this.year(s.anioMin), yMax = this.year(s.anioMax);
+    return Component.FILMS.filter(f => {
+      const cs = db.filmCodes[f.id];
+      if (!inc.every(c => cs.has(c)) || exc.some(c => cs.has(c))) return false;
+      if (yMin && f.anio < yMin) return false;
+      if (yMax && f.anio > yMax) return false;
+      if (s.durMax && f.duracion_min >= s.durMax) return false;
+      if (q) {
+        const hay = Component.slug([f.titulo, f.titulo_original, ...f.directores.map(d => d.nombre), ...f.actores.map(a => a.nombre)].join(' ')).replace(/-/g, ' ');
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+  sorted(list, s) {
+    const L = list.slice(), K = {
+      popular: (a, b) => b.popularidad - a.popularidad, recientes: (a, b) => b.anio - a.anio, antiguas: (a, b) => a.anio - b.anio,
+      cortas: (a, b) => a.duracion_min - b.duracion_min, titulo: (a, b) => a.titulo.localeCompare(b.titulo, 'es'),
+      azar: (a, b) => ((a.id * 9301 * s.seed) % 1) - ((b.id * 9301 * s.seed) % 1)
+    };
+    return L.sort(K[s.sort] || K.popular);
+  }
+  posterFs(t, base) {
+    const L = t.length, w = Math.max(...t.split(/\s+/).map(x => x.length));
+    const byLen = L <= 6 ? 30 : L <= 12 ? 22 : L <= 20 ? 18 : L <= 30 ? 15 : 13;
+    return Math.min(byLen, 88 / (w * 0.47)).toFixed(1) + 'cqw';
+  }
+  dur(m) { const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; }
+  pbg(f) { const h = Component.HUE[f.generos[0]] ?? 265; return `radial-gradient(ellipse 120% 80% at 50% 35%, oklch(0.34 0.08 ${h}) 0%, oklch(0.19 0.045 ${h}) 68%, #0c1121 100%)`; }
+
+  renderVals() {
+    const s = this.state, db = Component.build();
+    const mobile = s.w < 820;
+    const contentW = Math.min(s.w, 1360) - (mobile ? 16 : 48) - (mobile ? 0 : 324);
+    const cols = mobile ? 2 : contentW >= 880 ? 4 : 3;
+    const per = parseInt(this.props.porPagina ?? 24, 10) || 24;
+    const list = this.sorted(this.filtered(s), s);
+    const n = list.length, pages = Math.max(1, Math.ceil(n / per)), page = Math.min(s.page, pages);
+    const slice = list.slice((page - 1) * per, page * per);
+    const ready = s.status === 'ready';
+
+    const counts = {};
+    list.forEach(f => db.filmCodes[f.id].forEach(c => { counts[c] = (counts[c] || 0) + 1; }));
+
+    const LILA = { bg: '#c4b5f0', fg: '#0d1224', bd: '#c4b5f0', sh: '0 0 14px -2px rgba(196,176,255,0.55)' };
+    const RED = { bg: 'rgba(217,132,132,0.14)', fg: '#f0b4b4', bd: 'rgba(217,132,132,0.55)', sh: 'none' };
+    const NEU = { bg: 'rgba(255,255,255,0.04)', fg: '#dfe2ee', bd: 'rgba(255,255,255,0.14)', sh: 'none' };
+    const tone = c => s.tri[c] === 1 ? LILA : s.tri[c] === -1 ? RED : NEU;
+
+    const groups = Component.GROUPS.map(g => {
+      const all = db.opts[g.key], open = !!s.open[g.key], showAll = !!s.more[g.key];
+      const sel = all.filter(o => s.tri[o.codigo]);
+      let vis = all;
+      if (g.long && !showAll) { const top = all.slice(0, 8); vis = [...top, ...sel.filter(o => !top.includes(o))]; }
+      return {
+        nombre: g.nombre, expanded: open ? 'true' : 'false', rows: open ? '1fr' : '0fr', chev: open ? 'rotate(180deg)' : 'none',
+        hasSel: sel.length > 0, selCount: sel.length,
+        onToggle: () => this.setState(st => ({ open: { ...st.open, [g.key]: !st.open[g.key] } })),
+        hasMore: !!g.long && all.length > 8, moreLabel: showAll ? 'Ver menos' : `Ver todos (${all.length})`,
+        onMore: () => this.setState(st => ({ more: { ...st.more, [g.key]: !st.more[g.key] } })),
+        options: vis.map(o => {
+          const t = s.tri[o.codigo] || 0, cnt = counts[o.codigo] || 0;
+          return {
+            label: o.etiqueta, padre: o.padre, hasPadre: !!o.padre, n: cnt,
+            title: t === 0 ? 'Clic para incluir' : t === 1 ? 'Clic para excluir' : 'Clic para quitar',
+            isInc: t === 1, isExc: t === -1, op: cnt === 0 && !t ? 0.38 : 1,
+            boxBg: t === 1 ? '#c4b5f0' : t === -1 ? 'rgba(217,132,132,0.22)' : 'transparent',
+            boxBd: t === 1 ? '#c4b5f0' : t === -1 ? 'rgba(217,132,132,0.8)' : 'rgba(255,255,255,0.28)',
+            boxSh: t === 1 ? '0 0 10px rgba(196,176,255,0.6)' : 'none',
+            fg: t === 1 ? '#e8e1ff' : t === -1 ? '#e7a9a9' : '#dfe2ee', strike: t === -1 ? 'line-through' : 'none',
+            onClick: () => this.cycle(o.codigo)
+          };
+        })
+      };
+    });
+
+    const yMin = this.year(s.anioMin), yMax = this.year(s.anioMax);
+    const durL = (Component.DUR.find(d => d.v === s.durMax) || {}).l;
+    const keyLabel = k => k === 'texto' ? `“${s.texto.trim()}”` : k === 'anios' ? (yMin && yMax ? `${yMin}–${yMax}` : yMin ? `Desde ${yMin}` : `Hasta ${yMax}`) : k === 'dur' ? durL : (db.byCode[k] || {}).etiqueta || k;
+    const activeKeys = s.hist.filter(k => k === 'texto' ? s.texto.trim() : k === 'anios' ? (yMin || yMax) : k === 'dur' ? s.durMax : s.tri[k]);
+    const activeChips = activeKeys.map(k => {
+      const t = s.tri[k] || 0, c = t === 1 ? LILA : t === -1 ? RED : { bg: 'rgba(196,181,240,0.08)', fg: '#e8e1ff', bd: 'rgba(196,181,240,0.4)', sh: 'none' };
+      const label = keyLabel(k);
+      return { label, isInc: t === 1, isExc: t === -1, ...c, removeLabel: `Quitar ${label}`, onRemove: () => this.removeKey(k) };
+    });
+    const last = activeKeys[activeKeys.length - 1];
+
+    const mkTag = c => { const t = tone(c); return { label: (db.byCode[c] || {}).etiqueta, isInc: s.tri[c] === 1, bg: t.bg, fg: t.fg, bd: t.bd, onClick: () => this.include(c) }; };
+    const cg = (g, v) => Component.GROUPS.find(x => x.key === g).sub ? `s:${Component.slug(Component.SUBP[v] || 'otro')}:${Component.slug(v)}` : Component.GROUPS.find(x => x.key === g).pre + Component.slug(v);
+
+    const ease = 'cubic-bezier(.2,.8,.2,1)';
+    const cards = slice.map((f, i) => ({
+      titulo: f.titulo, anio: f.anio, meta: `${f.anio} · ${this.dur(f.duracion_min)}`, aria: `${f.titulo}, ${f.anio}. Ver ficha`,
+      generos: f.generos.map(g => { const c = 'g:' + Component.slug(g), on = s.tri[c] === 1; return { label: g, bg: on ? '#c4b5f0' : 'rgba(196,181,240,0.1)', fg: on ? '#0d1224' : '#ddd5fb', bd: on ? '#c4b5f0' : 'rgba(196,181,240,0.25)' }; }),
+      hasPoster: !!f.poster_url, noPoster: !f.poster_url, posterCss: f.poster_url ? `url("${f.poster_url}")` : 'none',
+      posterBg: this.pbg(f), posterFs: this.posterFs(f.titulo),
+      op: s.entering ? 0 : 1, tf: s.entering ? 'translate3d(0,16px,0) scale(.95)' : 'none',
+      tr: s.entering ? 'none' : `transform .5s ${ease} ${Math.min(i, 11) * 40}ms, opacity .45s ${Math.min(i, 11) * 40}ms`,
+      onOpen: () => this.openPanel(f.id)
+    }));
+
+    const pageItems = [];
+    if (pages > 1) {
+      const set = new Set([1, pages, page - 1, page, page + 1].filter(p => p >= 1 && p <= pages));
+      let prev = 0;
+      [...set].sort((a, b) => a - b).forEach(p => {
+        if (p - prev > 1) pageItems.push({ label: '…', current: 'false', bg: 'transparent', fg: '#7c859c', bd: 'transparent', sh: 'none', cursor: 'default', onClick: null });
+        const on = p === page;
+        pageItems.push({ label: String(p), current: on ? 'page' : 'false', bg: on ? '#c4b5f0' : 'rgba(18,26,44,0.9)', fg: on ? '#0d1224' : '#dfe2ee', bd: on ? '#c4b5f0' : 'rgba(255,255,255,0.14)', sh: on ? '0 0 16px -2px rgba(196,176,255,0.6)' : 'none', cursor: 'pointer', onClick: () => this.goPage(p) });
+        prev = p;
+      });
+    }
+
+    const f = s.openId != null ? Component.FILMS.find(x => x.id === s.openId) : null;
+    let d = {};
+    if (f) {
+      const tagGroups = [['subgenero', 'Subgénero', f.subgeneros], ...['Formato', 'Audiencia', 'Basado en', 'Época', 'Lugar', 'Temática', 'Tono', 'Escala'].map(k => [Component.GROUPS.find(g => g.nombre === k).key, k, f.tags[k] || []]), ['pais', 'País', f.paises]]
+        .filter(x => x[2].length).map(([key, nombre, vals]) => ({ nombre, chips: vals.map(v => mkTag(cg(key, v))) }));
+      d = {
+        titulo: f.titulo, orig: f.titulo_original, showOrig: f.titulo_original !== f.titulo, anio: f.anio,
+        meta: `${f.anio} · ${this.dur(f.duracion_min)}`, sinopsis: f.sinopsis,
+        hasPoster: !!f.poster_url, noPoster: !f.poster_url, posterCss: f.poster_url ? `url("${f.poster_url}")` : 'none', posterBg: this.pbg(f), posterFs: this.posterFs(f.titulo),
+        generos: f.generos.map(g => mkTag(cg('genero', g))),
+        directores: f.directores.map(x => mkTag(cg('director', x.nombre))),
+        plataformas: f.plataformas.map(x => mkTag(cg('plataforma', x))), noPlat: !f.plataformas.length,
+        actores: f.actores.map(a => { const c = cg('reparto', a.nombre); return { label: a.nombre, personaje: a.personaje, fg: s.tri[c] === 1 ? '#c4b5f0' : '#eef0f6', onClick: () => this.include(c) }; }),
+        tagGroups
+      };
+    }
+
+    const filtersN = activeKeys.length;
+    const word = n === 1 ? 'película' : 'películas';
+    return {
+      rootRef: this.rootRef, resultsRef: this.resultsRef,
+      isMobile: mobile, padBottom: mobile ? '104px' : '56px',
+      layoutCols: mobile ? 'minmax(0,1fr)' : '300px minmax(0,1fr)',
+      sb: mobile
+        ? { pos: 'fixed', top: '0', z: 50, h: 'auto', tf: s.sheet ? 'translateY(0)' : 'translateY(100%)', vis: s.sheet ? 'visible' : 'hidden', tr: s.sheet ? `transform .42s ${ease}, visibility 0s` : `transform .36s cubic-bezier(.4,0,.6,1), visibility 0s .36s`, bg: '#0c1222', bd: 'none', rad: '0' }
+        : { pos: 'sticky', top: '16px', z: 1, h: 'calc(100vh - 32px)', tf: 'none', vis: 'visible', tr: 'none', bg: 'linear-gradient(180deg,#141c31,#0e1526)', bd: '1px solid rgba(196,181,240,0.16)', rad: '22px' },
+      optH: mobile ? '44px' : '36px',
+      plateBulbs: Array.from({ length: 16 }, (_, i) => i), posterBulbs: [0, 1, 2, 3, 4, 5, 6],
+      texto: s.texto,
+      onTexto: e => { const v = e.target.value; this.bump({ texto: v, hist: this.histSet(this.state.hist, 'texto', !!v.trim()) }); },
+      anioMin: s.anioMin, anioMax: s.anioMax,
+      onAnioMin: e => { const v = e.target.value.slice(0, 4); this.bump({ anioMin: v, hist: this.histSet(this.state.hist, 'anios', !!(this.year(v) || this.year(this.state.anioMax))) }); },
+      onAnioMax: e => { const v = e.target.value.slice(0, 4); this.bump({ anioMax: v, hist: this.histSet(this.state.hist, 'anios', !!(this.year(v) || this.year(this.state.anioMin))) }); },
+      durChips: Component.DUR.map(x => { const on = s.durMax === x.v; return { label: x.l, pressed: on ? 'true' : 'false', bg: on ? '#c4b5f0' : 'rgba(255,255,255,0.03)', fg: on ? '#0c1122' : '#dfe2ee', bd: on ? '#c4b5f0' : 'rgba(255,255,255,0.14)', onClick: () => this.bump({ durMax: x.v, hist: this.histSet(this.state.hist, 'dur', x.v != null) }) }; }),
+      groups,
+      hasActive: activeChips.length > 0, activeChips, clearAll: this.clearAll, clearOp: filtersN ? 1 : 0.4,
+      countNum: ready ? n : '—', countWord: word, sort: s.sort,
+      onSort: e => { const v = e.target.value; this.setState({ sort: v, seed: v === 'azar' ? Math.random() : s.seed, page: 1, entering: true }, () => this.raf2(() => this.setState({ entering: false }))); },
+      isLoading: s.status === 'loading', isOffline: s.status === 'offline', isEmpty: ready && n === 0, showGrid: ready && n > 0,
+      skeletons: Array.from({ length: cols * 2 }, (_, i) => ({ delay: (i * 0.08).toFixed(2) + 's' })),
+      gridCols: `repeat(${cols}, minmax(0, 1fr))`, gridGap: mobile ? '18px 12px' : '26px 18px', gridOp: s.busy ? 0.5 : 1,
+      cards,
+      deadBulbs: Array.from({ length: 7 }, (_, i) => i === 3 ? { bg: 'rgba(226,216,255,1)', sh: '0 0 8px 2px rgba(196,176,255,0.7)' } : { bg: 'rgba(214,200,255,0.14)', sh: 'none' }),
+      canUndoLast: !!last, removeLastLabel: last ? `Quitar “${keyLabel(last)}”` : '',
+      emptyHint: last ? `Prueba quitando el último filtro que agregaste: “${keyLabel(last)}”.` : 'Prueba con otra búsqueda.',
+      removeLast: () => last && this.removeKey(last),
+      retry: () => { if (navigator.onLine === false) return; this.load(); },
+      hasPages: pages > 1, pageItems,
+      prevOp: page > 1 ? 1 : 0.35, nextOp: page < pages ? 1 : 0.35,
+      prevPage: () => page > 1 && this.goPage(page - 1), nextPage: () => page < pages && this.goPage(page + 1),
+      showFab: mobile && !s.sheet && s.status !== 'offline',
+      fabLabel: filtersN ? `Filtros (${filtersN})` : 'Filtros',
+      openSheet: () => this.setState({ sheet: true }), closeSheet: () => this.setState({ sheet: false }),
+      verLabel: n === 0 ? 'Sin resultados' : `Ver ${n} ${word}`,
+      hasPanel: !!f, d, closePanel: this.closePanel, stop: e => e.stopPropagation(),
+      pn: mobile
+        ? { align: 'flex-end', pad: '0', op: s.panelIn ? 1 : 0, maxH: '92vh', rad: '22px 22px 0 0', tf: s.panelIn ? 'none' : 'translateY(100%)', posterW: '108px', infoCols: 'minmax(0,1fr)' }
+        : { align: 'center', pad: '24px', op: s.panelIn ? 1 : 0, maxH: '88vh', rad: '22px', tf: s.panelIn ? 'none' : 'translateY(18px) scale(.97)', posterW: '170px', infoCols: 'minmax(0,1fr) minmax(0,1fr)' }
+    };
+  }
+}
+</script>
+</body>
+</html>
