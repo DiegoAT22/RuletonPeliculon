@@ -4,6 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./supabase.js"></script>
+  <script src="./cuenta.js"></script>
   <script src="./support.js"></script>
 </head>
 
@@ -93,10 +95,17 @@
         <nav style="display:flex;justify-content:center;">
           <div
             style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
-        <a href="Tragamonedas%20de%20Peliculas.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Tragamonedas</a>
-        <a href="Descubrir.dc.html" aria-current="page" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;">Descubrir</a>
-        <a href="Para%20ti.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Para ti</a>
-        <a href="Explorar.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;" style-hover="color:#ffffff;">Explorar</a>
+            <a href="Tragamonedas%20de%20Peliculas.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Tragamonedas</a>
+            <a href="Descubrir.dc.html" aria-current="page"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;">Descubrir</a>
+            <a href="Para%20ti.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Para ti</a>
+            <a href="Explorar.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Explorar</a>
           </div>
         </nav>
 
@@ -476,52 +485,14 @@ class Component extends DCLogic {
   // La misma publishable key de la tragamonedas. NUNCA la secret key.
   static SUPABASE_URL = 'https://mlrezhasoubggrembngu.supabase.co';
   static SUPABASE_KEY = 'sb_publishable_aMwHv2EdEELy5FRcRdkYDg_ipcSNSTG';
-  static SESION = 'ruleta_sesion_v1';      // dónde se recuerda la sesión anónima en este navegador
   // ================================================================
 
   live() { return (this.props.estado ?? 'interactivo') === 'interactivo'; }
 
-  leerSesion() { try { return JSON.parse(localStorage.getItem(Component.SESION)) || null; } catch (_) { return null; } }
-  guardarSesion(d) {
-    const ses = { access_token: d.access_token, refresh_token: d.refresh_token,
-                  expires_at: d.expires_at || Math.floor(Date.now() / 1000) + (d.expires_in || 3600) };
-    try { localStorage.setItem(Component.SESION, JSON.stringify(ses)); } catch (_) {}
-    this.ses = ses;
-    return ses;
-  }
-  async auth(ruta, cuerpo) {
-    const C = Component;
-    const r = await fetch(`${C.SUPABASE_URL}/auth/v1/${ruta}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', apikey: C.SUPABASE_KEY }, body: JSON.stringify(cuerpo) });
-    if (!r.ok) { const t = await r.text(); throw new Error(`auth ${r.status}: ${t}`); }
-    return r.json();
-  }
-  // Sesión anónima: se crea la primera vez y se renueva sola. Si la persona crea
-  // cuenta después, Supabase conserva el mismo usuario y sus swipes.
-  async sesion(forzarRenovar) {
-    if (this.renovando) return this.renovando;
-    this.renovando = (async () => {
-      let ses = this.ses || this.leerSesion();
-      const ahora = Math.floor(Date.now() / 1000);
-      if (ses && (forzarRenovar || ses.expires_at - 60 < ahora)) {
-        try { ses = this.guardarSesion(await this.auth('token?grant_type=refresh_token', { refresh_token: ses.refresh_token })); }
-        catch (e) { console.warn('No se pudo renovar la sesión; se crea una nueva', e); ses = null; }
-      }
-      if (!ses) ses = this.guardarSesion(await this.auth('signup', { data: {} }));
-      this.ses = ses;
-      return ses;
-    })();
-    try { return await this.renovando; } finally { this.renovando = null; }
-  }
-  async rpc(fn, args, reintento) {
-    const C = Component;
-    const ses = await this.sesion(false);
-    const r = await fetch(`${C.SUPABASE_URL}/rest/v1/rpc/${fn}`, {
-      method: 'POST', body: JSON.stringify(args || {}),
-      headers: { 'Content-Type': 'application/json', apikey: C.SUPABASE_KEY, Authorization: 'Bearer ' + ses.access_token } });
-    if (r.status === 401 && !reintento) { await this.sesion(true); return this.rpc(fn, args, true); }
-    if (!r.ok) { const t = await r.text(); throw new Error(`${fn} ${r.status}: ${t}`); }
-    return r.json();
+  // La sesión (anónima o con Google) vive en cuenta.js, compartida por todas las pantallas.
+  async rpc(fn, args) {
+    if (!window.Cuenta) throw new Error('Falta cargar cuenta.js');
+    return window.Cuenta.rpc(fn, args);
   }
   // Las escrituras van en fila (un swipe y su deshacer nunca se cruzan)
   enFila(op) {
