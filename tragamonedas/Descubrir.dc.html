@@ -41,6 +41,11 @@
           font-family: inherit;
         }
 
+        button:focus-visible {
+          outline: 2px solid #c4b5f0;
+          outline-offset: 3px;
+        }
+
         * {
           scrollbar-width: thin;
           scrollbar-color: rgba(196, 181, 240, 0.45) transparent;
@@ -90,7 +95,7 @@
     <div ref="{{ rootRef }}"
       style="min-height:100vh;overflow:hidden;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
       <div
-        style="max-width:460px;margin:0 auto;padding:clamp(16px,4vw,40px) 14px 48px;display:flex;flex-direction:column;gap:18px;">
+        style="max-width:460px;margin:0 auto;padding:clamp(16px,4vw,40px) 14px 20px;display:flex;flex-direction:column;gap:14px;">
 
         <nav style="display:flex;justify-content:center;">
           <div
@@ -138,7 +143,8 @@
           </div>
         </div>
 
-        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+        <div
+          style="display:flex;flex-wrap:{{ chipWrap }};justify-content:{{ chipJustify }};gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px;">
           <sc-for list="{{ genreChips }}" as="g" hint-placeholder-count="8">
             <button onClick="{{ g.onClick }}"
               style="flex:none;min-height:38px;padding:0 15px;border-radius:999px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};transition:background .2s,color .2s;">{{
@@ -146,7 +152,8 @@
           </sc-for>
         </div>
 
-        <div style="position:relative;width:100%;max-width:380px;height:clamp(480px,64vh,580px);margin:0 auto 26px;">
+        <div
+          style="position:relative;width:100%;max-width:380px;height:clamp(380px,calc(100svh - 472px),580px);margin:0 auto 12px;">
 
           <sc-if value="{{ showDeck }}" hint-placeholder-val="{{ true }}">
             <sc-for list="{{ slots }}" as="c" hint-placeholder-count="3">
@@ -178,7 +185,8 @@
                           <div
                             style="margin-top:14px;text-align:center;font:600 11px/1.3 'Barlow Condensed',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:rgba(236,230,255,0.78);">
                             {{ c.genreLine }}</div>
-                          <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+                          <div
+                            style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;container-type:size;">
                             <h3
                               style="margin:0;text-align:center;font:600 {{ c.posterFs }}/0.92 'Barlow Condensed',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 28px rgba(196,181,240,0.3);">
                               {{ c.titulo }}</h3>
@@ -296,37 +304,17 @@
 
                 <sc-if value="{{ c.isTop }}" hint-placeholder-val="{{ false }}">
                   <div
-                    style="position:absolute;top:30px;left:20px;transform:rotate(-14deg);opacity:{{ c.sLike }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #7ee0a6;border-radius:10px;color:#7ee0a6;font:700 40px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.4);white-space:nowrap;">
-                    ME LATE</div>
+                    style="position:absolute;top:30px;left:20px;transform:rotate(-14deg);opacity:{{ c.sLike }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #7ee0a6;border-radius:10px;color:#7ee0a6;font:700 34px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.5);white-space:nowrap;">
+                    QUIERO VERLA</div>
                   <div
-                    style="position:absolute;top:30px;right:20px;transform:rotate(14deg);opacity:{{ c.sNope }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #ff7b7b;border-radius:10px;color:#ff7b7b;font:700 34px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.4);white-space:nowrap;">
-                    NO ME LATE</div>
+                    style="position:absolute;top:30px;right:20px;transform:rotate(14deg);opacity:{{ c.sNope }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #ff7b7b;border-radius:10px;color:#ff7b7b;font:700 40px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.5);white-space:nowrap;">
+                    PASO</div>
                   <div
-                    style="position:absolute;bottom:42%;left:50%;transform:translateX(-50%) rotate(-6deg);opacity:{{ c.sSeen }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #c4b5f0;border-radius:10px;color:#c4b5f0;font:700 40px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.4);white-space:nowrap;">
-                    YA LA VI</div>
+                    style="position:absolute;bottom:42%;left:50%;transform:translateX(-50%) rotate(-6deg);opacity:{{ c.sSeen }};transition:{{ c.sTr }};pointer-events:none;padding:7px 16px 4px;border:4px solid #7ee0a6;border-radius:10px;color:#0c1a12;font:700 38px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:#7ee0a6;white-space:nowrap;">
+                    ME GUSTÓ</div>
                   <div
-                    style="position:absolute;top:34px;left:50%;transform:translateX(-50%) rotate(-3deg);opacity:{{ c.sSkip }};transition:{{ c.sTr }};pointer-events:none;padding:6px 14px 3px;border:4px solid #a3abbf;border-radius:10px;color:#a3abbf;font:700 30px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:rgba(10,15,29,0.4);white-space:nowrap;">
-                    NO ME INTERESA</div>
-                </sc-if>
-
-                <sc-if value="{{ c.asking }}" hint-placeholder-val="{{ false }}">
-                  <div
-                    style="position:absolute;inset:0;z-index:6;border-radius:22px;background:rgba(10,15,29,0.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px;cursor:default;">
-                    <div
-                      style="font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#c4b5f0;">
-                      Ya la vi</div>
-                    <h3 style="margin:0;font:600 46px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">¿Te gustó?</h3>
-                    <div style="display:flex;gap:12px;width:100%;">
-                      <button onClick="{{ answerYes }}"
-                        style="flex:1;min-height:68px;border-radius:18px;border:none;background:#7ee0a6;color:#0c1a12;font:700 24px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;"
-                        style-hover="background:#97eab8;">Sí</button>
-                      <button onClick="{{ answerNo }}"
-                        style="flex:1;min-height:68px;border-radius:18px;border:2px solid #ff7b7b;background:transparent;color:#ff9a9a;font:700 24px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;"
-                        style-hover="background:rgba(255,123,123,0.1);">No</button>
-                    </div>
-                    <button onClick="{{ cancelAsk }}"
-                      style="border:none;background:transparent;color:#8e97ad;font:500 14px/1 'Barlow',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:8px;">Cancelar</button>
-                  </div>
+                    style="position:absolute;top:34px;left:50%;transform:translateX(-50%) rotate(-3deg);opacity:{{ c.sSkip }};transition:{{ c.sTr }};pointer-events:none;padding:7px 16px 4px;border:4px solid #ff7b7b;border-radius:10px;color:#2a0c0c;font:700 34px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;background:#ff7b7b;white-space:nowrap;">
+                    NO ME GUSTÓ</div>
                 </sc-if>
               </div>
             </sc-for>
@@ -413,68 +401,119 @@
           </sc-if>
         </div>
 
-        <div style="display:flex;align-items:center;justify-content:center;gap:clamp(12px,4vw,18px);">
+        <div style="display:flex;align-items:center;gap:10px;min-height:40px;">
+          <sc-if value="{{ showHint }}" hint-placeholder-val="{{ true }}">
+            <div
+              style="flex:1;min-width:0;display:flex;align-items:center;gap:4px;font-size:13px;line-height:1.3;color:#b8bfd1;text-wrap:pretty;">
+              <span style="flex:1;min-width:0;">Dinos si ya la viste: así tus recomendaciones salen mejor.</span>
+              <button onClick="{{ closeHint }}" aria-label="Cerrar ayuda"
+                style="flex:none;width:32px;height:32px;border:none;border-radius:50%;background:transparent;color:#8e97ad;display:flex;align-items:center;justify-content:center;cursor:pointer;"
+                style-hover="color:#eef0f6;background:rgba(255,255,255,0.06);"><svg width="14" height="14"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                </svg></button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hintOff }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1;"></div>
+          </sc-if>
           <button onClick="{{ undo }}" aria-label="Deshacer" title="Deshacer (Ctrl+Z)"
-            style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,0.16);background:rgba(18,26,44,0.9);color:#c9cedd;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ undoOp }};transition:opacity .2s;"
+            style="flex:none;height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.16);background:rgba(18,26,44,0.9);color:#c9cedd;display:flex;align-items:center;gap:6px;font:500 13px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ undoOp }};transition:opacity .2s;"
             style-hover="background:rgba(196,181,240,0.12);">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 8v5h5"></path>
               <path d="M4.6 13A8 8 0 1 0 6.5 6.5L4 9"></path>
-            </svg>
-          </button>
-          <button onClick="{{ actNope }}" aria-label="No me late" title="No me late (←)"
-            style="width:66px;height:66px;border-radius:50%;border:1.5px solid rgba(255,123,123,0.55);background:rgba(18,26,44,0.9);color:#ff7b7b;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ actOp }};box-shadow:0 12px 26px -12px rgba(0,0,0,0.8);"
-            style-hover="background:rgba(255,123,123,0.12);">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
-              stroke-linecap="round">
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-            </svg>
-          </button>
-          <button onClick="{{ actSeen }}" aria-label="Ya la vi" title="Ya la vi (↑)"
-            style="width:54px;height:54px;border-radius:50%;border:1.5px solid rgba(196,181,240,0.55);background:rgba(18,26,44,0.9);color:#c4b5f0;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ actOp }};box-shadow:0 12px 26px -12px rgba(0,0,0,0.8);"
-            style-hover="background:rgba(196,181,240,0.12);">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </button>
-          <button onClick="{{ actLike }}" aria-label="Me late" title="Me late (→)"
-            style="width:66px;height:66px;border-radius:50%;border:1.5px solid rgba(126,224,166,0.55);background:rgba(18,26,44,0.9);color:#7ee0a6;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ actOp }};box-shadow:0 12px 26px -12px rgba(0,0,0,0.8);"
-            style-hover="background:rgba(126,224,166,0.12);">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.7 4.5c2.2 0 3.6 1.2 5.3 3.1 1.7-1.9 3.1-3.1 5.3-3.1 3.7 0 5.8 3.7 4.3 7.2C19.5 16.4 12 21 12 21z">
-              </path>
-            </svg>
+            </svg>Deshacer
           </button>
         </div>
 
-        <sc-if value="{{ compact }}" hint-placeholder-val="{{ true }}">
-          <div style="text-align:center;font-size:13px;color:#7c859c;">Desliza la tarjeta hacia abajo para descartarla
-            sin opinar</div>
-        </sc-if>
+        <div
+          style="position:fixed;left:0;right:0;bottom:0;z-index:40;padding:16px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(10,15,29,0) 0px,rgba(10,15,29,0.97) 12px,#0a0f1d 28px);pointer-events:none;">
+          <div
+            style="max-width:432px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;pointer-events:auto;">
+            <div role="group" aria-label="Ya la vi" style="display:flex;flex-direction:column;gap:7px;">
+              <div
+                style="display:flex;align-items:center;justify-content:center;gap:6px;padding:0 2px;font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;white-space:nowrap;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>Ya la vi
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button onClick="{{ actSeenYes }}" aria-label="Ya la vi y me gustó" title="Me gustó (↑)"
+                  style="flex:1;min-width:0;min-height:58px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid transparent;background:rgba(126,224,166,0.2);color:#7ee0a6;"
+                  style-hover="background:rgba(126,224,166,0.3);" style-active="transform:scale(.96);"><svg width="20"
+                    height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 10v11H3V10h4z"></path>
+                    <path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path>
+                  </svg><span>Me gustó</span></button>
+                <button onClick="{{ actSeenNo }}" aria-label="Ya la vi y no me gustó" title="No me gustó (↓)"
+                  style="flex:1;min-width:0;min-height:58px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid transparent;background:rgba(255,123,123,0.2);color:#ff7b7b;"
+                  style-hover="background:rgba(255,123,123,0.3);" style-active="transform:scale(.96);"><svg
+                    style="transform:rotate(180deg);" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 10v11H3V10h4z"></path>
+                    <path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path>
+                  </svg><span>No me gustó</span></button>
+              </div>
+            </div>
+            <div role="group" aria-label="No la he visto" style="display:flex;flex-direction:column;gap:7px;">
+              <div
+                style="display:flex;align-items:center;justify-content:center;gap:6px;padding:0 2px;font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;white-space:nowrap;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3l18 18"></path>
+                  <path
+                    d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-2.9 3.8M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6">
+                  </path>
+                  <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+                </svg>No la he visto
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button onClick="{{ actLike }}" aria-label="No la he visto, quiero verla" title="Quiero verla (→)"
+                  style="flex:1;min-width:0;min-height:58px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid rgba(126,224,166,0.75);background:transparent;color:#7ee0a6;"
+                  style-hover="background:rgba(126,224,166,0.1);" style-active="transform:scale(.96);"><svg width="20"
+                    height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 3h12v18l-6-4-6 4z"></path>
+                    <path d="M12 7v6M9 10h6"></path>
+                  </svg><span>Quiero verla</span></button>
+                <button onClick="{{ actNope }}" aria-label="No la he visto, paso" title="Paso (←)"
+                  style="flex:1;min-width:0;min-height:58px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid rgba(255,123,123,0.75);background:transparent;color:#ff7b7b;"
+                  style-hover="background:rgba(255,123,123,0.1);" style-active="transform:scale(.96);"><svg width="20"
+                    height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                    stroke-linecap="round">
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                  </svg><span>Paso</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;font-size:13px;color:#7c859c;">
             <span style="display:flex;align-items:center;gap:6px;"><span
-                style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">←</span>No
-              me late</span>
-            <span style="display:flex;align-items:center;gap:6px;"><span
-                style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">→</span>Me
-              late</span>
-            <span style="display:flex;align-items:center;gap:6px;"><span
-                style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">↑</span>Ya
-              la vi</span>
+                style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">↑</span>Me
+              gustó</span>
             <span style="display:flex;align-items:center;gap:6px;"><span
                 style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">↓</span>No
-              me interesa</span>
+              me gustó</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span
+                style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">→</span>Quiero
+              verla</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span
+                style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">←</span>Paso</span>
             <span style="display:flex;align-items:center;gap:6px;"><span
                 style="font:400 11px/1 'JetBrains Mono',monospace;color:#c9cedd;border:1px solid rgba(255,255,255,0.16);border-radius:5px;padding:4px 6px;">Ctrl+Z</span>Deshacer</span>
           </div>
         </sc-if>
 
+        <div aria-hidden="true" style="height:calc(98px + env(safe-area-inset-bottom));"></div>
       </div>
     </div>
   </x-dc>
@@ -603,7 +642,7 @@ class Component extends DCLogic {
       plataformas: ['Disney+'] }
   ];
 
-  state = { loading: true, offline: false, genre: null, deck: [], rated: [], front: null, history: [], prog: { ...Component.SAMPLE }, phase: 'idle', drag: null, flyDir: null, flyTf: null, retTf: null, noTr: false, flipped: false, compact: true };
+  state = { loading: true, offline: false, genre: null, deck: [], rated: [], front: null, history: [], prog: { ...Component.SAMPLE }, phase: 'idle', drag: null, flyDir: null, flyTf: null, retTf: null, noTr: false, flipped: false, compact: true, hintOff: false };
   rootRef = React.createRef();
   timers = [];
 
@@ -613,6 +652,7 @@ class Component extends DCLogic {
       this.ro = new ResizeObserver(e => { const c = e[0].contentRect.width < 640; if (c !== this.state.compact) this.setState({ compact: c }); });
       this.ro.observe(el);
     }
+    try { if (localStorage.getItem('descubrir_ayuda_cerrada') === '1') this.setState({ hintOff: true }); } catch (_) {}
     window.addEventListener('keydown', this.onKey);
     window.addEventListener('offline', this.goOff);
     window.addEventListener('online', this.goOn);
@@ -662,16 +702,16 @@ class Component extends DCLogic {
     return `translate(${x * 1.5}px, ${H}px) rotate(${-x * 0.06}deg)`;
   }
 
-  commit(dir, liked) {
+  commit(dir) {
     const s = this.state;
-    if (!['idle', 'drag', 'ask'].includes(s.phase)) return;
+    if (!['idle', 'drag'].includes(s.phase)) return;
     const m = this.queue(s)[0]; if (!m) return;
     const d = s.drag || { x: 0, y: 0 };
     this.setState({ phase: 'fly', flyDir: dir, flyTf: this.flyTarget(dir, d.x, d.y, this.grab || 1), drag: null });
-    this.later(() => this.finalize(m, dir, liked), 430);
+    this.later(() => this.finalize(m, dir), 430);
   }
-  finalize(m, dir, liked) {
-    const kind = { right: 'like', left: 'dislike', down: 'no_interesa' }[dir] || (liked ? 'vista_gusto' : 'vista_no_gusto');
+  finalize(m, dir) {
+    const kind = { right: 'like', left: 'dislike', up: 'vista_gusto', down: 'vista_no_gusto' }[dir];
     this.grab = 1;
     this.setState(st => ({
       rated: [...st.rated, m.id], front: st.front === m.id ? null : st.front,
@@ -694,7 +734,7 @@ class Component extends DCLogic {
   }
   undo = () => {
     const s = this.state;
-    if (!s.history.length || !['idle', 'ask'].includes(s.phase)) return;
+    if (!s.history.length || s.phase !== 'idle') return;
     const h = s.history[s.history.length - 1];
     const m = (this.live() ? s.deck : Component.MOVIES).find(x => x.id === h.id);
     if (this.live()) {
@@ -711,20 +751,13 @@ class Component extends DCLogic {
   };
   act(dir) {
     if (!this.canAct()) return;
-    if (dir === 'up') this.setState({ phase: 'ask' });
-    else this.commit(dir);
+    this.commit(dir);
   }
 
   onKey = e => {
     const t = e.target && e.target.tagName;
     if (t === 'INPUT' || t === 'TEXTAREA') return;
     if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); this.undo(); return; }
-    if (this.state.phase === 'ask') {
-      if (e.key === 'Escape') this.setState({ phase: 'idle' });
-      else if (e.key === 's' || e.key === 'S') this.commit('up', true);
-      else if (e.key === 'n' || e.key === 'N') this.commit('up', false);
-      return;
-    }
     const map = { ArrowRight: 'right', ArrowLeft: 'left', ArrowUp: 'up', ArrowDown: 'down' };
     if (map[e.key]) { e.preventDefault(); this.act(map[e.key]); }
   };
@@ -752,15 +785,26 @@ class Component extends DCLogic {
     if (Math.abs(x) >= Math.abs(y)) { if (x > 110 || (vx > 0.55 && x > 35)) dir = 'right'; else if (x < -110 || (vx < -0.55 && x < -35)) dir = 'left'; }
     else { if (y < -100 || (vy < -0.55 && y < -35)) dir = 'up'; else if (y > 110 || (vy > 0.55 && y > 35)) dir = 'down'; }
     if (!dir) this.setState({ phase: 'idle', drag: null });
-    else if (dir === 'up') this.setState({ phase: 'ask', drag: null });
     else this.commit(dir);
   };
   onCancel = () => { if (!this.ptr) return; this.ptr = null; this.setState({ phase: 'idle', drag: null }); };
 
+  // Tamaño del título del cartel. La caja del título mide lo que sobre en la tarjeta
+  // (container-type:size), así que el tamaño se limita por ancho (cqw) Y por alto (cqh):
+  // en pantallas chaparras el título se achica en vez de encimarse con lo demás.
   posterFs(t) {
-    const L = t.length, w = Math.max(...t.split(/\s+/).map(x => x.length));
+    const palabras = t.trim().split(/\s+/);
+    const L = t.length, w = Math.max(...palabras.map(x => x.length));
     const byLen = L <= 6 ? 30 : L <= 12 ? 22 : L <= 20 ? 17 : L <= 30 ? 14 : 11.5;
-    return Math.min(byLen, 84 / (w * 0.47)).toFixed(1) + 'cqw';
+    const f = Math.min(byLen, 84 / (w * 0.47));                 // % del ancho de la tarjeta
+    const cabe = Math.max(w, Math.floor(78 / (0.47 * f)));      // letras que caben por renglón
+    let renglones = 1, usado = 0;
+    for (const p of palabras) {
+      if (usado && usado + 1 + p.length > cabe) { renglones++; usado = p.length; }
+      else usado += (usado ? 1 : 0) + p.length;
+    }
+    const ancho = (f * 1.15).toFixed(1), alto = (96 / (0.92 * renglones)).toFixed(1);
+    return `min(${ancho}cqw, ${alto}cqh)`;
   }
   dur(m) { if (!m) return ''; const h = Math.floor(m / 60), r = m % 60; return h ? `${h} h ${r} min` : `${r} min`; }
 
@@ -802,7 +846,6 @@ class Component extends DCLogic {
         flipTr: s.noTr ? 'none' : 'transform .6s cubic-bezier(.2,.8,.2,1)',
         onFlip: () => this.setState(x => ({ flipped: !x.flipped })),
         sLike: st.like, sNope: st.nope, sSeen: st.seen, sSkip: st.skip, sTr: s.phase === 'drag' ? 'none' : 'opacity .2s',
-        asking: top && s.phase === 'ask',
         titulo: m.titulo, orig: m.titulo_original, showOrig: !!m.titulo_original && m.titulo_original !== m.titulo,
         anio: m.anio, dur: this.dur(m.duracion_min), generos: m.generos, genreLine: m.generos.join(' · '),
         director: m.directores.map(x => x.nombre).join(' y '), actors: m.actores.slice(0, 3).map(a => a.nombre).join(', '),
@@ -824,7 +867,7 @@ class Component extends DCLogic {
     const empty = ready && q.length === 0;
     const anyInGenre = s.genre && (this.live() || Component.MOVIES.some(m => m.generos.includes(s.genre)));
     const chip = sel => sel ? { bg: '#c4b5f0', fg: '#0c1122', bd: '#c4b5f0' } : { bg: 'rgba(255,255,255,0.03)', fg: '#dfe2ee', bd: 'rgba(255,255,255,0.14)' };
-    const setGenre = g => { if (s.phase === 'idle' || s.phase === 'ask') this.setState({ genre: g, front: null, flipped: false, phase: 'idle' }, () => { if (this.live()) this.iniciar(); }); };
+    const setGenre = g => { if (s.phase === 'idle') this.setState({ genre: g, front: null, flipped: false }, () => { if (this.live()) this.iniciar(); }); };
     const can = this.canAct();
 
     return {
@@ -832,7 +875,6 @@ class Component extends DCLogic {
       genreChips: [{ label: 'Todos', ...chip(!s.genre), onClick: () => setGenre(null) },
         ...Component.GENRES.map(g => ({ label: g, ...chip(s.genre === g), onClick: () => setGenre(g) }))],
       showDeck: ready && q.length > 0, slots, stopPD: e => e.stopPropagation(),
-      answerYes: () => this.commit('up', true), answerNo: () => this.commit('up', false), cancelAsk: () => this.setState({ phase: 'idle' }),
       showLoading: s.loading && !s.offline, showOffline: s.offline,
       loadBulbs: Array.from({ length: 5 }, (_, i) => ({ delay: (i * 0.14).toFixed(2) + 's' })),
       showEmpty: empty, emptyHasFilter: !!s.genre,
@@ -841,7 +883,11 @@ class Component extends DCLogic {
       clearGenre: () => setGenre(null),
       retry: () => { if (navigator.onLine === false) return; if (this.live()) { this.iniciar(); return; } this.setState({ offline: false, loading: true }); this.later(() => this.setState({ loading: false }), 900); },
       undo: this.undo, undoOp: s.history.length && s.phase === 'idle' ? 1 : 0.35, actOp: can ? 1 : 0.35,
-      actNope: () => this.act('left'), actSeen: () => this.act('up'), actLike: () => this.act('right'),
+      actNope: () => this.act('left'), actLike: () => this.act('right'),
+      actSeenYes: () => this.act('up'), actSeenNo: () => this.act('down'),
+      showHint: !s.hintOff, hintOff: s.hintOff,
+      closeHint: () => { try { localStorage.setItem('descubrir_ayuda_cerrada', '1'); } catch (_) {} this.setState({ hintOff: true }); },
+      chipWrap: s.compact ? 'nowrap' : 'wrap', chipJustify: s.compact ? 'flex-start' : 'center',
       compact: s.compact, wide: !s.compact
     };
   }
