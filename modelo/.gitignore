@@ -1,0 +1,6 @@
+datos/
+datos_demo/
+salidas/
+salidas_demo/
+.env
+__pycache__/
