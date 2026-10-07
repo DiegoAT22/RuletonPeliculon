@@ -97,21 +97,29 @@
       <div
         style="max-width:460px;margin:0 auto;padding:clamp(16px,4vw,40px) 14px 20px;display:flex;flex-direction:column;gap:14px;">
 
-        <nav style="display:flex;justify-content:center;">
+        <nav style="display:flex;justify-content:center;align-items:center;gap:6px;">
           <div
-            style="display:flex;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+            style="display:flex;min-width:0;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
             <a href="Tragamonedas%20de%20Peliculas.dc.html"
-              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;"
               style-hover="color:#ffffff;">Tragamonedas</a>
             <a href="Descubrir.dc.html" aria-current="page"
-              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;">Descubrir</a>
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;background:#c4b5f0;color:#0c1122;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;">Descubrir</a>
             <a href="Para%20ti.dc.html"
-              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;"
               style-hover="color:#ffffff;">Para ti</a>
             <a href="Explorar.dc.html"
-              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(7px,2vw,18px);border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,3.3vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.8px,0.45vw,2.2px);text-transform:uppercase;"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;"
               style-hover="color:#ffffff;">Explorar</a>
           </div>
+          <a href="Perfil.dc.html" aria-label="Tu perfil" title="Tu perfil"
+            style="flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:rgba(0,0,0,0.3);color:#c4b5f0;border:1px solid rgba(196,181,240,0.45);"
+            style-hover="background:rgba(196,181,240,0.14);color:#e2d9ff;"><svg width="20" height="20"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 21a8 8 0 0 1 16 0"></path>
+            </svg></a>
         </nav>
 
         <div
@@ -440,8 +448,7 @@
                   stroke-linecap="round" stroke-linejoin="round">
                   <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
-                </svg>Ya la vi
-              </div>
+                </svg>Ya la vi</div>
               <div style="display:flex;gap:6px;">
                 <button onClick="{{ actSeenYes }}" aria-label="Ya la vi y me gustó" title="Me gustó (↑)"
                   style="flex:1;min-width:0;min-height:58px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid transparent;background:rgba(126,224,166,0.2);color:#7ee0a6;"
@@ -471,8 +478,7 @@
                     d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-2.9 3.8M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6">
                   </path>
                   <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
-                </svg>No la he visto
-              </div>
+                </svg>No la he visto</div>
               <div style="display:flex;gap:6px;">
                 <button onClick="{{ actLike }}" aria-label="No la he visto, quiero verla" title="Quiero verla (→)"
                   style="flex:1;min-width:0;min-height:58px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid rgba(126,224,166,0.75);background:transparent;color:#7ee0a6;"

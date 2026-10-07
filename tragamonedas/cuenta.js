@@ -12,7 +12,7 @@
    Las pantallas usan:
      Cuenta.sesion()        → asegura que haya sesión (anónima o con cuenta)
      Cuenta.rpc(fn, args)   → llama una función de Supabase con esa sesión
-     Cuenta.usuario()       → el usuario actual o null
+     Cuenta.usuario()       → el usuario actual o null (sin crear sesión)
      Cuenta.entrar() / Cuenta.salir() / Cuenta.borrar()
    y pueden escuchar el evento  window "cuenta:cambio".
 
@@ -26,14 +26,15 @@
     // Publishable key: sí puede ir en el frontend. NUNCA pongas aquí la secret key.
     key: 'sb_publishable_aMwHv2EdEELy5FRcRdkYDg_ipcSNSTG',
     proveedor: 'google',
-    privacidad: 'privacidad.html'
+    privacidad: 'privacidad.html',
+    perfil: 'Perfil.dc.html'
   };
   var VIEJA = 'ruleta_sesion_v1';   // sesión anónima de la versión anterior (se migra una sola vez)
   var PASE = 'ruleta_pase_v1';      // pase para pasar los swipes anónimos a la cuenta
 
   function leer(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }
-  function guardar(k, v) { try { localStorage.setItem(k, v); } catch (_) {} }
-  function quitar(k) { try { localStorage.removeItem(k); } catch (_) {} }
+  function guardar(k, v) { try { localStorage.setItem(k, v); } catch (_) { } }
+  function quitar(k) { try { localStorage.removeItem(k); } catch (_) { } }
 
   // Sin respuesta del servidor (o error 5xx): se puede reintentar; no es que la sesión esté mal.
   function esDeRed(e) {
@@ -74,7 +75,7 @@
   var estado = { lista: false, usuario: null, ocupado: false };
 
   function avisar() {
-    try { window.dispatchEvent(new CustomEvent('cuenta:cambio', { detail: { usuario: estado.usuario } })); } catch (_) {}
+    try { window.dispatchEvent(new CustomEvent('cuenta:cambio', { detail: { usuario: estado.usuario } })); } catch (_) { }
     pintar();
   }
 
@@ -99,7 +100,7 @@
     if (vieja && ses) quitar(VIEJA);
     if (vieja && !ses) {
       var v = null;
-      try { v = JSON.parse(vieja); } catch (_) {}
+      try { v = JSON.parse(vieja); } catch (_) { }
       if (v && v.access_token && v.refresh_token) {
         var m = await sb.auth.setSession({ access_token: v.access_token, refresh_token: v.refresh_token });
         if (m.error) {
@@ -216,7 +217,7 @@
 
   async function borrar() {
     await rpc('borrar_mi_cuenta');
-    try { await sb.auth.signOut({ scope: 'local' }); } catch (_) {}
+    try { await sb.auth.signOut({ scope: 'local' }); } catch (_) { }
     quitar(PASE);
     location.reload();
   }
@@ -264,6 +265,7 @@
     '.btn{width:100%;min-height:40px;padding:0 14px;border-radius:999px;border:0;cursor:pointer;font:600 14px/1 "Barlow Condensed","Barlow",system-ui,sans-serif;',
     '  letter-spacing:1.2px;text-transform:uppercase;display:block}',
     '.btn+.btn{margin-top:8px}',
+    '.btn.enl{display:flex;align-items:center;justify-content:center;text-decoration:none}',
     '.btn.pri{background:#c4b5f0;color:#0c1122}.btn.pri:hover{background:#d8ccff}',
     '.btn.sec{background:transparent;color:#e8eaf2;border:1px solid rgba(196,181,240,.4)}.btn.sec:hover{border-color:#c4b5f0}',
     '.btn.rojo{background:transparent;color:#ff9c9c;border:1px solid rgba(255,140,140,.4)}.btn.rojo:hover{border-color:#ff9c9c}',
@@ -333,6 +335,7 @@
     var nombre = meta.full_name || meta.name || (u && u.email) || 'Tu cuenta';
     var foto = meta.avatar_url || meta.picture || null;
 
+    var enPerfil = decodeURIComponent(location.pathname).slice(-CONFIG.perfil.length) === CONFIG.perfil;
     var alternar = function () { ui.abierto = !ui.abierto; ui.confirmar = false; ui.error = null; pintar(); };
     var chip;
     if (conCuenta) {
@@ -355,12 +358,14 @@
         panel.appendChild(el('p', { class: 'titulo', texto: 'Guarda tu progreso' }));
         panel.appendChild(el('p', { class: 'txt', texto: 'Entra con Google para que tus películas calificadas no se pierdan y te sigan en cualquier dispositivo.' }));
         panel.appendChild(el('button', { class: 'btn pri', type: 'button', disabled: estado.ocupado, texto: estado.ocupado ? 'Abriendo Google…' : 'Continuar con Google', click: accion(entrar) }));
+        if (!enPerfil) panel.appendChild(el('a', { class: 'btn sec enl', href: CONFIG.perfil, texto: 'Mi perfil' }));
         var pie = el('p', { class: 'pie', texto: 'Solo guardamos tu nombre, correo y foto de Google. ' });
         pie.appendChild(el('a', { class: 'liga', href: CONFIG.privacidad, texto: 'Aviso de privacidad' }));
         panel.appendChild(pie);
       } else if (!ui.confirmar) {
         panel.appendChild(el('p', { class: 'dato', texto: nombre }));
         panel.appendChild(el('p', { class: 'sub', texto: (u.email && u.email !== nombre) ? u.email : 'Sesión iniciada con Google' }));
+        if (!enPerfil) panel.appendChild(el('a', { class: 'btn pri enl', href: CONFIG.perfil, texto: 'Mi perfil' }));
         panel.appendChild(el('button', { class: 'btn sec', type: 'button', disabled: estado.ocupado, texto: 'Cerrar sesión', click: accion(salir) }));
         panel.appendChild(el('button', { class: 'btn rojo', type: 'button', disabled: estado.ocupado, texto: 'Borrar mi cuenta', click: function () { ui.confirmar = true; ui.error = null; pintar(); } }));
         var pie2 = el('p', { class: 'pie' });
@@ -395,7 +400,7 @@
     try {
       new MutationObserver(function () { if (ui.raiz && !ui.raiz.isConnected) pintar(); })
         .observe(document.documentElement, { childList: true, subtree: true });
-    } catch (_) {}
+    } catch (_) { }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrancar);
   else arrancar();

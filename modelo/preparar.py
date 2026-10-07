@@ -80,7 +80,8 @@ class Datos:
         self.y = np.array([C.ETIQUETA[a] for a in self.accion], dtype=np.float32)
         self.w_perfil = np.array([C.PESO_PERFIL[a] for a in self.accion], dtype=np.float32)
         self.w_ejemplo = np.array([C.PESO_EJEMPLO[a] for a in self.accion], dtype=np.float32)
-        self.es_swipe = np.array([o == "swipe" for o in self.origen])
+        # "perfil" = la persona corrigió su respuesta desde su perfil: vale igual que un swipe de Descubrir
+        self.es_swipe = np.array([o in ("swipe", "perfil") for o in self.origen])
         self.n_usuarios = len(usuarios)
         self.con_cuenta = np.array([cuenta.get(i, False) for i in range(self.n_usuarios)])
 

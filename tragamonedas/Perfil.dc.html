@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./supabase.js"></script>
+<script src="./cuenta.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#0a0f1d;}
+*{box-sizing:border-box;}
+a{color:#c4b5f0;}
+a:hover{color:#e2d9ff;}
+button{font-family:inherit;}
+button:focus-visible,a:focus-visible{outline:2px solid #c4b5f0;outline-offset:3px;}
+*{scrollbar-width:thin;scrollbar-color:rgba(196,181,240,0.45) transparent;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(196,181,240,0.4);border-radius:3px;}
+@keyframes skPulse{0%,100%{opacity:.45;}50%{opacity:.9;}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
+  <div style="max-width:1100px;margin:0 auto;padding:clamp(16px,4vw,40px) 14px 48px;display:flex;flex-direction:column;gap:16px;">
+
+    <nav style="display:flex;justify-content:center;align-items:center;gap:6px;">
+      <div style="display:flex;min-width:0;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+        <a href="Tragamonedas%20de%20Peliculas.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;" style-hover="color:#ffffff;">Tragamonedas</a>
+        <a href="Descubrir.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;" style-hover="color:#ffffff;">Descubrir</a>
+        <a href="Para%20ti.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;" style-hover="color:#ffffff;">Para ti</a>
+        <a href="Explorar.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;" style-hover="color:#ffffff;">Explorar</a>
+      </div>
+      <a href="Perfil.dc.html" aria-label="Tu perfil" aria-current="page" title="Tu perfil" style="flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:#c4b5f0;color:#0c1122;border:1px solid #c4b5f0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></a>
+    </nav>
+
+    <sc-if value="{{ showLoading }}" hint-placeholder-val="{{ false }}">
+      <div aria-busy="true" aria-label="Cargando tu perfil" style="display:flex;flex-direction:column;gap:16px;">
+        <div style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.12);padding:20px 18px;display:flex;align-items:center;gap:16px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out infinite;"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+            <div style="height:24px;width:50%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out .1s infinite;"></div>
+            <div style="height:14px;width:70%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out .2s infinite;"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start;">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="height:220px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(196,181,240,0.08);animation:skPulse 1.4s ease-in-out .15s infinite;"></div>
+            <div style="height:260px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(196,181,240,0.08);animation:skPulse 1.4s ease-in-out .3s infinite;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="height:44px;border-radius:999px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .2s infinite;"></div>
+            <div style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .3s infinite;"></div>
+            <div style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .4s infinite;"></div>
+            <div style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .5s infinite;"></div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showOffline }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:460px;width:100%;margin:24px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px 28px;text-align:center;">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path><path d="M10 5.1A15 15 0 0 1 22 8.8"></path><path d="M5 12.5a10 10 0 0 1 5.2-2.8"></path><path d="M14.5 9.9A10 10 0 0 1 19 12.5"></path><path d="M8.5 16a5 5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r="0.8" fill="#c4b5f0"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>
+        <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sin conexión</h2>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">No pudimos cargar tu perfil. Lo que ya calificaste está guardado.</p>
+        <button onClick="{{ reintentar }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Reintentar</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showMain }}" hint-placeholder-val="{{ true }}">
+
+      <header style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;">
+        <sc-if value="{{ conCuenta }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ hasFoto }}" hint-placeholder-val="{{ false }}">
+            <div role="img" aria-label="{{ nombre }}" style="flex:none;width:64px;height:64px;border-radius:50%;background-image:{{ fotoCss }};background-size:cover;background-position:center;border:2px solid rgba(196,181,240,0.5);"></div>
+          </sc-if>
+          <sc-if value="{{ noFoto }}" hint-placeholder-val="{{ true }}">
+            <div aria-hidden="true" style="flex:none;width:64px;height:64px;border-radius:50%;background:#c4b5f0;color:#0d1224;display:flex;align-items:center;justify-content:center;font:600 32px/1 'Barlow Condensed',sans-serif;box-shadow:0 0 0 4px rgba(196,181,240,0.15);">{{ inicial }}</div>
+          </sc-if>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
+            <h1 style="margin:0;font:600 32px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nombre }}</h1>
+            <p style="margin:0;font-size:14px;color:#a8b0c4;">{{ desdeTxt }}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{ sinCuenta }}" hint-placeholder-val="{{ false }}">
+          <div aria-hidden="true" style="flex:none;width:64px;height:64px;border-radius:50%;border:1.5px dashed rgba(196,181,240,0.5);color:#c4b5f0;display:flex;align-items:center;justify-content:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>
+          </div>
+          <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px;">
+            <h1 style="margin:0;font:600 32px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sesión sin cuenta</h1>
+            <p style="margin:0;font-size:14px;line-height:1.4;color:#a8b0c4;">Entra con Google para no perder tu progreso</p>
+          </div>
+          <button onClick="{{ entrar }}" style="flex:none;min-height:48px;padding:0 22px;border-radius:999px;border:none;background:#f4f2ec;color:#0d1224;font:600 15px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ entrarOp }};" style-hover="background:#ffffff;">{{ entrarTxt }}</button>
+        </sc-if>
+      </header>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start;">
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
+
+          <section aria-labelledby="h-numeros" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:16px;">
+            <h2 id="h-numeros" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Tus números</h2>
+            <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+              <span style="font:600 64px/0.9 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 28px rgba(196,181,240,0.3);">{{ total }}</span>
+              <span style="font:600 20px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.04em;color:#dfe2ee;">{{ totalLabel }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;">
+              <div style="display:flex;flex-direction:column;gap:6px;padding:12px 10px;border-radius:14px;background:rgba(126,224,166,0.12);color:#7ee0a6;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg>
+                <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nGusto }}</span>
+                <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Me gustaron</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;padding:12px 10px;border-radius:14px;background:rgba(255,123,123,0.12);color:#ff7b7b;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(180deg);"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg>
+                <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nNoGusto }}</span>
+                <span style="font-size:12px;line-height:1.2;color:#c9cedd;">No me gustaron</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;padding:11px 9px;border-radius:14px;border:1px solid rgba(126,224,166,0.55);color:#7ee0a6;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path><path d="M12 7v6M9 10h6"></path></svg>
+                <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nQuiero }}</span>
+                <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Quiero ver</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;padding:11px 9px;border-radius:14px;border:1px solid rgba(255,123,123,0.55);color:#ff7b7b;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+                <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nPaso }}</span>
+                <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Paso</span>
+              </div>
+            </div>
+            <div role="img" aria-label="{{ barAria }}" style="display:flex;gap:3px;height:14px;">
+              <div style="display:{{ dGusto }};width:{{ wGusto }};border-radius:4px;background:#7ee0a6;transition:width .4s;"></div>
+              <div style="display:{{ dNoGusto }};width:{{ wNoGusto }};border-radius:4px;background:#ff7b7b;transition:width .4s;"></div>
+              <div style="display:{{ dQuiero }};width:{{ wQuiero }};border-radius:4px;border:1.5px solid #7ee0a6;background:repeating-linear-gradient(135deg,rgba(126,224,166,0.5) 0 3px,transparent 3px 7px);transition:width .4s;"></div>
+              <div style="display:{{ dPaso }};width:{{ wPaso }};border-radius:4px;border:1.5px solid #ff7b7b;background:repeating-linear-gradient(135deg,rgba(255,123,123,0.5) 0 3px,transparent 3px 7px);transition:width .4s;"></div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#8e97ad;">
+              <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#7ee0a6;"></span>Vistas: lleno</span>
+              <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;border:1.5px solid #c9cedd;background:repeating-linear-gradient(135deg,rgba(201,206,221,0.6) 0 2px,transparent 2px 4px);"></span>No vistas: rayado</span>
+            </div>
+            <sc-if value="{{ showPct }}" hint-placeholder-val="{{ true }}">
+              <p style="margin:0;font:600 19px/1.2 'Barlow Condensed',sans-serif;letter-spacing:.03em;color:#eef0f6;">{{ pctTxt }}</p>
+            </sc-if>
+          </section>
+
+          <section aria-labelledby="h-precision" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:16px;">
+            <h2 id="h-precision" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Qué tan bien te conozco</h2>
+            <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+                <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí verás tus gustos</p>
+                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+              </div>
+            </sc-if>
+            <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+              <div style="border-radius:18px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+                <div style="background:#121724;border-radius:12px;padding:14px 14px 16px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+                  <div aria-hidden="true" style="align-self:stretch;display:flex;justify-content:space-between;padding:0 2px;">
+                    <sc-for list="{{ deco }}" as="d" hint-placeholder-count="16">
+                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);"></div>
+                    </sc-for>
+                  </div>
+                  <sc-if value="{{ mNum }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;align-items:baseline;justify-content:center;gap:12px;font:600 26px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#e2d9ff;">
+                      <span>Atino</span>
+                      <span style="font:600 96px/0.85 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 30px rgba(196,181,240,0.55);">{{ aucN }}</span>
+                      <span>de cada 10</span>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ mLow }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:10px 0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">Todavía no te atino. Sigue calificando.</div>
+                  </sc-if>
+                  <sc-if value="{{ mNull }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:10px 0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">Todavía no puedo medirlo</div>
+                  </sc-if>
+                  <sc-if value="{{ hasAuc }}" hint-placeholder-val="{{ true }}">
+                    <div aria-hidden="true" style="display:flex;gap:10px;">
+                      <sc-for list="{{ aucBulbs }}" as="b" hint-placeholder-count="10">
+                        <div style="width:11px;height:11px;border-radius:50%;background:{{ b.bg }};box-shadow:{{ b.sh }};"></div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                  <div aria-hidden="true" style="align-self:stretch;display:flex;justify-content:space-between;padding:0 2px;">
+                    <sc-for list="{{ deco }}" as="d" hint-placeholder-count="16">
+                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);"></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+              <sc-if value="{{ hasAuc }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:-4px 0 0;font-size:13px;line-height:1.45;color:#a8b0c4;text-align:center;text-wrap:pretty;">Tomo una película que te gustó y una que no, y adivino cuál es cuál.</p>
+              </sc-if>
+              <sc-if value="{{ mNull }}" hint-placeholder-val="{{ false }}">
+                <p style="margin:-4px 0 0;font-size:13px;line-height:1.45;color:#a8b0c4;text-align:center;text-wrap:pretty;">Me faltan películas que te gusten y que no: llevas {{ posN }} y {{ negN }}, necesito al menos 8 de cada una.</p>
+              </sc-if>
+
+              <div style="display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;">
+                  <span style="font:600 22px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nivelNombre }}</span>
+                  <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">Nivel {{ nivelNum }} de 4</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;">
+                  <sc-for list="{{ niveles }}" as="n" hint-placeholder-count="4">
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                      <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.08);overflow:hidden;">
+                        <div style="height:100%;width:{{ n.fill }};background:#c4b5f0;box-shadow:0 0 8px rgba(196,176,255,0.6);border-radius:999px;"></div>
+                      </div>
+                      <span style="font-size:11px;line-height:1.2;color:{{ n.fg }};font-weight:{{ n.fw }};">{{ n.nombre }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <p style="margin:0;font-size:14px;color:#c9cedd;">{{ faltanTxt }}</p>
+              </div>
+            </sc-if>
+          </section>
+
+          <section aria-labelledby="h-late" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:14px;">
+            <h2 id="h-late" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Lo que más te late</h2>
+            <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+                <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí verás tus gustos</p>
+                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+              </div>
+            </sc-if>
+            <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <sc-for list="{{ gustos }}" as="g" hint-placeholder-count="8">
+                  <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 40px;gap:10px;align-items:center;">
+                    <span style="font-size:15px;color:#eef0f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ g.rasgo }}</span>
+                    <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.06);overflow:hidden;">
+                      <div style="height:100%;width:{{ g.w }};border-radius:999px;background:#7ee0a6;"></div>
+                    </div>
+                    <span style="font:600 14px/1 'Barlow Condensed',sans-serif;color:#7ee0a6;text-align:right;">{{ g.val }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ hasNoTanto }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
+                  <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#7c859c;">No tanto</span>
+                  <sc-for list="{{ noTanto }}" as="g" hint-placeholder-count="5">
+                    <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 40px;gap:10px;align-items:center;">
+                      <span style="font-size:13px;color:#a8b0c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ g.rasgo }}</span>
+                      <div style="height:5px;border-radius:999px;background:rgba(255,255,255,0.05);overflow:hidden;">
+                        <div style="height:100%;width:{{ g.w }};border-radius:999px;background:rgba(255,123,123,0.7);"></div>
+                      </div>
+                      <span style="font:600 13px/1 'Barlow Condensed',sans-serif;color:#ff9a9a;text-align:right;">{{ g.val }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </sc-if>
+          </section>
+
+          <section aria-labelledby="h-tabla" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <h2 id="h-tabla" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Tu tabla de gustos</h2>
+              <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0;font-size:13px;color:#8e97ad;">Se actualiza sola cada vez que calificas una película.</p>
+              </sc-if>
+            </div>
+            <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+                <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí verás tus gustos</p>
+                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+              </div>
+            </sc-if>
+            <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+              <div aria-hidden="true" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) 48px;gap:10px;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;">
+                <span></span>
+                <div style="display:flex;justify-content:space-between;"><span>← No</span><span>Sí →</span></div>
+                <span></span>
+              </div>
+              <div style="display:flex;flex-direction:column;">
+                <sc-for list="{{ tabla }}" as="t" hint-placeholder-count="5">
+                  <div style="border-top:1px solid rgba(255,255,255,0.08);">
+                    <button onClick="{{ t.toggle }}" aria-expanded="{{ t.open }}" style="width:100%;min-height:48px;padding:0 2px;border:none;background:transparent;color:#eef0f6;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;" style-hover="color:#ffffff;">
+                      <span style="flex:1;font:600 19px/1 'Barlow Condensed',sans-serif;letter-spacing:.03em;">{{ t.nombre }}</span>
+                      <span style="font-size:12px;color:#8e97ad;">{{ t.cuenta }}</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:{{ t.chev }};transition:transform .2s;"><path d="M6 9l6 6 6-6"></path></svg>
+                    </button>
+                    <sc-if value="{{ t.open }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:10px;padding:2px 2px 16px;">
+                        <sc-for list="{{ t.rasgos }}" as="r" hint-placeholder-count="4">
+                          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) 48px;gap:10px;align-items:center;">
+                            <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
+                              <span style="font-size:14px;color:#eef0f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.rasgo }}</span>
+                              <span style="font-size:11px;color:#7c859c;">{{ r.veces }}</span>
+                            </div>
+                            <div style="position:relative;height:10px;border-radius:999px;background:rgba(255,255,255,0.06);">
+                              <div style="position:absolute;top:0;bottom:0;left:{{ r.l }};width:{{ r.w }};border-radius:999px;background:{{ r.bg }};"></div>
+                              <div style="position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:rgba(255,255,255,0.35);"></div>
+                            </div>
+                            <span style="font:600 15px/1 'Barlow Condensed',sans-serif;color:{{ r.fg }};text-align:right;">{{ r.val }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </section>
+
+          <section aria-labelledby="h-generos" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:14px;">
+            <h2 id="h-generos" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Por género</h2>
+            <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+                <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí verás tus gustos</p>
+                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+              </div>
+            </sc-if>
+            <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <sc-for list="{{ generos }}" as="g" hint-placeholder-count="8">
+                  <div style="display:flex;flex-direction:column;gap:6px;">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;">
+                      <span style="font-size:15px;color:#eef0f6;">{{ g.nombre }} <span style="font-size:12px;color:#7c859c;">· {{ g.total }} calificadas</span></span>
+                      <span style="font-size:12px;color:#a8b0c4;white-space:nowrap;">{{ g.pos }}</span>
+                    </div>
+                    <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden;">
+                      <div style="height:100%;width:{{ g.pct }};border-radius:999px;background:#7ee0a6;"></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </section>
+        </div>
+
+        <section aria-labelledby="h-pelis" style="min-width:0;border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 0;display:flex;flex-direction:column;gap:14px;">
+          <h2 id="h-pelis" style="margin:0;padding:0 18px;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Tus películas</h2>
+          <div role="tablist" aria-label="Tus películas" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 18px 4px;">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+              <button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.onClick }}" style="flex:none;min-height:40px;padding:0 14px;border-radius:999px;display:flex;align-items:center;gap:7px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};">{{ t.label }}<span style="font:600 12px/1 'Barlow',sans-serif;padding:3px 7px;border-radius:999px;background:{{ t.cbg }};">{{ t.count }}</span></button>
+            </sc-for>
+          </div>
+
+          <div role="tabpanel" style="display:flex;flex-direction:column;padding:0 18px;">
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+              <div style="border-top:1px solid rgba(255,255,255,0.07);padding:12px 0;display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div aria-hidden="true" style="flex:none;width:54px;height:80px;border-radius:8px;overflow:hidden;position:relative;background:{{ r.posterBg }};border:1px solid rgba(196,181,240,0.16);">
+                    <sc-if value="{{ r.hasPoster }}" hint-placeholder-val="{{ false }}">
+                      <div style="position:absolute;inset:0;background-image:{{ r.posterCss }};background-size:cover;background-position:center;"></div>
+                    </sc-if>
+                    <sc-if value="{{ r.noPoster }}" hint-placeholder-val="{{ true }}">
+                      <div style="position:absolute;inset:3px;border:1px solid rgba(214,200,255,0.22);border-radius:5px;display:flex;flex-direction:column;justify-content:space-between;padding:4px 3px;">
+                        <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                          <sc-for list="{{ miniBulbs }}" as="d" hint-placeholder-count="4">
+                            <div style="width:2.5px;height:2.5px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 3px rgba(196,176,255,0.7);"></div>
+                          </sc-for>
+                        </div>
+                        <div style="text-align:center;font:600 8.5px/0.95 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;word-break:break-word;">{{ r.titulo }}</div>
+                        <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                          <sc-for list="{{ miniBulbs }}" as="d" hint-placeholder-count="4">
+                            <div style="width:2.5px;height:2.5px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 3px rgba(196,176,255,0.7);"></div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-if>
+                  </div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;">
+                    <h3 style="margin:0;font:600 19px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ r.titulo }}</h3>
+                    <span style="font-size:13px;color:#a8b0c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.meta }}</span>
+                    <span style="align-self:flex-start;display:inline-flex;align-items:center;gap:5px;padding:4px 9px 4px 7px;border-radius:999px;font:600 12px/1 'Barlow',sans-serif;color:{{ r.tagFg }};background:{{ r.tagBg }};border:1.5px solid {{ r.tagBd }};">
+                      <sc-if value="{{ r.isG }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg></sc-if>
+                      <sc-if value="{{ r.isN }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(180deg);"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg></sc-if>
+                      <sc-if value="{{ r.isL }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path><path d="M12 7v6M9 10h6"></path></svg></sc-if>
+                      <sc-if value="{{ r.isP }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></sc-if>
+                      {{ r.tag }}
+                    </span>
+                  </div>
+                  <button onClick="{{ r.toggle }}" aria-expanded="{{ r.open }}" aria-label="{{ r.cambiarAria }}" style="flex:none;min-height:40px;padding:0 13px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);background:{{ r.cBg }};color:#ddd5fb;font:600 13px/1 'Barlow',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;" style-hover="background:rgba(196,181,240,0.12);">Cambiar<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:{{ r.chev }};transition:transform .2s;"><path d="M6 9l6 6 6-6"></path></svg></button>
+                </div>
+
+                <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);">
+                    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+                      <div role="group" aria-label="Ya la vi" style="display:flex;flex-direction:column;gap:6px;">
+                        <span style="text-align:center;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">Ya la vi</span>
+                        <div style="display:flex;gap:6px;">
+                          <button onClick="{{ r.setG }}" aria-pressed="{{ r.curG }}" aria-label="Ya la vi y me gustó" style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid transparent;background:rgba(126,224,166,0.2);color:#7ee0a6;box-shadow:{{ r.shG }};" style-hover="background:rgba(126,224,166,0.3);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg>Me gustó</button>
+                          <button onClick="{{ r.setN }}" aria-pressed="{{ r.curN }}" aria-label="Ya la vi y no me gustó" style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid transparent;background:rgba(255,123,123,0.2);color:#ff7b7b;box-shadow:{{ r.shN }};" style-hover="background:rgba(255,123,123,0.3);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(180deg);"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg>No me gustó</button>
+                        </div>
+                      </div>
+                      <div role="group" aria-label="No la he visto" style="display:flex;flex-direction:column;gap:6px;">
+                        <span style="text-align:center;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">No la he visto</span>
+                        <div style="display:flex;gap:6px;">
+                          <button onClick="{{ r.setL }}" aria-pressed="{{ r.curL }}" aria-label="No la he visto, quiero verla" style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid rgba(126,224,166,0.75);background:transparent;color:#7ee0a6;box-shadow:{{ r.shL }};" style-hover="background:rgba(126,224,166,0.1);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path><path d="M12 7v6M9 10h6"></path></svg>Quiero verla</button>
+                          <button onClick="{{ r.setP }}" aria-pressed="{{ r.curP }}" aria-label="No la he visto, paso" style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid rgba(255,123,123,0.75);background:transparent;color:#ff7b7b;box-shadow:{{ r.shP }};" style-hover="background:rgba(255,123,123,0.1);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>Paso</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);">
+                      <span style="font-size:12px;color:#8e97ad;">Respuesta actual: {{ r.tag }}</span>
+                      <button onClick="{{ r.quitar }}" aria-label="{{ r.quitarAria }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:none;background:transparent;color:#ff9a9a;font:500 13px/1 'Barlow',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;" style-hover="background:rgba(255,123,123,0.1);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>Quitar de mi lista</button>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+
+            <sc-if value="{{ listaCargando }}" hint-placeholder-val="{{ false }}">
+              <div aria-busy="true" style="display:flex;flex-direction:column;">
+                <sc-for list="{{ skRows }}" as="k" hint-placeholder-count="3">
+                  <div style="border-top:1px solid rgba(255,255,255,0.07);padding:12px 0;display:flex;align-items:center;gap:12px;">
+                    <div style="width:54px;height:80px;border-radius:8px;background:rgba(255,255,255,0.07);animation:skPulse 1.4s ease-in-out infinite;"></div>
+                    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+                      <div style="height:18px;width:65%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out .1s infinite;"></div>
+                      <div style="height:12px;width:45%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out .2s infinite;"></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ emptyTab }}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px solid rgba(255,255,255,0.07);padding:32px 8px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+                <p style="margin:0;font:600 22px/1.15 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ emptyTitle }}</p>
+                <p style="margin:0;font-size:14px;color:#a8b0c4;max-width:32ch;text-wrap:pretty;">Califica películas en Descubrir y aparecerán aquí.</p>
+                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ hayMas }}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <button onClick="{{ cargarMas }}" style="min-height:44px;padding:0 24px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);background:transparent;color:#ddd5fb;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(196,181,240,0.12);">Cargar más</button>
+                <span style="font-size:12px;color:#7c859c;">{{ mostrandoTxt }}</span>
+              </div>
+            </sc-if>
+          </div>
+          <div aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">{{ aviso }}</div>
+        </section>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;con datos&quot;,&quot;sin cuenta&quot;,&quot;pocos datos&quot;,&quot;cargando&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;precision&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;baja&quot;,&quot;sin medir&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  // ================== CONEXIÓN A SUPABASE ==================
+  // En el estado "interactivo" los datos salen de la base (16_perfil.sql).
+  // La sesión (anónima o con Google) vive en cuenta.js.
+  static VACIO = { total: 0, vistas: 0, vista_gusto: 0, vista_no_gusto: 0, quiero_ver: 0, paso: 0, desde: null,
+    precision: { auc: null, positivas: 0, negativas: 0 }, generos: [], gustos: [], no_tanto: [], tabla: [] };
+
+  live() { return (this.props.estado ?? 'interactivo') === 'interactivo'; }
+  async rpc(fn, args) {
+    if (!window.Cuenta) throw new Error('Falta cargar cuenta.js');
+    return window.Cuenta.rpc(fn, args);
+  }
+  // Las escrituras van en fila: dos cambios seguidos nunca se cruzan
+  enFila(op) {
+    const sig = (this.fila || Promise.resolve()).then(op);
+    this.fila = sig.catch(() => {});
+    return sig;
+  }
+  haySesion() { return !!(window.Cuenta && window.Cuenta.usuario()); }
+  cuentaActual() {
+    const u = window.Cuenta && window.Cuenta.usuario();
+    if (!u || u.is_anonymous) return { conCuenta: false, nombre: null, foto: null };
+    const m = u.user_metadata || {};
+    return { conCuenta: true, nombre: m.full_name || m.name || u.email || 'Tu cuenta', foto: m.avatar_url || m.picture || null };
+  }
+  listaVacia(tipo) { return { tipo, total: 0, pagina: 1, paginas: 1, peliculas: [] }; }
+  normResumen(r) {
+    r = r || {};
+    return { ...Component.VACIO, ...r, precision: { ...Component.VACIO.precision, ...(r.precision || {}) },
+      generos: r.generos || [], gustos: r.gustos || [], no_tanto: r.no_tanto || [], tabla: r.tabla || [] };
+  }
+  normLista(l, tipo) {
+    l = l || {};
+    return { tipo: l.tipo || tipo, total: l.total || 0, pagina: l.pagina || 1, paginas: l.paginas || 1,
+      peliculas: (l.peliculas || []).map(p => ({ ...p, titulo: p.titulo || '', generos: p.generos || [], directores: p.directores || [],
+        accion: Component.TAG[p.accion] ? p.accion : 'dislike' })) };
+  }
+  async iniciar() {
+    this.timers.forEach(clearTimeout); this.timers = [];
+    const carga = (this.carga = (this.carga || 0) + 1);
+    this.setState({ cargando: true, offline: false, abiertaId: null, aviso: '' });
+    try {
+      if (!window.Cuenta) throw new Error('Falta cargar cuenta.js');
+      await window.Cuenta.lista();
+      if (carga !== this.carga) return;
+      if (!this.haySesion()) {            // visitante que nunca ha calificado: perfil vacío, sin crear nada
+        this.setState({ cargando: false, resumen: this.normResumen(null), cuenta: this.cuentaActual(), lista: this.listaVacia('quiero_ver') });
+        return;
+      }
+      const [resumen, lista] = await Promise.all([
+        this.rpc('perfil_resumen', {}),
+        this.rpc('perfil_peliculas', { tipo: 'quiero_ver', pagina: 1 })
+      ]);
+      if (carga !== this.carga) return;
+      this.setState({ cargando: false, offline: false, resumen: this.normResumen(resumen), cuenta: this.cuentaActual(), lista: this.normLista(lista, 'quiero_ver') });
+    } catch (e) {
+      console.error(e);
+      if (carga === this.carga) this.setState({ cargando: false, offline: true });
+    }
+  }
+  // Tras corregir o quitar una película cambian los gustos y la precisión: se vuelven a pedir
+  refrescar() {
+    const carga = this.carga;
+    this.enFila(() => this.rpc('perfil_resumen', {}))
+      .then(r => { if (carga === this.carga) this.setState({ resumen: this.normResumen(r) }); })
+      .catch(e => console.error(e));
+  }
+  cambiarVivo(id, accion) {
+    const p = this.state.lista.peliculas.find(x => x.id === id);
+    if (!p || p.accion === accion) { this.setState({ abiertaId: null }); return; }
+    const antes = p.accion;
+    const poner = a => s => ({ ...s.lista, peliculas: s.lista.peliculas.map(x => x.id === id ? { ...x, accion: a } : x) });
+    this.setState(s => ({ resumen: this.ajustar(s.resumen, antes, accion), abiertaId: null, lista: poner(accion)(s),
+      aviso: `${p.titulo}: ahora es ${Component.TAG[accion].t}` }));
+    this.enFila(() => this.rpc('cambiar_opinion', { p_titulo: id, p_accion: accion }))
+      .then(c => { this.setState(s => ({ resumen: { ...s.resumen, ...c } })); this.refrescar(); })
+      .catch(e => {                       // no se guardó: regresa a como estaba
+        console.error(e);
+        this.setState(s => ({ resumen: this.ajustar(s.resumen, accion, antes), lista: poner(antes)(s),
+          aviso: `No se pudo guardar el cambio de ${p.titulo}. Intenta de nuevo.` }));
+      });
+  }
+  quitarVivo(id) {
+    const i = this.state.lista.peliculas.findIndex(x => x.id === id);
+    if (i < 0) return;
+    const p = this.state.lista.peliculas[i];
+    this.setState(s => ({ resumen: this.ajustar(s.resumen, p.accion, null), abiertaId: null,
+      lista: { ...s.lista, total: Math.max(0, s.lista.total - 1), peliculas: s.lista.peliculas.filter(x => x.id !== id) },
+      aviso: `${p.titulo} se quitó de tu lista` }));
+    this.enFila(() => this.rpc('quitar_opinion', { p_titulo: id }))
+      .then(c => { this.setState(s => ({ resumen: { ...s.resumen, ...c } })); this.refrescar(); })
+      .catch(e => {                       // no se quitó: la película vuelve a su lugar
+        console.error(e);
+        this.setState(s => {
+          const pel = s.lista.peliculas.slice(); pel.splice(Math.min(i, pel.length), 0, p);
+          const r = { ...s.resumen, total: s.resumen.total + 1 };
+          r[Component.KEY[p.accion]] = (r[Component.KEY[p.accion]] || 0) + 1; r.vistas = r.vista_gusto + r.vista_no_gusto;
+          return { resumen: r, lista: { ...s.lista, total: s.lista.total + 1, peliculas: pel }, aviso: `No se pudo quitar ${p.titulo}. Intenta de nuevo.` };
+        });
+      });
+  }
+  alCambiarCuenta = () => { if (this.live() && this.state.resumen) this.setState({ cuenta: this.cuentaActual() }); };
+  // ==========================================================
+
+  static HUE = { 'Acción': 35, 'Aventura': 75, 'Ciencia ficción': 210, 'Comedia': 60, 'Crimen': 15, 'Drama': 265, 'Fantasía': 300, 'Musical': 330, 'Romance': 350, 'Terror': 25, 'Thriller': 185, 'Western': 50, 'Bélico': 120, 'Misterio': 240 };
+  static MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  static RAW = [
+    'Mad Max: Furia en el camino|Mad Max: Fury Road|2015|120|Acción,Ciencia ficción|George Miller',
+    'Dune||2021|155|Ciencia ficción,Aventura|Denis Villeneuve',
+    'La llegada|Arrival|2016|116|Ciencia ficción,Drama|Denis Villeneuve',
+    'Blade Runner 2049||2017|164|Ciencia ficción,Thriller|Denis Villeneuve',
+    'Sicario||2015|121|Thriller,Crimen|Denis Villeneuve',
+    'Roma||2018|135|Drama|Alfonso Cuarón',
+    'Gravedad|Gravity|2013|91|Ciencia ficción,Thriller|Alfonso Cuarón',
+    'Niños del hombre|Children of Men|2006|109|Ciencia ficción,Drama|Alfonso Cuarón',
+    "El laberinto del fauno|Pan's Labyrinth|2006|118|Fantasía,Bélico|Guillermo del Toro",
+    'La forma del agua|The Shape of Water|2017|123|Fantasía,Romance|Guillermo del Toro',
+    'Coco||2017|105|Fantasía,Musical|Lee Unkrich',
+    'Alien: el octavo pasajero|Alien|1979|117|Terror,Ciencia ficción|Ridley Scott',
+    'El silencio de los inocentes|The Silence of the Lambs|1991|118|Thriller,Crimen|Jonathan Demme',
+    'Eterno resplandor de una mente sin recuerdos|Eternal Sunshine of the Spotless Mind|2004|108|Romance,Ciencia ficción,Drama|Michel Gondry',
+    'Son como niños 2|Grown Ups 2|2013|101|Comedia|Dennis Dugan',
+    'Interestelar|Interstellar|2014|169|Ciencia ficción,Drama|Christopher Nolan',
+    'El origen|Inception|2010|148|Ciencia ficción,Acción|Christopher Nolan',
+    'Batman: el caballero de la noche|The Dark Knight|2008|152|Acción,Crimen|Christopher Nolan',
+    'Parásitos|Parasite|2019|132|Thriller,Drama|Bong Joon-ho',
+    'El huésped|The Host|2006|120|Terror,Ciencia ficción|Bong Joon-ho',
+    'Amores perros||2000|154|Drama,Thriller|Alejandro G. Iñárritu',
+    'Birdman||2014|119|Comedia,Drama|Alejandro G. Iñárritu',
+    'El renacido|The Revenant|2015|156|Aventura,Drama|Alejandro G. Iñárritu',
+    'Y tu mamá también||2001|106|Drama,Comedia|Alfonso Cuarón',
+    'El club de la pelea|Fight Club|1999|139|Drama,Thriller|David Fincher',
+    'Pecados capitales|Se7en|1995|127|Thriller,Crimen|David Fincher',
+    'Perdida|Gone Girl|2014|149|Thriller,Misterio|David Fincher',
+    'Zodiaco|Zodiac|2007|157|Crimen,Misterio|David Fincher',
+    'Ex Machina||2014|108|Ciencia ficción,Thriller|Alex Garland',
+    'Aniquilación|Annihilation|2018|115|Ciencia ficción,Terror|Alex Garland',
+    '¡Huye!|Get Out|2017|104|Terror,Misterio|Jordan Peele',
+    '¡Nop!|Nope|2022|130|Terror,Ciencia ficción|Jordan Peele',
+    'El resplandor|The Shining|1980|146|Terror|Stanley Kubrick',
+    '2001: Odisea del espacio|2001: A Space Odyssey|1968|149|Ciencia ficción|Stanley Kubrick',
+    'Matrix|The Matrix|1999|136|Ciencia ficción,Acción|Lana y Lilly Wachowski',
+    'Terminator 2: el juicio final|Terminator 2: Judgment Day|1991|137|Acción,Ciencia ficción|James Cameron',
+    'Aliens: el regreso|Aliens|1986|137|Acción,Terror|James Cameron',
+    'Titanic||1997|195|Romance,Drama|James Cameron',
+    'La La Land: una historia de amor|La La Land|2016|128|Musical,Romance|Damien Chazelle',
+    'Whiplash: música y obsesión|Whiplash|2014|106|Drama,Musical|Damien Chazelle',
+    'Mamma Mia!||2008|108|Musical,Comedia|Phyllida Lloyd',
+    'El gran showman|The Greatest Showman|2017|105|Musical,Drama|Michael Gracey',
+    'Todo en todas partes al mismo tiempo|Everything Everywhere All at Once|2022|139|Ciencia ficción,Comedia|Daniel Kwan',
+    'Oppenheimer||2023|180|Drama|Christopher Nolan',
+    'Tenet||2020|150|Acción,Ciencia ficción|Christopher Nolan',
+    'Dunkerque|Dunkirk|2017|106|Bélico,Drama|Christopher Nolan',
+    '1917||2019|119|Bélico,Drama|Sam Mendes',
+    'Bastardos sin gloria|Inglourious Basterds|2009|153|Bélico,Drama|Quentin Tarantino',
+    'Tiempos violentos|Pulp Fiction|1994|154|Crimen,Thriller|Quentin Tarantino',
+    'Kill Bill: Volumen 1|Kill Bill: Vol. 1|2003|111|Acción,Crimen|Quentin Tarantino',
+    'Django sin cadenas|Django Unchained|2012|165|Western,Drama|Quentin Tarantino',
+    'Sin lugar para los débiles|No Country for Old Men|2007|122|Thriller,Crimen|Joel y Ethan Coen',
+    'Fargo||1996|98|Crimen,Comedia|Joel y Ethan Coen',
+    'El gran Lebowski|The Big Lebowski|1998|117|Comedia,Crimen|Joel y Ethan Coen',
+    'Volver al futuro|Back to the Future|1985|116|Ciencia ficción,Aventura|Robert Zemeckis',
+    'Forrest Gump||1994|142|Drama,Romance|Robert Zemeckis',
+    'Jurassic Park||1993|127|Aventura,Ciencia ficción|Steven Spielberg',
+    'Tiburón|Jaws|1975|124|Terror,Aventura|Steven Spielberg',
+    'E.T. el extraterrestre|E.T. the Extra-Terrestrial|1982|115|Ciencia ficción,Aventura|Steven Spielberg',
+    'El viaje de Chihiro|Spirited Away|2001|125|Fantasía,Aventura|Hayao Miyazaki',
+    'La princesa Mononoke|Princess Mononoke|1997|134|Fantasía,Aventura|Hayao Miyazaki',
+    'Mi vecino Totoro|My Neighbor Totoro|1988|86|Fantasía|Hayao Miyazaki',
+    "Amélie|Le Fabuleux Destin d'Amélie Poulain|2001|122|Romance,Comedia|Jean-Pierre Jeunet",
+    'Orgullo y prejuicio|Pride & Prejudice|2005|129|Romance,Drama|Joe Wright',
+    'Diario de una pasión|The Notebook|2004|123|Romance,Drama|Nick Cassavetes',
+    'El legado del diablo|Hereditary|2018|127|Terror,Misterio|Ari Aster',
+    'Midsommar: el terror no espera la noche|Midsommar|2019|148|Terror,Drama|Ari Aster',
+    'El conjuro|The Conjuring|2013|112|Terror|James Wan',
+    'Supercool|Superbad|2007|113|Comedia|Greg Mottola',
+    '¿Qué pasó ayer?|The Hangover|2009|100|Comedia|Todd Phillips',
+    'Guasón|Joker|2019|122|Drama,Crimen|Todd Phillips',
+    'Los 8 más odiados|The Hateful Eight|2015|168|Western,Misterio|Quentin Tarantino',
+    'Bajo la misma estrella|The Fault in Our Stars|2014|126|Romance,Drama|Josh Boone'
+  ];
+  static TABS = [['quiero_ver', 'Quiero ver'], ['vista_gusto', 'Me gustaron'], ['vista_no_gusto', 'No me gustaron'], ['paso', 'Paso'], ['todas', 'Todas']];
+  static KEY = { like: 'quiero_ver', dislike: 'paso', vista_gusto: 'vista_gusto', vista_no_gusto: 'vista_no_gusto' };
+  static TAG = {
+    vista_gusto: { t: 'Me gustó', fg: '#7ee0a6', bg: 'rgba(126,224,166,0.18)', bd: 'transparent' },
+    vista_no_gusto: { t: 'No me gustó', fg: '#ff7b7b', bg: 'rgba(255,123,123,0.18)', bd: 'transparent' },
+    like: { t: 'Quiero verla', fg: '#7ee0a6', bg: 'transparent', bd: 'rgba(126,224,166,0.7)' },
+    dislike: { t: 'Paso', fg: '#ff7b7b', bg: 'transparent', bd: 'rgba(255,123,123,0.7)' }
+  };
+  static NIVELES = [[0, 30, 'Empezando'], [30, 100, 'Te voy conociendo'], [100, 250, 'Ya te conozco'], [250, Infinity, 'Te conozco de memoria']];
+  static PREC = { normal: { auc: 0.71, positivas: 50, negativas: 23 }, baja: { auc: 0.52, positivas: 50, negativas: 23 }, 'sin medir': { auc: null, positivas: 12, negativas: 5 } };
+  static RESUMEN = {
+    total: 73, vistas: 35, vista_gusto: 28, vista_no_gusto: 7, quiero_ver: 22, paso: 16,
+    desde: '2026-10-05',
+    precision: { auc: 0.71, positivas: 50, negativas: 23 },
+    generos: [
+      { nombre: 'Ciencia ficción', total: 14, positivas: 11, vistas: 8 }, { nombre: 'Drama', total: 20, positivas: 12, vistas: 14 },
+      { nombre: 'Thriller', total: 12, positivas: 9, vistas: 7 }, { nombre: 'Acción', total: 11, positivas: 7, vistas: 6 },
+      { nombre: 'Terror', total: 9, positivas: 5, vistas: 5 }, { nombre: 'Comedia', total: 8, positivas: 2, vistas: 4 },
+      { nombre: 'Fantasía', total: 7, positivas: 5, vistas: 3 }, { nombre: 'Crimen', total: 6, positivas: 4, vistas: 4 },
+      { nombre: 'Romance', total: 5, positivas: 1, vistas: 2 }, { nombre: 'Musical', total: 3, positivas: 0, vistas: 2 }
+    ],
+    gustos: [
+      { rasgo: 'Ciencia ficción', afinidad: 0.82, veces: 14 }, { rasgo: 'Oscuro', afinidad: 0.74, veces: 11 },
+      { rasgo: 'Futuro', afinidad: 0.66, veces: 10 }, { rasgo: 'Thriller', afinidad: 0.64, veces: 12 },
+      { rasgo: 'dirigida por Denis Villeneuve', afinidad: 0.6, veces: 2 }, { rasgo: 'dirigida por Christopher Nolan', afinidad: 0.55, veces: 5 },
+      { rasgo: 'Supervivencia', afinidad: 0.51, veces: 7 }, { rasgo: 'Tenso', afinidad: 0.47, veces: 12 }
+    ],
+    no_tanto: [
+      { rasgo: 'Musical', afinidad: -0.41, veces: 3 }, { rasgo: 'Comedia', afinidad: -0.33, veces: 8 },
+      { rasgo: 'Ligero', afinidad: -0.30, veces: 6 }, { rasgo: 'con Adam Sandler', afinidad: -0.28, veces: 3 },
+      { rasgo: 'Amor', afinidad: -0.27, veces: 8 }
+    ],
+    tabla: [
+      { grupo: 'genero', nombre: 'Género', rasgos: [
+        { rasgo: 'Ciencia ficción', afinidad: 0.82, veces: 14 }, { rasgo: 'Thriller', afinidad: 0.64, veces: 12 },
+        { rasgo: 'Drama', afinidad: 0.35, veces: 20 }, { rasgo: 'Terror', afinidad: 0.22, veces: 9 },
+        { rasgo: 'Comedia', afinidad: -0.33, veces: 8 }, { rasgo: 'Musical', afinidad: -0.41, veces: 3 } ] },
+      { grupo: 'tono', nombre: 'Tono', rasgos: [
+        { rasgo: 'Oscuro', afinidad: 0.74, veces: 11 }, { rasgo: 'Tenso', afinidad: 0.47, veces: 12 },
+        { rasgo: 'Agridulce', afinidad: 0.30, veces: 9 }, { rasgo: 'Inspirador', afinidad: 0.12, veces: 5 },
+        { rasgo: 'Ligero', afinidad: -0.30, veces: 6 } ] },
+      { grupo: 'tematica', nombre: 'Temática', rasgos: [
+        { rasgo: 'Supervivencia', afinidad: 0.51, veces: 7 }, { rasgo: 'Memoria', afinidad: 0.44, veces: 4 },
+        { rasgo: 'Familia', afinidad: 0.08, veces: 10 }, { rasgo: 'Crecer', afinidad: -0.12, veces: 5 },
+        { rasgo: 'Amor', afinidad: -0.27, veces: 8 } ] },
+      { grupo: 'epoca', nombre: 'Época', rasgos: [
+        { rasgo: 'Futuro', afinidad: 0.66, veces: 10 }, { rasgo: 'Contemporánea', afinidad: 0.10, veces: 30 },
+        { rasgo: 'Siglo XIX', afinidad: -0.20, veces: 3 } ] },
+      { grupo: 'director', nombre: 'Director', rasgos: [
+        { rasgo: 'Denis Villeneuve', afinidad: 0.6, veces: 2 }, { rasgo: 'Christopher Nolan', afinidad: 0.55, veces: 5 },
+        { rasgo: 'David Fincher', afinidad: 0.48, veces: 4 }, { rasgo: 'Quentin Tarantino', afinidad: -0.18, veces: 5 } ] },
+      { grupo: 'reparto', nombre: 'Reparto', rasgos: [
+        { rasgo: 'Tom Hardy', afinidad: 0.38, veces: 3 }, { rasgo: 'Jodie Foster', afinidad: 0.31, veces: 2 },
+        { rasgo: 'Adam Sandler', afinidad: -0.28, veces: 3 } ] }
+    ]
+  };
+  static POCOS = { total: 3, vistas: 2, vista_gusto: 1, vista_no_gusto: 1, quiero_ver: 1, paso: 0, desde: '2026-10-07',
+    precision: { auc: null, positivas: 2, negativas: 1 }, generos: [], gustos: [], no_tanto: [], tabla: [] };
+
+  static catalogo() {
+    const cnt = { like: 22, vista_gusto: 28, vista_no_gusto: 7, dislike: 16 };
+    const acc = []; Object.entries(cnt).forEach(([k, n]) => { for (let i = 0; i < n; i++) acc.push(k); });
+    let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = acc.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [acc[i], acc[j]] = [acc[j], acc[i]]; }
+    const t0 = Date.parse('2026-10-06T21:15:00Z');
+    return Component.RAW.map((r, i) => {
+      const [titulo, orig, anio, dur, gen, dir] = r.split('|');
+      return { id: i + 1, titulo, titulo_original: orig || titulo, anio: +anio, duracion_min: +dur, poster_url: null,
+        generos: gen.split(','), directores: [{ id: 100 + i, nombre: dir }], accion: acc[i],
+        calificada_en: new Date(t0 - i * 41 * 60000).toISOString().replace('.000', '') };
+    });
+  }
+
+  state = { cargando: true, offline: false, resumen: null, lista: { tipo: 'quiero_ver', total: 0, pagina: 1, paginas: 1, peliculas: [] },
+    cuenta: { conCuenta: true, nombre: 'Diego Arias', foto: null }, abiertos: { genero: true, tono: true }, abiertaId: null,
+    listaCargando: false, entrando: false, aviso: '' };
+  timers = []; pool = []; token = 0;
+
+  componentDidMount() { window.addEventListener('keydown', this.onKey); window.addEventListener('cuenta:cambio', this.alCambiarCuenta); this.applyEstado(this.props.estado); }
+  componentDidUpdate(pp) {
+    if (pp.estado !== this.props.estado) this.applyEstado(this.props.estado);
+    else if (pp.precision !== this.props.precision && this.state.resumen && this.state.resumen.total >= 5)
+      this.setState(s => ({ resumen: { ...s.resumen, precision: { ...this.prec() } } }));
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); window.removeEventListener('cuenta:cambio', this.alCambiarCuenta); this.timers.forEach(clearTimeout); }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  onKey = e => { if (e.key === 'Escape' && this.state.abiertaId != null) this.setState({ abiertaId: null }); };
+  prec() { return Component.PREC[this.props.precision ?? 'normal'] || Component.PREC.normal; }
+
+  applyEstado(e) {
+    e = e ?? 'interactivo';
+    if (e === 'interactivo') { this.iniciar(); return; }
+    this.carga = (this.carga || 0) + 1;       // cancela cualquier carga real en curso
+    this.timers.forEach(clearTimeout); this.timers = [];
+    this.setState({ cargando: true, offline: e === 'sin conexión', abiertaId: null, aviso: '' });
+    if (e === 'cargando' || e === 'sin conexión') { if (e === 'sin conexión') this.setState({ cargando: false }); return; }
+    this.later(() => this.cargar(e), 600);
+  }
+  cargar(e) {
+    let resumen;
+    if (e === 'pocos datos') {
+      this.pool = Component.catalogo().slice(0, 3).map((p, i) => ({ ...p, accion: ['vista_gusto', 'vista_no_gusto', 'like'][i] }));
+      resumen = JSON.parse(JSON.stringify(Component.POCOS));
+    } else {
+      this.pool = Component.catalogo();
+      resumen = JSON.parse(JSON.stringify(Component.RESUMEN));
+      resumen.precision = { ...this.prec() };
+    }
+    const cuenta = e === 'sin cuenta' ? { conCuenta: false, nombre: null, foto: null } : { conCuenta: true, nombre: 'Diego Arias', foto: null };
+    this.setState({ cargando: false, offline: false, resumen, cuenta, lista: this.consulta('quiero_ver', 1) });
+  }
+  consulta(tipo, pagina) {
+    const all = this.pool.filter(p => tipo === 'todas' || Component.KEY[p.accion] === tipo);
+    const paginas = Math.max(1, Math.ceil(all.length / 24));
+    return { tipo, total: all.length, pagina, paginas, peliculas: all.slice(0, pagina * 24).slice((pagina - 1) * 24) };
+  }
+
+  setTab = tipo => {
+    const s = this.state; if (s.lista.tipo === tipo && !s.listaCargando) return;
+    const tk = ++this.token;
+    this.setState({ listaCargando: true, abiertaId: null, lista: { tipo, total: 0, pagina: 1, paginas: 1, peliculas: [] } });
+    if (this.live()) {
+      if (!this.haySesion()) { this.setState({ listaCargando: false }); return; }
+      this.rpc('perfil_peliculas', { tipo, pagina: 1 })
+        .then(l => { if (tk === this.token) this.setState({ lista: this.normLista(l, tipo), listaCargando: false }); })
+        .catch(e => { console.error(e); if (tk === this.token) this.setState({ listaCargando: false, aviso: 'No se pudo cargar la lista. Revisa tu conexión.' }); });
+      return;
+    }
+    this.later(() => { if (tk === this.token) this.setState({ lista: this.consulta(tipo, 1), listaCargando: false }); }, 280);
+  };
+  cargarMas = () => {
+    const l = this.state.lista; if (l.pagina >= l.paginas || this.state.listaCargando) return;
+    const tk = ++this.token;
+    this.setState({ listaCargando: true });
+    if (this.live()) {
+      this.rpc('perfil_peliculas', { tipo: l.tipo, pagina: l.pagina + 1 })
+        .then(r => {
+          if (tk !== this.token) return;
+          const next = this.normLista(r, l.tipo);
+          this.setState(s => {
+            const ids = new Set(s.lista.peliculas.map(p => p.id));
+            return { listaCargando: false, lista: { ...next, peliculas: [...s.lista.peliculas, ...next.peliculas.filter(p => !ids.has(p.id))] } };
+          });
+        })
+        .catch(e => { console.error(e); if (tk === this.token) this.setState({ listaCargando: false, aviso: 'No se pudieron cargar más. Revisa tu conexión.' }); });
+      return;
+    }
+    this.later(() => {
+      if (tk !== this.token) return;
+      const next = this.consulta(l.tipo, l.pagina + 1);
+      const ids = new Set(this.state.lista.peliculas.map(p => p.id));
+      this.setState(s => ({ listaCargando: false, lista: { ...next, peliculas: [...s.lista.peliculas, ...next.peliculas.filter(p => !ids.has(p.id))] } }));
+    }, 450);
+  };
+  ajustar(r, quita, pone) {
+    const n = { ...r };
+    if (quita) n[Component.KEY[quita]] = Math.max(0, n[Component.KEY[quita]] - 1);
+    if (pone) n[Component.KEY[pone]] = n[Component.KEY[pone]] + 1;
+    if (!pone) n.total = Math.max(0, n.total - 1);
+    n.vistas = n.vista_gusto + n.vista_no_gusto;
+    return n;
+  }
+  cambiar = (id, accion) => {
+    if (this.live()) { this.cambiarVivo(id, accion); return; }
+    const p = this.pool.find(x => x.id === id); if (!p || p.accion === accion) { this.setState({ abiertaId: null }); return; }
+    const old = p.accion; p.accion = accion;
+    this.setState(s => ({
+      resumen: this.ajustar(s.resumen, old, accion), abiertaId: null,
+      lista: { ...s.lista, peliculas: s.lista.peliculas.map(x => x.id === id ? { ...x, accion } : x) },
+      aviso: `${p.titulo}: ahora es ${Component.TAG[accion].t}`
+    }));
+  };
+  quitar = id => {
+    if (this.live()) { this.quitarVivo(id); return; }
+    const p = this.pool.find(x => x.id === id); if (!p) return;
+    this.pool = this.pool.filter(x => x.id !== id);
+    this.setState(s => ({
+      resumen: this.ajustar(s.resumen, p.accion, null), abiertaId: null,
+      lista: { ...s.lista, total: Math.max(0, s.lista.total - 1), peliculas: s.lista.peliculas.filter(x => x.id !== id) },
+      aviso: `${p.titulo} se quitó de tu lista`
+    }));
+  };
+  entrar = () => {
+    if (this.state.entrando) return;
+    this.setState({ entrando: true });
+    if (this.live()) {                    // si todo va bien, el navegador se va a Google
+      Promise.resolve().then(() => window.Cuenta.entrar())
+        .catch(e => { console.error(e); this.setState({ entrando: false, aviso: 'No se pudo abrir Google. Intenta de nuevo.' }); });
+      return;
+    }
+    this.later(() => this.setState({ entrando: false, cuenta: { conCuenta: true, nombre: 'Diego Arias', foto: null } }), 900);
+  };
+  reintentar = () => {
+    if (navigator.onLine === false) return;
+    if (this.live()) { this.iniciar(); return; }
+    this.setState({ offline: false, cargando: true });
+    this.later(() => this.cargar(this.props.estado === 'sin conexión' ? 'con datos' : (this.props.estado ?? 'con datos')), 800);
+  };
+
+  fecha(iso) { if (!iso) return ''; const [y, m, d] = iso.split('-').map(Number); return `${d} de ${Component.MESES[m - 1]} de ${y}`; }
+  num(v) { return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2); }
+
+  renderVals() {
+    const s = this.state, r = s.resumen;
+    const ready = !s.cargando && !s.offline && !!r;
+    const base = { showLoading: s.cargando && !s.offline, showOffline: s.offline, showMain: ready, reintentar: this.reintentar };
+    if (!ready) return base;
+
+    const c = s.cuenta, total = r.total, pocos = total < 5;
+    const pct = n => (total ? (n / total * 100).toFixed(2) : 0) + '%';
+    const auc = r.precision ? r.precision.auc : null;
+    const aucN = auc == null ? 0 : Math.round(auc * 10);
+    const mNull = auc == null, mLow = !mNull && auc <= 0.55, mNum = !mNull && !mLow;
+
+    const N = Component.NIVELES, li = N.findIndex(([a, b]) => total >= a && total < b);
+    const niveles = N.map(([a, b, nombre], i) => ({
+      nombre, fill: i < li ? '100%' : i > li ? '0%' : (b === Infinity ? '100%' : Math.max(4, (total - a) / (b - a) * 100).toFixed(1) + '%'),
+      fg: i === li ? '#eef0f6' : '#7c859c', fw: i === li ? 600 : 400
+    }));
+    const sig = N[li + 1];
+    const faltan = sig ? sig[0] - total : 0;
+    const faltanTxt = sig ? `Te ${faltan === 1 ? 'falta 1' : 'faltan ' + faltan} para «${sig[2]}».` : 'Llegaste al nivel más alto.';
+
+    const gmax = Math.max(0.01, ...r.gustos.map(g => g.afinidad));
+    const nmax = Math.max(0.01, ...r.no_tanto.map(g => Math.abs(g.afinidad)));
+    const tmax = Math.max(0.01, ...r.tabla.flatMap(t => t.rasgos.map(x => Math.abs(x.afinidad))));
+    const tabla = r.tabla.map(t => {
+      const open = !!s.abiertos[t.grupo];
+      return {
+        nombre: t.nombre, open, chev: open ? 'rotate(180deg)' : 'none',
+        cuenta: `${Math.min(6, t.rasgos.length)} ${t.rasgos.length === 1 ? 'rasgo' : 'rasgos'}`,
+        toggle: () => this.setState(x => ({ abiertos: { ...x.abiertos, [t.grupo]: !x.abiertos[t.grupo] } })),
+        rasgos: t.rasgos.slice(0, 6).map(x => {
+          const w = Math.abs(x.afinidad) / tmax * 50, pos = x.afinidad >= 0;
+          return { rasgo: x.rasgo, val: this.num(x.afinidad), veces: `${x.veces} ${x.veces === 1 ? 'película' : 'películas'}`,
+            l: (pos ? 50 : 50 - w).toFixed(2) + '%', w: w.toFixed(2) + '%', bg: pos ? '#7ee0a6' : '#ff7b7b', fg: pos ? '#7ee0a6' : '#ff7b7b' };
+        })
+      };
+    });
+
+    const generos = [...r.generos].sort((a, b) => b.total - a.total).map(g => ({
+      nombre: g.nombre, total: g.total, pct: (g.total ? g.positivas / g.total * 100 : 0).toFixed(1) + '%',
+      pos: `${g.positivas} de ${g.total} positivas`
+    }));
+
+    const counts = { quiero_ver: r.quiero_ver, vista_gusto: r.vista_gusto, vista_no_gusto: r.vista_no_gusto, paso: r.paso, todas: total };
+    const tabs = Component.TABS.map(([tipo, label]) => {
+      const sel = s.lista.tipo === tipo;
+      return { label, count: counts[tipo], sel, onClick: () => this.setTab(tipo),
+        bg: sel ? '#c4b5f0' : 'rgba(255,255,255,0.03)', fg: sel ? '#0c1122' : '#dfe2ee', bd: sel ? '#c4b5f0' : 'rgba(255,255,255,0.14)',
+        cbg: sel ? 'rgba(12,17,34,0.15)' : 'rgba(255,255,255,0.08)' };
+    });
+
+    const ring = on => on ? '0 0 0 2px #eef0f6' : 'none';
+    const rows = s.lista.peliculas.map(p => {
+      const T = Component.TAG[p.accion], open = s.abiertaId === p.id, h = Component.HUE[p.generos[0]] ?? 265;
+      return {
+        titulo: p.titulo, meta: [p.anio, p.generos.join(', ')].filter(Boolean).join(' · '),
+        hasPoster: !!p.poster_url, noPoster: !p.poster_url, posterCss: p.poster_url ? `url("${p.poster_url}")` : 'none',
+        posterBg: `radial-gradient(ellipse 120% 80% at 50% 35%, oklch(0.34 0.08 ${h}) 0%, oklch(0.19 0.045 ${h}) 68%, #0c1121 100%)`,
+        tag: T.t, tagFg: T.fg, tagBg: T.bg, tagBd: T.bd,
+        isG: p.accion === 'vista_gusto', isN: p.accion === 'vista_no_gusto', isL: p.accion === 'like', isP: p.accion === 'dislike',
+        open, chev: open ? 'rotate(180deg)' : 'none', cBg: open ? 'rgba(196,181,240,0.14)' : 'transparent',
+        toggle: () => this.setState(x => ({ abiertaId: x.abiertaId === p.id ? null : p.id })),
+        cambiarAria: `Cambiar respuesta de ${p.titulo}`, quitarAria: `Quitar ${p.titulo} de mi lista`,
+        curG: p.accion === 'vista_gusto', curN: p.accion === 'vista_no_gusto', curL: p.accion === 'like', curP: p.accion === 'dislike',
+        shG: ring(p.accion === 'vista_gusto'), shN: ring(p.accion === 'vista_no_gusto'), shL: ring(p.accion === 'like'), shP: ring(p.accion === 'dislike'),
+        setG: () => this.cambiar(p.id, 'vista_gusto'), setN: () => this.cambiar(p.id, 'vista_no_gusto'),
+        setL: () => this.cambiar(p.id, 'like'), setP: () => this.cambiar(p.id, 'dislike'),
+        quitar: () => this.quitar(p.id)
+      };
+    });
+    const tabName = (Component.TABS.find(t => t[0] === s.lista.tipo) || [0, ''])[1];
+
+    return {
+      ...base,
+      conCuenta: c.conCuenta, sinCuenta: !c.conCuenta, nombre: c.nombre || '', inicial: (c.nombre || '?').trim().charAt(0).toUpperCase(),
+      hasFoto: !!c.foto, noFoto: !c.foto, fotoCss: c.foto ? `url("${c.foto}")` : 'none', desdeTxt: r.desde ? 'Calificando desde el ' + this.fecha(r.desde) : 'Todavía no calificas películas',
+      entrar: this.entrar, entrarTxt: s.entrando ? 'Entrando…' : 'Continuar con Google', entrarOp: s.entrando ? 0.6 : 1,
+      total, totalLabel: total === 1 ? 'película calificada' : 'películas calificadas',
+      nGusto: r.vista_gusto, nNoGusto: r.vista_no_gusto, nQuiero: r.quiero_ver, nPaso: r.paso,
+      wGusto: pct(r.vista_gusto), wNoGusto: pct(r.vista_no_gusto), wQuiero: pct(r.quiero_ver), wPaso: pct(r.paso),
+      dGusto: r.vista_gusto ? 'block' : 'none', dNoGusto: r.vista_no_gusto ? 'block' : 'none', dQuiero: r.quiero_ver ? 'block' : 'none', dPaso: r.paso ? 'block' : 'none',
+      barAria: `Proporción: ${r.vista_gusto} me gustaron, ${r.vista_no_gusto} no me gustaron, ${r.quiero_ver} quiero ver, ${r.paso} paso`,
+      showPct: r.vistas >= 5, pctTxt: `Te gustó el ${r.vistas ? Math.round(r.vista_gusto / r.vistas * 100) : 0}% de lo que has visto`,
+      pocos, datos: !pocos,
+      deco: Array.from({ length: 16 }, (_, i) => i),
+      mNum, mLow, mNull, hasAuc: !mNull, aucN, posN: r.precision ? r.precision.positivas : 0, negN: r.precision ? r.precision.negativas : 0,
+      aucBulbs: Array.from({ length: 10 }, (_, i) => i < aucN
+        ? { bg: 'rgba(226,216,255,1)', sh: '0 0 8px 2px rgba(196,176,255,0.75)' }
+        : { bg: 'rgba(214,200,255,0.14)', sh: 'none' }),
+      nivelNombre: N[li][2], nivelNum: li + 1, niveles, faltanTxt,
+      gustos: r.gustos.slice(0, 8).map(g => ({ rasgo: g.rasgo, w: (g.afinidad / gmax * 100).toFixed(1) + '%', val: this.num(g.afinidad) })),
+      noTanto: r.no_tanto.slice(0, 5).map(g => ({ rasgo: g.rasgo, w: (Math.abs(g.afinidad) / nmax * 100).toFixed(1) + '%', val: this.num(g.afinidad) })),
+      hasNoTanto: r.no_tanto.length > 0,
+      tabla, generos, tabs, rows, miniBulbs: [0, 1, 2, 3], skRows: [0, 1, 2],
+      listaCargando: s.listaCargando,
+      emptyTab: !s.listaCargando && rows.length === 0,
+      emptyTitle: s.lista.tipo === 'todas' ? 'Todavía no calificas ninguna película' : `Aún no tienes películas en «${tabName}»`,
+      hayMas: !s.listaCargando && s.lista.pagina < s.lista.paginas, cargarMas: this.cargarMas,
+      mostrandoTxt: `Mostrando ${rows.length} de ${s.lista.total}`,
+      aviso: s.aviso
+    };
+  }
+}
+</script>
+</body>
+</html>
