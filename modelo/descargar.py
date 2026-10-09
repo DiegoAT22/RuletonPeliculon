@@ -2,9 +2,9 @@
 PASO 1 — BAJAR LOS DATOS DE SUPABASE
 Llama a exportar_datos_modelo() (15_exportar_modelo.sql) y guarda en modelo/datos/:
   interacciones.csv   persona, película, respuesta, origen, fecha, con_cuenta
-  titulos.csv         el catálogo publicado
+  titulos.csv         el catálogo publicado (con calificación de la crítica y duración)
   rasgos.csv          los rasgos de cada película con su peso
-  claves.csv          a qué grupo pertenece cada rasgo
+  claves.csv          a qué grupo pertenece cada rasgo y si es de los nuevos (17_mas_rasgos.sql)
 
 Usa la misma llave que el importador: lee importador/.env (o modelo/.env si existe).
   SUPABASE_URL=https://tu-proyecto.supabase.co
@@ -43,9 +43,10 @@ def proteger():
 
 
 def guardar(nombre, encabezado, filas):
+    ancho = len(filas[0]) if filas else len(encabezado)      # si Supabase aún no manda las columnas nuevas, no se inventan
     with open(DATOS / nombre, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(encabezado)
+        w.writerow(encabezado[:ancho])
         w.writerows(filas)
 
 
@@ -75,9 +76,9 @@ def main():
 
     DATOS.mkdir(exist_ok=True)
     guardar("interacciones.csv", ["usuario", "titulo_id", "accion", "origen", "creado_en", "con_cuenta"], d["interacciones"])
-    guardar("titulos.csv", ["titulo_id", "titulo", "anio", "popularidad"], d["titulos"])
+    guardar("titulos.csv", ["titulo_id", "titulo", "anio", "popularidad", "calificacion", "duracion_min"], d["titulos"])
     guardar("rasgos.csv", ["titulo_id", "clave", "peso"], d["rasgos"])
-    guardar("claves.csv", ["clave", "grupo", "etiqueta"], d["claves"])
+    guardar("claves.csv", ["clave", "grupo", "etiqueta", "nuevo"], d["claves"])
 
     inter = d["interacciones"]
     personas = {}
@@ -85,6 +86,13 @@ def main():
         personas[fila[0]] = personas.get(fila[0], 0) + 1
     con_cuenta = {fila[0] for fila in inter if fila[5]}
     print(f"  {len(d['titulos'])} películas, {len(d['claves'])} rasgos distintos")
+    nuevos = [c for c in d["claves"] if len(c) > 3 and c[3]]
+    if nuevos:
+        con_cal = sum(1 for t in d["titulos"] if len(t) > 4 and t[4] is not None)
+        print(f"  rasgos nuevos: {len(nuevos)} en {len({c[1] for c in nuevos})} grupos"
+              f" ({', '.join(sorted({c[1] for c in nuevos}))});  películas con calificación de la crítica: {con_cal}")
+    else:
+        print("  (sin rasgos nuevos: falta correr 17_mas_rasgos.sql en Supabase)")
     print(f"  {len(inter)} opiniones de {len(personas)} personas ({len(con_cuenta)} con cuenta)")
     print(f"  con 20 o más: {sum(1 for n in personas.values() if n >= 20)}   con 50 o más: {sum(1 for n in personas.values() if n >= 50)}")
     print(f"Guardado en {DATOS}")

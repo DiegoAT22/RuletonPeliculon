@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./supabase.js"></script>
+<script src="./cuenta.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#0a0f1d;}
+*{box-sizing:border-box;}
+a{color:#c4b5f0;}
+a:hover{color:#e2d9ff;}
+button,input{font-family:inherit;}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #c4b5f0;outline-offset:3px;}
+input::placeholder{color:#6f788f;}
+*{scrollbar-width:thin;scrollbar-color:rgba(196,181,240,0.45) transparent;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-thumb{background:rgba(196,181,240,0.4);border-radius:3px;}
+@keyframes skPulse{0%,100%{opacity:.45;}50%{opacity:.9;}}
+@keyframes bulbChase{0%,100%{background:rgba(214,200,255,0.16);box-shadow:none;}50%{background:rgba(214,200,255,1);box-shadow:0 0 8px 2px rgba(196,176,255,0.75);}}
+@keyframes popIn{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:scale(1);}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
+  <div style="max-width:920px;margin:0 auto;padding:clamp(16px,4vw,40px) 14px 28px;display:flex;flex-direction:column;gap:16px;">
+
+    <nav style="display:flex;margin:0 -10px;justify-content:center;align-items:center;gap:5px;">
+      <div style="display:flex;min-width:0;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+        <a href="Tragamonedas%20de%20Peliculas.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(4px,1.2vw,9px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(10.5px,2.8vw,13.5px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.2px,0.15vw,1px);text-transform:uppercase;" style-hover="color:#ffffff;">Tragamonedas</a>
+        <a href="Descubrir.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(4px,1.2vw,9px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(10.5px,2.8vw,13.5px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.2px,0.15vw,1px);text-transform:uppercase;" style-hover="color:#ffffff;">Descubrir</a>
+        <a href="Para%20ti.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(4px,1.2vw,9px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(10.5px,2.8vw,13.5px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.2px,0.15vw,1px);text-transform:uppercase;" style-hover="color:#ffffff;">Para ti</a>
+        <a href="Explorar.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(4px,1.2vw,9px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(10.5px,2.8vw,13.5px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.2px,0.15vw,1px);text-transform:uppercase;" style-hover="color:#ffffff;">Explorar</a>
+      </div>
+      <a href="Perfil.dc.html" aria-label="Tu perfil" title="Tu perfil" style="flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:rgba(0,0,0,0.3);color:#c9cedd;border:1px solid rgba(255,255,255,0.08);" style-hover="color:#ffffff;border-color:rgba(196,181,240,0.5);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></a>
+      <a href="Amigos.dc.html" aria-label="Modo amigos" aria-current="page" title="Modo amigos" style="flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:#c4b5f0;color:#0c1122;border:1px solid #c4b5f0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"></path><path d="M18 14a6.5 6.5 0 0 1 3.5 6"></path></svg></a>
+    </nav>
+
+    <sc-if value="{{ vInicio }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:16px;">
+        <header style="text-align:center;display:flex;flex-direction:column;gap:8px;padding:4px 0 2px;">
+          <h1 style="margin:0;font:600 clamp(34px,8vw,46px)/1 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 28px rgba(196,181,240,0.3);">Modo amigos</h1>
+          <p style="margin:0 auto;max-width:42ch;font-size:15px;line-height:1.5;color:#b8bfd1;text-wrap:pretty;">Voten el mismo mazo. Las que les laten a todos son match, y la palanca elige la de hoy.</p>
+        </header>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;align-items:start;">
+          <section style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:16px;min-width:0;">
+            <h2 style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Crear sala</h2>
+            <label style="display:flex;flex-direction:column;gap:8px;">
+              <span style="display:flex;justify-content:space-between;font-size:14px;color:#dfe2ee;"><span>¿Cómo te dicen?</span><span style="color:#7c859c;">{{ nickCount }}/20</span></span>
+              <input value="{{ nick }}" onChange="{{ onNick }}" maxLength="20" placeholder="Tu apodo" style="width:100%;min-height:50px;padding:0 14px;border-radius:14px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.14);color:#eef0f6;font:500 16px/1 'Barlow',sans-serif;outline:none;" style-focus="border-color:#c4b5f0;">
+            </label>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-size:14px;color:#dfe2ee;">Género <span style="color:#7c859c;">(opcional)</span></span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <sc-for list="{{ genreChips }}" as="g" hint-placeholder-count="8">
+                  <button onClick="{{ g.onClick }}" style="flex:none;min-height:38px;padding:0 15px;border-radius:999px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }};transition:background .2s,color .2s;">{{ g.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <button onClick="{{ crear }}" style="min-height:56px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 18px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;opacity:{{ crearOp }};" style-hover="background:#d6cbfa;">Crear sala</button>
+          </section>
+          <section style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:16px;min-width:0;">
+            <h2 style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Entrar con código</h2>
+            <label style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-size:14px;color:#dfe2ee;">Código de 6 caracteres</span>
+              <input value="{{ code }}" onChange="{{ onCode }}" maxLength="6" placeholder="K7P2QX" autoCapitalize="characters" autoComplete="off" spellCheck="false" style="width:100%;min-height:58px;padding:0 14px;border-radius:14px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.14);color:#f6f4ee;font:600 30px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;text-align:center;text-transform:uppercase;outline:none;" style-focus="border-color:#c4b5f0;">
+            </label>
+            <button onClick="{{ entrarCodigo }}" style="min-height:52px;border-radius:999px;border:1.5px solid rgba(196,181,240,0.7);background:transparent;color:#ddd5fb;font:700 17px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;opacity:{{ entrarOp }};" style-hover="background:rgba(196,181,240,0.12);">Entrar</button>
+          </section>
+        </div>
+        <section style="display:flex;flex-direction:column;gap:10px;">
+          <h2 style="margin:6px 2px 0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Tus salas abiertas</h2>
+          <sc-for list="{{ salasAbiertas }}" as="r" hint-placeholder-count="2">
+            <button onClick="{{ r.onClick }}" style="display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:12px 16px;border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);color:#eef0f6;text-align:left;cursor:pointer;" style-hover="background:rgba(196,181,240,0.08);border-color:rgba(196,181,240,0.35);">
+              <span style="flex:none;font:600 22px/1 'Barlow Condensed',sans-serif;letter-spacing:.18em;color:#f6f4ee;">{{ r.code }}</span>
+              <span style="flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:14px;color:#a8b0c4;"><span>{{ r.personas }}</span><span>{{ r.matches }}</span><span>{{ r.cierra }}</span></span>
+              <svg style="flex:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8e97ad" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+            </button>
+          </sc-for>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vInvitacion }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:440px;margin:8px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:28px 20px 22px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;">
+        <div style="position:relative;width:64px;height:64px;border-radius:50%;background:{{ invBg }};color:#0d1224;display:flex;align-items:center;justify-content:center;font:600 32px/1 'Barlow Condensed',sans-serif;box-shadow:0 0 0 4px rgba(196,181,240,0.15);">{{ invIni }}
+          <svg style="position:absolute;top:-12px;right:-6px;transform:rotate(18deg);" width="24" height="24" viewBox="0 0 24 24" fill="#f2d27a" stroke="#0a0f1d" stroke-width="1.4" stroke-linejoin="round"><path d="M3 18 2 7l5.5 4L12 4l4.5 7L22 7l-1 11z"></path></svg>
+        </div>
+        <h1 style="margin:0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ invTitulo }}</h1>
+        <div style="padding:12px 22px 10px;border-radius:14px;background:#121724;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75);font:600 46px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;color:#f6f4ee;text-shadow:0 0 24px rgba(196,181,240,0.35);">{{ codigo }}</div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:15px;color:#b8bfd1;">
+          <div style="display:flex;">
+            <sc-for list="{{ invAvatares }}" as="a" hint-placeholder-count="3">
+              <span style="width:28px;height:28px;margin-left:{{ a.ml }};border-radius:50%;background:{{ a.bg }};color:#0d1224;display:flex;align-items:center;justify-content:center;font:600 15px/1 'Barlow Condensed',sans-serif;border:2px solid #111829;">{{ a.ini }}</span>
+            </sc-for>
+          </div>
+          <span>{{ invTxt }}</span>
+        </div>
+        <label style="width:100%;display:flex;flex-direction:column;gap:8px;text-align:left;margin-top:4px;">
+          <span style="display:flex;justify-content:space-between;font-size:14px;color:#dfe2ee;"><span>¿Cómo te dicen?</span><span style="color:#7c859c;">{{ nickCount }}/20</span></span>
+          <input value="{{ nick }}" onChange="{{ onNick }}" maxLength="20" placeholder="Tu apodo" style="width:100%;min-height:50px;padding:0 14px;border-radius:14px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.14);color:#eef0f6;font:500 16px/1 'Barlow',sans-serif;outline:none;" style-focus="border-color:#c4b5f0;">
+        </label>
+        <button onClick="{{ entrarInvitacion }}" style="width:100%;min-height:56px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 18px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;opacity:{{ crearOp }};" style-hover="background:#d6cbfa;">Entrar a la sala</button>
+        <span style="font-size:13px;color:#7c859c;">No necesitas cuenta</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vSala }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="border-radius:20px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+          <div style="background:#121724;border-radius:12px;padding:14px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
+              <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#a8b0c4;">Código de sala</span>
+              <span style="font:600 clamp(36px,10vw,46px)/0.95 'Barlow Condensed',sans-serif;letter-spacing:.16em;color:#f6f4ee;text-shadow:0 0 24px rgba(196,181,240,0.35);">{{ codigo }}</span>
+              <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#a8b0c4;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ cierraTxt }}</span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button onClick="{{ copiar }}" style="min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);background:transparent;color:#ddd5fb;display:flex;align-items:center;gap:7px;font:600 14px/1 'Barlow',sans-serif;cursor:pointer;" style-hover="background:rgba(196,181,240,0.12);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h8"></path></svg>{{ copiarTxt }}</button>
+              <a href="{{ waHref }}" target="_blank" rel="noopener" style="min-height:44px;padding:0 16px;border-radius:999px;background:#c4b5f0;color:#0d1224;display:flex;align-items:center;gap:7px;font:600 14px/1 'Barlow',sans-serif;text-decoration:none;" style-hover="background:#d6cbfa;color:#0d1224;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v13"></path></svg>Invitar</a>
+            </div>
+          </div>
+        </div>
+
+        <div role="list" aria-label="Miembros de la sala" style="display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:10px 14px 2px;">
+          <sc-for list="{{ miembros }}" as="m" hint-placeholder-count="4">
+            <div role="listitem" style="flex:none;width:64px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;">
+              <div style="position:relative;width:46px;height:46px;border-radius:50%;background:{{ m.bg }};color:#0d1224;display:flex;align-items:center;justify-content:center;font:600 22px/1 'Barlow Condensed',sans-serif;box-shadow:{{ m.ring }};">{{ m.ini }}
+                <sc-if value="{{ m.creador }}" hint-placeholder-val="{{ false }}">
+                  <svg aria-label="Creó la sala" style="position:absolute;top:-11px;right:-5px;transform:rotate(18deg);" width="20" height="20" viewBox="0 0 24 24" fill="#f2d27a" stroke="#0a0f1d" stroke-width="1.5" stroke-linejoin="round"><path d="M3 18 2 7l5.5 4L12 4l4.5 7L22 7l-1 11z"></path></svg>
+                </sc-if>
+                <sc-if value="{{ m.on }}" hint-placeholder-val="{{ true }}">
+                  <span aria-label="En línea" style="position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;background:#7ee0a6;border:2.5px solid #0c1222;"></span>
+                </sc-if>
+              </div>
+              <span style="max-width:100%;font:600 14px/1.1 'Barlow',sans-serif;color:{{ m.nameColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.nombre }}</span>
+              <span style="font-size:12px;line-height:1;color:#8e97ad;">{{ m.votos }} votadas</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:18px 28px;align-items:start;">
+          <div style="display:flex;flex-direction:column;gap:12px;min-width:0;">
+            <div id="mazo-sala" style="position:relative;width:100%;max-width:380px;height:clamp(400px,calc(100svh - 380px),540px);margin:0 auto 14px;">
+              <sc-if value="{{ showDeck }}" hint-placeholder-val="{{ true }}">
+                <sc-for list="{{ slots }}" as="c" hint-placeholder-count="3">
+                  <div style="position:absolute;inset:0;transform:{{ c.tf }};transition:{{ c.tr }};opacity:{{ c.op }};z-index:{{ c.z }};">
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);box-shadow:0 30px 60px -28px rgba(0,0,0,0.9);">
+                      <div style="flex:1;min-height:0;position:relative;container-type:size;background:{{ c.posterBg }};">
+                        <div style="position:absolute;inset:9px;border:1px solid rgba(214,200,255,0.2);border-radius:14px;display:flex;flex-direction:column;padding:12px 14px;">
+                          <div style="display:flex;justify-content:space-between;padding:0 4px;">
+                            <sc-for list="{{ bulbs9 }}" as="d" hint-placeholder-count="9">
+                              <div style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);"></div>
+                            </sc-for>
+                          </div>
+                          <div style="margin-top:14px;text-align:center;font:600 11px/1.3 'Barlow Condensed',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:rgba(236,230,255,0.78);">{{ c.genreLine }}</div>
+                          <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+                            <h3 style="margin:0;text-align:center;font:600 {{ c.posterFs }}/0.92 'Barlow Condensed',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 28px rgba(196,181,240,0.3);">{{ c.titulo }}</h3>
+                          </div>
+                          <div style="display:flex;align-items:center;gap:10px;color:#e2d9ff;">
+                            <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                            <span style="font:600 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;">{{ c.anio }}</span>
+                            <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                          </div>
+                          <div style="margin:10px 0 12px;text-align:center;display:flex;flex-direction:column;gap:4px;">
+                            <span style="font:500 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:rgba(236,230,255,0.6);">Una película de</span>
+                            <span style="font:600 14px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#f4f2ec;">{{ c.director }}</span>
+                          </div>
+                          <div style="display:flex;justify-content:space-between;padding:0 4px;">
+                            <sc-for list="{{ bulbs9 }}" as="d" hint-placeholder-count="9">
+                              <div style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);"></div>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="padding:13px 16px 15px;display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(255,255,255,0.06);">
+                        <h2 style="margin:0;font:600 25px/1.02 'Barlow Condensed',sans-serif;color:#f6f4ee;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ c.titulo }}</h2>
+                        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:14px;color:#a8b0c4;">
+                          <span>{{ c.anio }}</span>
+                          <span>{{ c.dur }}</span>
+                          <sc-for list="{{ c.generos }}" as="g" hint-placeholder-count="1">
+                            <span style="padding:4px 10px;border-radius:999px;background:#c4b5f0;color:#0d1224;font:600 12px/1 'Barlow',sans-serif;">{{ g }}</span>
+                          </sc-for>
+                        </div>
+                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;"><span style="color:#7c859c;">Dirección </span><span style="color:#eef0f6;">{{ c.director }}</span></div>
+                      </div>
+                    </div>
+                    <div style="position:absolute;inset:0;border-radius:22px;background:#0a0f1d;opacity:{{ c.dim }};pointer-events:none;transition:{{ c.tr }};"></div>
+                    <sc-if value="{{ c.showLate }}" hint-placeholder-val="{{ false }}">
+                      <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:#7ee0a6;color:#0c1a12;font:700 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;box-shadow:0 8px 20px -8px rgba(0,0,0,0.8);"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.5-9.3C1 8 3.4 4.5 7 4.5c2 0 3.6 1.1 5 2.9 1.4-1.8 3-2.9 5-2.9 3.6 0 6 3.5 4.5 7.2C19.5 16.4 12 21 12 21z"></path></svg>{{ c.lateTxt }}</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </sc-if>
+              <sc-if value="{{ showDone }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;inset:0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px;text-align:center;">
+                  <div style="display:flex;gap:8px;">
+                    <sc-for list="{{ load5 }}" as="d" hint-placeholder-count="5">
+                      <div style="width:7px;height:7px;border-radius:50%;animation:bulbChase 1.6s ease-in-out infinite;animation-delay:{{ d.delay }};"></div>
+                    </sc-for>
+                  </div>
+                  <h2 style="margin:0;font:600 32px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">Ya votaste todas las de la sala</h2>
+                  <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">Espera a que los demás voten</p>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="position:sticky;bottom:0;z-index:20;margin:0 -14px;padding:8px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(10,15,29,0) 0%,rgba(10,15,29,0.94) 18%,#0a0f1d 100%);display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:flex-end;">
+                <button onClick="{{ undo }}" aria-label="Deshacer" title="Deshacer (Ctrl+Z)" style="flex:none;height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.16);background:rgba(18,26,44,0.9);color:#c9cedd;display:flex;align-items:center;gap:6px;font:500 13px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ undoOp }};transition:opacity .2s;" style-hover="background:rgba(196,181,240,0.12);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8v5h5"></path><path d="M4.6 13A8 8 0 1 0 6.5 6.5L4 9"></path></svg>Deshacer</button>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+                <div role="group" aria-label="Ya la vi" style="display:flex;flex-direction:column;gap:7px;">
+                  <div style="display:flex;align-items:center;justify-content:center;gap:6px;font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;white-space:nowrap;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>Ya la vi</div>
+                  <div style="display:flex;gap:6px;">
+                    <button onClick="{{ actSeenYes }}" aria-label="Ya la vi y me gustó (cuenta como sí)" title="Me gustó (↑)" style="flex:1;min-width:0;min-height:64px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid transparent;background:rgba(126,224,166,0.2);color:#7ee0a6;" style-hover="background:rgba(126,224,166,0.3);" style-active="transform:scale(.96);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg><span>Me gustó</span><span style="font:500 11px/1 'Barlow',sans-serif;letter-spacing:0;text-transform:none;color:#b7ecc9;">cuenta como sí</span></button>
+                    <button onClick="{{ actSeenNo }}" aria-label="Ya la vi y no me gustó" title="No me gustó (↓)" style="flex:1;min-width:0;min-height:64px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid transparent;background:rgba(255,123,123,0.2);color:#ff7b7b;" style-hover="background:rgba(255,123,123,0.3);" style-active="transform:scale(.96);"><svg style="transform:rotate(180deg);" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg><span>No me gustó</span></button>
+                  </div>
+                </div>
+                <div role="group" aria-label="No la he visto" style="display:flex;flex-direction:column;gap:7px;">
+                  <div style="display:flex;align-items:center;justify-content:center;gap:6px;font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;white-space:nowrap;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-2.9 3.8M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path></svg>No la he visto</div>
+                  <div style="display:flex;gap:6px;">
+                    <button onClick="{{ actLike }}" aria-label="Quiero verla" title="Quiero verla (→)" style="flex:1;min-width:0;min-height:64px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid rgba(126,224,166,0.75);background:transparent;color:#7ee0a6;" style-hover="background:rgba(126,224,166,0.1);" style-active="transform:scale(.96);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path><path d="M12 7v6M9 10h6"></path></svg><span>Quiero verla</span></button>
+                    <button onClick="{{ actNope }}" aria-label="Paso" title="Paso (←)" style="flex:1;min-width:0;min-height:64px;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;text-align:center;cursor:pointer;opacity:{{ actOp }};transition:background .15s,transform .1s;border:1.5px solid rgba(255,123,123,0.75);background:transparent;color:#ff7b7b;" style-hover="background:rgba(255,123,123,0.1);" style-active="transform:scale(.96);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg><span>Paso</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:18px;min-width:0;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <sc-if value="{{ hasMatches }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ jalar }}" style="width:100%;min-height:58px;border-radius:16px;border:1px solid rgba(255,255,255,0.25);background:linear-gradient(180deg,#d5c9fa,#a896dc);color:#0d1224;font:700 20px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 30px -10px rgba(170,150,230,0.6), inset 0 1px 0 rgba(255,255,255,0.6);" style-active="transform:translateY(2px);">Jalar la palanca</button>
+                <span style="text-align:center;font-size:13px;color:#8e97ad;">Elige al azar entre los matches</span>
+              </sc-if>
+              <sc-if value="{{ noMatches }}" hint-placeholder-val="{{ false }}">
+                <button disabled="{{ true }}" aria-disabled="true" style="width:100%;min-height:58px;border-radius:16px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#6f788f;font:700 20px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:not-allowed;">Jalar la palanca</button>
+                <p style="margin:0;text-align:center;font-size:14px;line-height:1.45;color:#b8bfd1;text-wrap:pretty;">{{ sinMatchTxt }}</p>
+              </sc-if>
+            </div>
+
+            <section style="display:flex;flex-direction:column;gap:12px;">
+              <h2 style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Matches ({{ nMatches }})</h2>
+              <sc-if value="{{ hasMatches }}" hint-placeholder-val="{{ true }}">
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;">
+                  <sc-for list="{{ matchCards }}" as="m" hint-placeholder-count="2">
+                    <div style="display:flex;flex-direction:column;gap:7px;min-width:0;">
+                      <div style="aspect-ratio:2/3;border-radius:12px;background:{{ m.bg }};border:1px solid rgba(196,181,240,0.2);padding:6px;">
+                        <div style="height:100%;border:1px solid rgba(214,200,255,0.2);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px;text-align:center;">
+                          <span style="font:600 17px/0.95 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;">{{ m.titulo }}</span>
+                          <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;color:#e2d9ff;">{{ m.anio }}</span>
+                        </div>
+                      </div>
+                      <span style="display:flex;align-items:center;gap:5px;font-size:12px;color:#7ee0a6;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.5-9.3C1 8 3.4 4.5 7 4.5c2 0 3.6 1.1 5 2.9 1.4-1.8 3-2.9 5-2.9 3.6 0 6 3.5 4.5 7.2C19.5 16.4 12 21 12 21z"></path></svg>{{ todosTxt }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ noMatches }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:22px 16px;border-radius:14px;border:1.5px dashed rgba(196,181,240,0.3);text-align:center;font-size:14px;line-height:1.45;color:#8e97ad;">Aquí aparecen las películas que les laten a todos.</div>
+              </sc-if>
+            </section>
+
+            <section style="display:flex;flex-direction:column;gap:10px;">
+              <h2 style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Casi</h2>
+              <sc-for list="{{ casiCards }}" as="m" hint-placeholder-count="2">
+                <div style="display:flex;align-items:center;gap:12px;padding:8px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);">
+                  <div style="flex:none;width:44px;height:64px;border-radius:8px;background:{{ m.bg }};border:1px solid rgba(196,181,240,0.2);"></div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+                    <span style="font:600 18px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.titulo }}</span>
+                    <span style="font-size:13px;color:#a8b0c4;">{{ m.casiTxt }}</span>
+                  </div>
+                  <span style="flex:none;padding:5px 10px;border-radius:999px;background:rgba(242,210,122,0.14);color:#f2d27a;font:600 12px/1 'Barlow',sans-serif;white-space:nowrap;">{{ m.falta }}</span>
+                </div>
+              </sc-for>
+            </section>
+          </div>
+        </div>
+
+        <sc-if value="{{ showMatch }}" hint-placeholder-val="{{ false }}">
+          <div role="dialog" aria-modal="true" aria-label="¡Match!" style="position:fixed;inset:0;z-index:50;background:rgba(5,8,16,0.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;">
+            <div style="width:100%;max-width:380px;border-radius:24px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 30px 70px -20px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.2);animation:popIn .45s cubic-bezier(.2,1.3,.4,1) both;">
+              <div style="background:#121724;border-radius:16px;padding:20px 18px 18px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;">
+                <div style="width:100%;display:flex;justify-content:space-between;padding:0 4px;">
+                  <sc-for list="{{ chase12 }}" as="d" hint-placeholder-count="12">
+                    <div style="width:6px;height:6px;border-radius:50%;animation:bulbChase .9s ease-in-out infinite;animation-delay:{{ d.delay }};"></div>
+                  </sc-for>
+                </div>
+                <div style="font:700 64px/0.9 'Barlow Condensed',sans-serif;color:#7ee0a6;text-shadow:0 0 30px rgba(126,224,166,0.45);">¡Match!</div>
+                <div style="width:min(100%,180px);aspect-ratio:2/3;border-radius:12px;background:{{ matchBg }};border:1px solid rgba(196,181,240,0.25);padding:6px;">
+                  <div style="height:100%;border:1px solid rgba(214,200,255,0.2);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px;">
+                    <span style="font:600 26px/0.95 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;">{{ matchTitulo }}</span>
+                    <span style="font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;color:#e2d9ff;">{{ matchAnio }}</span>
+                  </div>
+                </div>
+                <h2 style="margin:0;font:600 26px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ matchTitulo }}</h2>
+                <span style="font-size:15px;color:#b8bfd1;">{{ todosTxt }}</span>
+                <div style="width:100%;display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+                  <button onClick="{{ jalar }}" style="width:100%;min-height:56px;border-radius:16px;border:1px solid rgba(255,255,255,0.25);background:linear-gradient(180deg,#d5c9fa,#a896dc);color:#0d1224;font:700 19px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 30px -10px rgba(170,150,230,0.6), inset 0 1px 0 rgba(255,255,255,0.6);">Jalar la palanca</button>
+                  <button onClick="{{ seguir }}" style="width:100%;min-height:48px;border-radius:999px;border:1px solid rgba(255,255,255,0.22);background:transparent;color:#eef0f6;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,0.06);">Seguir votando</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vGanadora }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px;">
+        <div style="text-align:center;font:600 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#c4b5f0;">La de hoy:</div>
+        <div style="border-radius:20px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+          <div style="background:#121724;border-radius:12px;padding:12px 12px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75);display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;padding:0 4px;">
+              <sc-for list="{{ reelBulbs }}" as="d" hint-placeholder-count="14">
+                <div style="width:6px;height:6px;border-radius:50%;background:{{ d.bg }};box-shadow:{{ d.sh }};animation:{{ d.anim }};animation-delay:{{ d.delay }};"></div>
+              </sc-for>
+            </div>
+            <div style="position:relative;height:96px;overflow:hidden;border-radius:8px;background:linear-gradient(180deg,#05070d 0%,#1a2034 50%,#05070d 100%);">
+              <div style="transform:{{ reelTf }};transition:{{ reelTr }};">
+                <sc-for list="{{ reel }}" as="r" hint-placeholder-count="1">
+                  <div style="height:96px;display:flex;align-items:center;justify-content:center;padding:0 16px;font:600 clamp(24px,7vw,36px)/1 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 20px rgba(196,181,240,0.4);">{{ r }}</div>
+                </sc-for>
+              </div>
+              <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,7,13,0.85) 0%,rgba(5,7,13,0) 30%,rgba(5,7,13,0) 70%,rgba(5,7,13,0.85) 100%);"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:0 4px;">
+              <sc-for list="{{ reelBulbs }}" as="d" hint-placeholder-count="14">
+                <div style="width:6px;height:6px;border-radius:50%;background:{{ d.bg }};box-shadow:{{ d.sh }};animation:{{ d.anim }};animation-delay:{{ d.delay }};"></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <sc-if value="{{ spinning }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#8e97ad;padding:10px 0;">Girando…</div>
+        </sc-if>
+        <sc-if value="{{ gDone }}" hint-placeholder-val="{{ true }}">
+          <article style="border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.22);box-shadow:0 30px 60px -28px rgba(0,0,0,0.9);animation:popIn .5s cubic-bezier(.2,1.2,.4,1) both;">
+            <div style="position:relative;height:clamp(240px,46vw,300px);container-type:size;background:{{ win.bg }};">
+              <div style="position:absolute;inset:9px;border:1px solid rgba(214,200,255,0.2);border-radius:14px;display:flex;flex-direction:column;padding:14px;">
+                <div style="text-align:center;font:600 11px/1.3 'Barlow Condensed',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:rgba(236,230,255,0.78);">{{ win.genreLine }}</div>
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+                  <h3 style="margin:0;text-align:center;font:600 {{ win.posterFs }}/0.92 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;text-shadow:0 0 28px rgba(196,181,240,0.3);">{{ win.titulo }}</h3>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;color:#e2d9ff;">
+                  <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                  <span style="font:600 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;">{{ win.anio }}</span>
+                  <div style="flex:1;height:1px;background:rgba(214,200,255,0.3);"></div>
+                </div>
+              </div>
+            </div>
+            <div style="padding:18px 18px 20px;display:flex;flex-direction:column;gap:12px;">
+              <h2 style="margin:0;font:600 30px/1.02 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ win.titulo }}</h2>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:14px;color:#a8b0c4;">
+                <span>{{ win.anio }}</span>
+                <span>{{ win.dur }}</span>
+                <sc-for list="{{ win.generos }}" as="g" hint-placeholder-count="1">
+                  <span style="padding:4px 10px;border-radius:999px;background:#c4b5f0;color:#0d1224;font:600 12px/1 'Barlow',sans-serif;">{{ g }}</span>
+                </sc-for>
+              </div>
+              <p style="margin:0;font-size:15px;line-height:1.5;color:#d8dcea;text-wrap:pretty;">{{ win.sinopsis }}</p>
+              <div style="display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.4;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">
+                <div><span style="color:#7c859c;">Dirección </span><span style="color:#eef0f6;">{{ win.director }}</span></div>
+                <div><span style="color:#7c859c;">Reparto </span><span style="color:#eef0f6;">{{ win.actors }}</span></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.04);">
+                <span style="width:30px;height:30px;border-radius:50%;background:{{ puller.bg }};color:#0d1224;display:flex;align-items:center;justify-content:center;font:600 16px/1 'Barlow Condensed',sans-serif;">{{ puller.ini }}</span>
+                <span style="font-size:15px;color:#dfe2ee;">{{ puller.txt }}</span>
+              </div>
+            </div>
+          </article>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px;opacity:{{ gBtnOp }};">
+          <button onClick="{{ volverJalar }}" style="min-height:56px;border-radius:16px;border:1px solid rgba(255,255,255,0.25);background:linear-gradient(180deg,#d5c9fa,#a896dc);color:#0d1224;font:700 19px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 30px -10px rgba(170,150,230,0.6), inset 0 1px 0 rgba(255,255,255,0.6);">Volver a jalar</button>
+          <button onClick="{{ seguir }}" style="min-height:56px;border-radius:999px;border:1px solid rgba(255,255,255,0.22);background:transparent;color:#eef0f6;font:700 17px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(255,255,255,0.06);">Seguir votando</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vCerrada }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px;">
+        <header style="text-align:center;display:flex;flex-direction:column;gap:8px;">
+          <span style="font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#a8b0c4;">Sala {{ codigo }}</span>
+          <h1 style="margin:0;font:600 clamp(32px,8vw,42px)/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">Esta sala ya cerró</h1>
+          <p style="margin:0;font-size:15px;color:#b8bfd1;">Duró 24 horas. Así quedó:</p>
+        </header>
+        <sc-if value="{{ hayGanadora }}" hint-placeholder-val="{{ true }}">
+        <div style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.22);padding:14px;display:flex;align-items:center;gap:14px;">
+          <div style="flex:none;width:80px;aspect-ratio:2/3;border-radius:10px;background:{{ win.bg }};border:1px solid rgba(196,181,240,0.2);padding:5px;">
+            <div style="height:100%;border:1px solid rgba(214,200,255,0.2);border-radius:6px;display:flex;align-items:center;justify-content:center;padding:4px;text-align:center;font:600 12px/0.95 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;">{{ win.titulo }}</div>
+          </div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
+            <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#c4b5f0;">La de hoy</span>
+            <span style="font:600 26px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ win.titulo }}</span>
+            <span style="font-size:14px;color:#a8b0c4;">{{ win.anio }} · {{ win.dur }}</span>
+            <span style="font-size:14px;color:#dfe2ee;">{{ cerradaPor }}</span>
+          </div>
+        </div>
+        </sc-if>
+        <sc-if value="{{ sinGanadora }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;text-align:center;font-size:15px;color:#b8bfd1;">No llegaron a jalar la palanca.</p>
+        </sc-if>
+        <section style="display:flex;flex-direction:column;gap:12px;">
+          <h2 style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Matches ({{ nMatches }})</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;">
+            <sc-for list="{{ matchCards }}" as="m" hint-placeholder-count="2">
+              <div style="aspect-ratio:2/3;border-radius:12px;background:{{ m.bg }};border:1px solid rgba(196,181,240,0.2);padding:6px;">
+                <div style="height:100%;border:1px solid rgba(214,200,255,0.2);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px;text-align:center;">
+                  <span style="font:600 17px/0.95 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;text-wrap:balance;">{{ m.titulo }}</span>
+                  <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;color:#e2d9ff;">{{ m.anio }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+        <button onClick="{{ irInicio }}" style="min-height:56px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 18px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Crear otra sala</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vCargando }}" hint-placeholder-val="{{ false }}">
+      <div aria-busy="true" style="width:100%;max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:14px;">
+        <div style="height:112px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(196,181,240,0.08);animation:skPulse 1.4s ease-in-out infinite;"></div>
+        <div style="display:flex;gap:14px;">
+          <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.07);animation:skPulse 1.4s ease-in-out .1s infinite;"></div>
+          <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.07);animation:skPulse 1.4s ease-in-out .2s infinite;"></div>
+          <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.07);animation:skPulse 1.4s ease-in-out .3s infinite;"></div>
+        </div>
+        <div style="height:clamp(300px,52svh,480px);border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+          <div style="display:flex;gap:10px;">
+            <sc-for list="{{ load5 }}" as="d" hint-placeholder-count="5">
+              <div style="width:8px;height:8px;border-radius:50%;animation:bulbChase 1.1s ease-in-out infinite;animation-delay:{{ d.delay }};"></div>
+            </sc-for>
+          </div>
+          <div style="font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#8e97ad;">Entrando a la sala</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vOffline }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:440px;margin:24px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px 26px;text-align:center;">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path><path d="M10 5.1A15 15 0 0 1 22 8.8"></path><path d="M5 12.5a10 10 0 0 1 5.2-2.8"></path><path d="M14.5 9.9A10 10 0 0 1 19 12.5"></path><path d="M8.5 16a5 5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r="0.8" fill="#c4b5f0"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>
+        <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sin conexión</h2>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">No pudimos conectar con la sala. Tus votos están guardados.</p>
+        <button onClick="{{ reintentar }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Reintentar</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vNoExiste }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:440px;margin:24px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px 26px;text-align:center;">
+        <span style="padding:8px 16px 6px;border-radius:12px;background:#121724;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75);font:600 32px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;color:#ff7b7b;text-decoration:line-through;text-decoration-thickness:2px;">{{ codeTried }}</span>
+        <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Ese código no existe</h2>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">Revisa que esté bien escrito: son 6 letras y números.</p>
+        <button onClick="{{ irInicio }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Probar otro código</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vLlena }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:440px;margin:24px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px 26px;text-align:center;">
+        <span style="font:600 56px/0.9 'Barlow Condensed',sans-serif;color:#f2d27a;">12/12</span>
+        <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">La sala está llena</h2>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:32ch;text-wrap:pretty;">Ya hay 12 personas, el máximo por sala. Pide otro código o crea tu propia sala.</p>
+        <button onClick="{{ irInicio }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Crear sala</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ vSalaCerrada }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;max-width:440px;margin:24px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px 26px;text-align:center;">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+        <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Esta sala ya cerró</h2>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:32ch;text-wrap:pretty;">Las salas duran 24 horas. Pide un código nuevo o crea tu propia sala.</p>
+        <button onClick="{{ irInicio }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Crear sala</button>
+      </div>
+    </sc-if>
+
+  </div>
+  <sc-if value="{{ hayAviso }}" hint-placeholder-val="{{ false }}">
+    <div role="status" aria-live="polite" style="position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom, 0px) + 150px);transform:translateX(-50%);z-index:60;max-width:min(92vw,420px);padding:12px 18px;border-radius:14px;background:#1b2440;border:1px solid rgba(196,181,240,0.35);box-shadow:0 18px 40px -12px rgba(0,0,0,0.8);color:#eef0f6;font:500 15px/1.35 'Barlow',sans-serif;text-align:center;animation:popIn .2s ease-out;">{{ aviso }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;inicio&quot;,&quot;invitacion&quot;,&quot;sala&quot;,&quot;sin matches&quot;,&quot;match&quot;,&quot;ganadora&quot;,&quot;mazo terminado&quot;,&quot;cerrada&quot;,&quot;cargando&quot;,&quot;sin conexión&quot;,&quot;código no existe&quot;,&quot;sala llena&quot;,&quot;sala cerrada&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  static GENRES = ['Acción', 'Aventura', 'Ciencia ficción', 'Comedia', 'Crimen', 'Drama', 'Fantasía', 'Musical', 'Romance', 'Terror', 'Thriller', 'Western', 'Bélico', 'Misterio'];
+  static HUE = { 'Acción': 35, 'Aventura': 75, 'Ciencia ficción': 210, 'Comedia': 60, 'Crimen': 15, 'Drama': 265, 'Fantasía': 300, 'Musical': 330, 'Romance': 350, 'Terror': 25, 'Thriller': 185, 'Western': 50, 'Bélico': 120, 'Misterio': 240 };
+  // ---- Datos de ejemplo (solo para ver el diseño con los demás estados) ----
+  static MIEMBROS = [
+    { nombre: 'Diego', creador: true, on: true, votos: 24, h: 35 },
+    { nombre: 'Ana', yo: true, on: true, votos: 18, h: 290 },
+    { nombre: 'Beto', on: true, votos: 31, h: 150 },
+    { nombre: 'Caro', on: false, votos: 9, h: 200 }
+  ];
+  static M = {
+    coco: { titulo: 'Coco', anio: 2017, dur: 105, generos: ['Fantasía', 'Musical'], dir: 'Lee Unkrich y Adrian Molina', otros: 3 },
+    madmax: { titulo: 'Mad Max: Furia en el camino', anio: 2015, dur: 120, generos: ['Acción', 'Ciencia ficción'], dir: 'George Miller', otros: 1 },
+    roma: { titulo: 'Roma', anio: 2018, dur: 135, generos: ['Drama'], dir: 'Alfonso Cuarón', otros: 0 },
+    fauno: { titulo: 'El laberinto del fauno', anio: 2006, dur: 118, generos: ['Fantasía', 'Bélico'], dir: 'Guillermo del Toro', otros: 2 },
+    alien: { titulo: 'Alien: el octavo pasajero', anio: 1979, dur: 117, generos: ['Terror', 'Ciencia ficción'], dir: 'Ridley Scott', otros: 1 },
+    eterno: { titulo: 'Eterno resplandor de una mente sin recuerdos', anio: 2004, dur: 108, generos: ['Romance', 'Drama'], dir: 'Michel Gondry', otros: 2 },
+    parasitos: { titulo: 'Parásitos', anio: 2019, dur: 132, generos: ['Thriller', 'Drama'], dir: 'Bong Joon-ho', actors: 'Song Kang-ho, Choi Woo-shik, Park So-dam, Cho Yeo-jeong',
+      sinopsis: 'Los Kim, una familia sin trabajo, se infiltran uno por uno en la casa de los adinerados Park haciéndose pasar por empleados calificados, hasta que un secreto escondido en el sótano lo cambia todo.' },
+    spider: { titulo: 'Spider-Man: un nuevo universo', anio: 2018, dur: 117, generos: ['Acción', 'Aventura'], dir: 'Bob Persichetti, Peter Ramsey y Rodney Rothman', actors: 'Shameik Moore, Hailee Steinfeld, Mahershala Ali, Jake Johnson',
+      sinopsis: 'Miles Morales, un adolescente de Brooklyn, obtiene poderes arácnidos y descubre que existen otros Spider-Man de distintas dimensiones que necesitan su ayuda para volver a casa.' },
+    inter: { titulo: 'Interestelar', anio: 2014, dur: 169, generos: ['Ciencia ficción', 'Drama'], dir: 'Christopher Nolan', falta: 'Falta Caro' },
+    amelie: { titulo: 'Amélie', anio: 2001, dur: 122, generos: ['Romance', 'Comedia'], dir: 'Jean-Pierre Jeunet', falta: 'Falta Beto' }
+  };
+  static DECK = ['coco', 'madmax', 'roma', 'fauno', 'alien', 'eterno'];
+  // ---- Conexión ----
+  static GUARDADA = 'ruleton_sala';      // la sala en la que estabas (para volver, también después de entrar con Google)
+  static CADA = 4000;                    // cada cuánto se pregunta cómo va la sala
+  static ACCION = { right: 'like', left: 'dislike', up: 'vista_gusto', down: 'vista_no_gusto' };
+
+  state = { view: 'sala', idx: 0, matches: ['parasitos', 'spider'], casi: ['inter', 'amelie'], history: [], phase: 'idle', flyDir: null, noTr: false, showMatch: null,
+    nick: '', code: '', genre: null, copied: false, winner: 'parasitos', puller: 'Beto', reel: ['Parásitos'], reelPos: 0, reelTr: 'none', gPhase: 'done', codeTried: 'K7P2QZ',
+    // en vivo
+    sala: null, cola: [], hist: [], mazoFin: false, matchObj: null, winObj: null, pullerApodo: '', misSalas: [], aviso: '', ocupado: false };
+  timers = [];
+  vistos = new Set();
+  conocida = false;
+
+  live() { return (this.props.estado ?? 'interactivo') === 'interactivo'; }
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.onKey);
+    if (this.live()) this.iniciar(); else this.apply(this.props.estado ?? 'sala');
+  }
+  componentDidUpdate(pp) {
+    if (pp.estado === this.props.estado) return;
+    this.parar();
+    if (this.live()) this.iniciar(); else this.apply(this.props.estado ?? 'sala');
+  }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); this.clear(); this.parar(); }
+  clear() { this.timers.forEach(clearTimeout); this.timers = []; }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  raf2(fn) { requestAnimationFrame(() => requestAnimationFrame(fn)); }
+
+  // =====================================================================
+  //  EN VIVO (Supabase)
+  // =====================================================================
+  rpc(fn, args) {
+    if (!window.Cuenta) return Promise.reject(new Error('sin cuenta.js'));
+    return window.Cuenta.rpc(fn, args || {});
+  }
+  msgError(e) {
+    const m = String((e && e.message) || '');
+    const i = m.indexOf(': ');
+    return i >= 0 ? m.slice(i + 2) : 'Algo salió mal. Intenta de nuevo.';
+  }
+  esDeRed(e) { return !e || !e.status || e.status >= 500; }
+  avisar(txt) {
+    this.setState({ aviso: txt });
+    clearTimeout(this.tAviso);
+    this.tAviso = setTimeout(() => this.setState({ aviso: '' }), 4200);
+  }
+  limpiaCodigo(c) { return String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); }
+  leerGuardada() { try { return localStorage.getItem(Component.GUARDADA); } catch (_) { return null; } }
+  guardar(c) { try { c ? localStorage.setItem(Component.GUARDADA, c) : localStorage.removeItem(Component.GUARDADA); } catch (_) {} }
+  ponerUrl(c) {
+    try {
+      const u = new URL(location.href);
+      if (c) u.searchParams.set('sala', c); else u.searchParams.delete('sala');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (_) {}
+  }
+  link(c) { return location.origin + location.pathname + '?sala=' + c; }
+
+  async iniciar() {
+    this.clear();
+    this.vistos = new Set(); this.conocida = false; this.ultimaGirada = undefined; this.votosOtros = undefined;
+    this.setState({ view: 'cargando', sala: null, cola: [], hist: [], mazoFin: false, matchObj: null, winObj: null, idx: 0, phase: 'idle', history: [] });
+    const q = this.limpiaCodigo(new URLSearchParams(location.search).get('sala'));
+    try { if (window.Cuenta) await window.Cuenta.lista(); } catch (_) {}
+    this.prellenarApodo();
+    if (q) return this.abrirCodigo(q, false);
+    const g = this.leerGuardada();
+    if (g) return this.abrirCodigo(g, true);
+    this.irInicioVivo();
+  }
+  prellenarApodo() {
+    if (this.state.nick || !window.Cuenta || !window.Cuenta.conCuenta()) return;
+    const u = window.Cuenta.usuario(), meta = (u && u.user_metadata) || {};
+    const n = String(meta.full_name || meta.name || '').trim().split(/\s+/)[0] || '';
+    if (n) this.setState({ nick: n.slice(0, 20) });
+  }
+  irInicioVivo() {
+    this.parar(); this.guardar(null); this.ponerUrl(null);
+    this.setState({ view: 'inicio', sala: null, cola: [], matchObj: null });
+    const hay = window.Cuenta && window.Cuenta.usuario && window.Cuenta.usuario();
+    if (hay) this.rpc('mis_salas').then(l => this.setState({ misSalas: Array.isArray(l) ? l : [] })).catch(() => {});
+  }
+  // Abre una sala por código: si ya soy miembro entro directo; si no, la invitación
+  async abrirCodigo(c, silencioso) {
+    this.ultimo = () => this.abrirCodigo(c, silencioso);
+    this.setState({ view: 'cargando', codeTried: c });
+    let e;
+    try { e = await this.rpc('estado_sala', { p_codigo: c }); }
+    catch (err) {
+      if (silencioso) return this.irInicioVivo();
+      if (err && err.status === 429) { this.irInicioVivo(); return this.avisar(this.msgError(err)); }
+      return this.setState({ view: 'offline' });
+    }
+    if (!e || e.error === 'no_existe') {
+      if (silencioso) return this.irInicioVivo();
+      this.guardar(null);
+      return this.setState({ view: 'noexiste', codeTried: c });
+    }
+    if (!e.soy_miembro) {
+      if (silencioso) return this.irInicioVivo();
+      this.ponerUrl(e.codigo);
+      return this.setState({ sala: e, view: !e.activa ? 'salacerrada' : e.lleno ? 'llena' : 'invitacion' });
+    }
+    this.entrarSala(e, true);
+  }
+  entrarSala(e, alAbrir) {
+    this.guardar(e.activa ? e.codigo : null);
+    this.ponerUrl(e.codigo);
+    this.conocerSala(e);
+    let view = !e.activa ? 'cerrada' : 'sala';
+    if (alAbrir && e.activa && e.ganadora) view = 'ganadora';
+    const w = e.ganadora ? this.norm(e.ganadora) : null;
+    this.setState({ sala: e, view, cola: [], hist: [], mazoFin: false, matchObj: null, winObj: w, pullerApodo: e.girada_por || '',
+                    gPhase: 'done', reel: w ? [w.titulo] : [''], reelPos: 0, reelTr: 'none' });
+    if (e.activa) { this.cargarMazo(false); this.arrancar(); }
+    if (view === 'sala') this.later(() => this.alMazo(), 350);
+  }
+  // En celular el código y los miembros ocupan media pantalla: se baja hasta la tarjeta (una sola vez, al entrar)
+  alMazo() {
+    const el = document.getElementById('mazo-sala');
+    if (!el || window.innerWidth >= 760) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 28;
+    if (top > 0) window.scrollTo({ top, behavior: 'smooth' });
+  }
+  // Recuerda lo que ya había, para celebrar solo lo nuevo
+  conocerSala(e) {
+    (e.matches || []).forEach(m => this.vistos.add(m.id));
+    this.conocida = true;
+    this.ultimaGirada = e.girada_en || null;
+  }
+  arrancar() {
+    this.parar();
+    this.reloj = setInterval(() => { if (!document.hidden) this.refrescar(); }, Component.CADA);
+    this.alVolver = () => { if (!document.hidden) this.refrescar(); };
+    document.addEventListener('visibilitychange', this.alVolver);
+  }
+  parar() {
+    clearInterval(this.reloj); this.reloj = null;
+    if (this.alVolver) document.removeEventListener('visibilitychange', this.alVolver);
+    this.alVolver = null;
+  }
+  refrescar() {
+    const s = this.state.sala;
+    if (!s || !s.soy_miembro || this.pidiendoEstado) return;
+    this.pidiendoEstado = true;
+    this.rpc('estado_sala', { p_codigo: s.codigo })
+      .then(e => this.aplicarSala(e))
+      .catch(() => {})
+      .finally(() => { this.pidiendoEstado = false; });
+  }
+  // Cada respuesta del servidor pasa por aquí
+  aplicarSala(e) {
+    if (!e || e.error) return;
+    if (!e.soy_miembro) { this.avisar('Ya no estás en esta sala.'); return this.irInicioVivo(); }
+    // Si los demás votaron algo nuevo, se reordena el mazo: primero lo que ya les latió
+    const otros = (e.miembros || []).filter(m => !m.es_yo).reduce((t, m) => t + (m.votos || 0), 0) + ':' + (e.n_miembros || 0);
+    if (this.votosOtros !== undefined && otros !== this.votosOtros && e.activa) this.later(() => this.cargarMazo(true), 0);
+    this.votosOtros = otros;
+    const nuevos = (e.matches || []).filter(m => !this.vistos.has(m.id));
+    nuevos.forEach(m => this.vistos.add(m.id));
+    const cambios = { sala: e };
+    if (!e.activa) { this.parar(); this.guardar(null); cambios.view = 'cerrada'; }
+    // Alguien más jaló la palanca: todos ven el giro
+    if (e.girada_en && e.girada_en !== this.ultimaGirada) {
+      this.ultimaGirada = e.girada_en;
+      if (!this.yoGiro && e.ganadora && e.activa) { this.setState(cambios); return this.animarGanadora(e); }
+    }
+    // Un match nuevo (de mi voto o del de alguien más): se celebra uno a la vez
+    const s = this.state;
+    if (nuevos.length && this.conocida && e.activa && s.view === 'sala' && !s.matchObj) cambios.matchObj = this.norm(nuevos[0]);
+    this.setState(cambios);
+  }
+  async cargarMazo(reordenar) {
+    const s = this.state.sala;
+    if (!s || this.pidiendoMazo) return;
+    this.pidiendoMazo = true;
+    try {
+      const l = await this.rpc('mazo_sala', { p_codigo: s.codigo, p_cantidad: 15 });
+      const llegan = (Array.isArray(l) ? l : []).map(f => this.norm(f));
+      this.setState(st => {
+        const votadas = new Set(st.hist.map(h => h.id));
+        if (reordenar && st.cola.length) {
+          // la de arriba no se mueve (la persona la está viendo), solo se le actualiza "A 2 de 3 ya les late"
+          const tope = st.cola[0], fresca = llegan.find(c => c.id === tope.id) || tope;
+          return { cola: [fresca, ...llegan.filter(c => c.id !== tope.id && !votadas.has(c.id))], mazoFin: false };
+        }
+        const ya = new Set(st.cola.map(c => c.id));
+        const cola = [...st.cola, ...llegan.filter(c => !ya.has(c.id) && !votadas.has(c.id))];
+        return { cola, mazoFin: cola.length === 0 };
+      });
+    } catch (err) {
+      if (!this.state.cola.length) this.avisar('No se pudieron cargar las películas. Revisa tu conexión.');
+    } finally { this.pidiendoMazo = false; }
+  }
+  norm(f) {
+    const nombres = l => (l || []).map(x => (x && x.nombre) || x).filter(Boolean);
+    const dirs = nombres(f.directores);
+    return {
+      id: f.id, titulo: f.titulo || '', anio: f.anio || '', dur: f.duracion_min || 0, generos: f.generos || [],
+      dir: dirs.length > 1 ? dirs.slice(0, -1).join(', ') + ' y ' + dirs[dirs.length - 1] : (dirs[0] || ''),
+      actors: nombres(f.actores).slice(0, 4).join(', '), sinopsis: f.sinopsis || '',
+      otros: f.a_favor || 0, faltan: f.faltan || []
+    };
+  }
+  votarVivo(dir) {
+    const s = this.state, carta = s.cola[0];
+    if (!carta || !s.sala) return;
+    const codigo = s.sala.codigo;
+    this.setState({ phase: 'fly', flyDir: dir });
+    this.later(() => this.setState(st => ({
+      cola: st.cola.filter(c => c.id !== carta.id), hist: [...st.hist, carta], phase: 'idle', flyDir: null, noTr: true
+    }), () => this.raf2(() => this.setState({ noTr: false }))), 380);
+    this.votados = (this.votados || 0) + 1;
+    this.rpc('votar_sala', { p_codigo: codigo, p_titulo: carta.id, p_accion: Component.ACCION[dir] })
+      .then(r => {
+        this.aplicarSala(r.estado);
+        const st = this.state;
+        if (st.cola.length <= 4) this.cargarMazo(false);
+        else if (this.votados % 6 === 0) this.cargarMazo(true);   // reordena: primero lo que a otros ya les latió
+      })
+      .catch(err => {
+        // no se guardó: la carta regresa
+        this.setState(st => ({ cola: [carta, ...st.cola.filter(c => c.id !== carta.id)], hist: st.hist.filter(h => h.id !== carta.id), mazoFin: false }));
+        if (err && err.status && err.status < 500 && /cerró/.test(this.msgError(err))) return this.refrescar();
+        this.avisar(err && err.status === 429 ? this.msgError(err) : 'No se guardó tu voto. Revisa tu conexión e intenta otra vez.');
+      });
+  }
+  deshacerVivo() {
+    const s = this.state;
+    if (!s.sala || !s.hist.length || s.phase !== 'idle' || this.deshaciendo) return;
+    this.deshaciendo = true;
+    this.rpc('deshacer_voto_sala', { p_codigo: s.sala.codigo })
+      .then(r => {
+        const f = r && r.ficha ? this.norm(r.ficha) : null;
+        this.setState(st => ({
+          hist: f ? st.hist.filter(h => h.id !== f.id) : st.hist.slice(0, -1),
+          cola: f ? [f, ...st.cola.filter(c => c.id !== f.id)] : st.cola, mazoFin: false, matchObj: null
+        }));
+        if (f) this.vistos.delete(f.id);
+        this.aplicarSala(r && r.estado);
+      })
+      .catch(() => this.avisar('No se pudo deshacer. Intenta otra vez.'))
+      .finally(() => { this.deshaciendo = false; });
+  }
+  async jalarVivo() {
+    const s = this.state;
+    if (!s.sala || !(s.sala.matches || []).length || s.gPhase === 'spin' || this.yoGiro) return;
+    this.yoGiro = true;
+    try {
+      const e = await this.rpc('girar_sala', { p_codigo: s.sala.codigo });
+      this.ultimaGirada = e.girada_en;
+      this.setState({ sala: e });
+      this.animarGanadora(e);
+    } catch (err) {
+      this.avisar(this.esDeRed(err) ? 'No se pudo jalar la palanca. Revisa tu conexión.' : this.msgError(err));
+    } finally { this.yoGiro = false; }
+  }
+  animarGanadora(e) {
+    const w = this.norm(e.ganadora);
+    const titles = (e.matches || []).map(m => m.titulo);
+    if (!titles.length) titles.push(w.titulo);
+    const reel = Array.from({ length: 17 }, (_, i) => titles[i % titles.length]);
+    reel.push(w.titulo);
+    this.clear();
+    this.setState({ view: 'ganadora', matchObj: null, gPhase: 'spin', reel, reelPos: 0, reelTr: 'none', winObj: w, pullerApodo: e.girada_por || '' }, () => this.raf2(() => {
+      this.setState({ reelPos: reel.length - 1, reelTr: 'transform 2.6s cubic-bezier(.12,.75,.18,1)' });
+      this.later(() => this.setState({ gPhase: 'done' }), 2700);
+    }));
+  }
+  async crearVivo() {
+    const s = this.state;
+    if (!s.nick.trim() || s.ocupado) return;
+    this.setState({ ocupado: true });
+    try {
+      const e = await this.rpc('crear_sala', { p_filtros: s.genre ? { genero: s.genre } : {}, p_apodo: s.nick.trim() });
+      this.vistos = new Set();
+      this.entrarSala(e, false);
+    } catch (err) {
+      this.avisar(this.esDeRed(err) ? 'No se pudo crear la sala. Revisa tu conexión.' : this.msgError(err));
+    } finally { this.setState({ ocupado: false }); }
+  }
+  async unirseVivo() {
+    const s = this.state;
+    if (!s.nick.trim() || !s.sala || s.ocupado) return;
+    this.setState({ ocupado: true });
+    try {
+      const e = await this.rpc('unirse_sala', { p_codigo: s.sala.codigo, p_apodo: s.nick.trim() });
+      if (e && e.error) {
+        const v = { no_existe: 'noexiste', cerrada: 'salacerrada', llena: 'llena' }[e.error] || 'noexiste';
+        if (v === 'noexiste') this.guardar(null);
+        return this.setState({ view: v });
+      }
+      this.vistos = new Set();
+      this.entrarSala(e, false);
+    } catch (err) {
+      this.avisar(this.esDeRed(err) ? 'No se pudo entrar. Revisa tu conexión.' : this.msgError(err));
+    } finally { this.setState({ ocupado: false }); }
+  }
+  hue(t) { let h = 0; for (const ch of String(t || '')) h = (h * 31 + ch.codePointAt(0)) % 360; return h; }
+  inicial(t) { return (String(t || '?').trim()[0] || '?').toUpperCase(); }
+  cierra(iso) {
+    const min = Math.round((new Date(iso).getTime() - Date.now()) / 60000);
+    if (!isFinite(min)) return '';
+    if (min <= 0) return 'Ya cerró';
+    return min >= 60 ? `Cierra en ${Math.floor(min / 60)} h` : `Cierra en ${min} min`;
+  }
+
+  // =====================================================================
+  //  DEMO (los demás valores de "estado", para ver el diseño)
+  // =====================================================================
+  apply(e) {
+    this.clear();
+    const base = { idx: 0, matches: ['parasitos', 'spider'], casi: ['inter', 'amelie'], history: [], phase: 'idle', showMatch: null, noTr: false, winner: 'parasitos', puller: 'Beto', gPhase: 'done', reel: ['Parásitos'], reelPos: 0, reelTr: 'none' };
+    const map = { 'inicio': 'inicio', 'invitacion': 'invitacion', 'cerrada': 'cerrada', 'cargando': 'cargando', 'sin conexión': 'offline', 'código no existe': 'noexiste', 'sala llena': 'llena', 'sala cerrada': 'salacerrada' };
+    if (map[e]) return this.setState({ ...base, view: map[e] });
+    if (e === 'sin matches') return this.setState({ ...base, view: 'sala', matches: [], casi: ['inter', 'amelie', 'spider'] });
+    if (e === 'match') return this.setState({ ...base, view: 'sala', showMatch: 'spider' });
+    if (e === 'mazo terminado') return this.setState({ ...base, view: 'sala', idx: Component.DECK.length });
+    if (e === 'ganadora') { this.setState({ ...base, view: 'ganadora' }); return this.later(() => this.spin('Beto'), 200); }
+    this.setState({ ...base, view: 'sala' });
+  }
+
+  go(view, ms = 900) { this.clear(); this.setState({ view: 'cargando' }); this.later(() => this.setState({ view }), ms); }
+
+  spin(puller) {
+    const ms = this.state.matches; if (!ms.length) return;
+    let w = ms[Math.floor(Math.random() * ms.length)];
+    if (ms.length > 1 && this.state.gPhase === 'done' && this.state.view === 'ganadora' && w === this.state.winner && puller !== 'Beto') w = ms.find(x => x !== w);
+    const titles = ms.map(k => Component.M[k].titulo);
+    const reel = Array.from({ length: 17 }, (_, i) => titles[i % titles.length]); reel.push(Component.M[w].titulo);
+    this.setState({ view: 'ganadora', showMatch: null, gPhase: 'spin', reel, reelPos: 0, reelTr: 'none', winner: w, puller }, () => this.raf2(() => {
+      this.setState({ reelPos: reel.length - 1, reelTr: 'transform 2.6s cubic-bezier(.12,.75,.18,1)' });
+      this.later(() => this.setState({ gPhase: 'done' }), 2700);
+    }));
+  }
+
+  canAct() {
+    const s = this.state;
+    if (this.live()) return s.view === 'sala' && s.phase === 'idle' && !s.matchObj && s.cola.length > 0 && !!(s.sala && s.sala.activa);
+    return s.view === 'sala' && s.phase === 'idle' && !s.showMatch && s.idx < Component.DECK.length;
+  }
+  rate(dir) {
+    if (!this.canAct()) return;
+    if (this.live()) return this.votarVivo(dir);
+    const key = Component.DECK[this.state.idx], m = Component.M[key];
+    const yes = dir === 'right' || dir === 'up';
+    const isMatch = yes && m.otros === Component.MIEMBROS.length - 1;
+    this.setState({ phase: 'fly', flyDir: dir });
+    this.later(() => this.setState(s => ({
+      idx: s.idx + 1, phase: 'idle', flyDir: null, noTr: true,
+      history: [...s.history, { key, isMatch }],
+      matches: isMatch ? [...s.matches, key] : s.matches,
+      showMatch: isMatch ? key : null
+    }), () => this.raf2(() => this.setState({ noTr: false }))), 380);
+  }
+  undo = () => {
+    if (this.live()) return this.deshacerVivo();
+    const s = this.state; if (!s.history.length || s.phase !== 'idle') return;
+    const h = s.history[s.history.length - 1];
+    this.setState({ idx: s.idx - 1, history: s.history.slice(0, -1), matches: h.isMatch ? s.matches.filter(k => k !== h.key) : s.matches, showMatch: null });
+  };
+  onKey = e => {
+    const t = e.target && e.target.tagName; if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); this.undo(); return; }
+    const map = { ArrowRight: 'right', ArrowLeft: 'left', ArrowUp: 'up', ArrowDown: 'down' };
+    if (map[e.key] && this.canAct()) { e.preventDefault(); this.rate(map[e.key]); }
+  };
+
+  bg(m) { const h = Component.HUE[(m.generos || [])[0]] ?? 265; return `radial-gradient(ellipse 120% 80% at 50% 35%, oklch(0.34 0.08 ${h}) 0%, oklch(0.19 0.045 ${h}) 68%, #0c1121 100%)`; }
+  posterFs(t) {
+    t = String(t || ' ');
+    const L = t.length, w = Math.max(...t.split(/\s+/).map(x => x.length), 1);
+    const byLen = L <= 6 ? 30 : L <= 12 ? 22 : L <= 20 ? 17 : L <= 30 ? 14 : 11.5;
+    return `min(${Math.min(byLen, 84 / (w * 0.47)).toFixed(1)}cqw, ${L <= 12 ? 18 : 13}cqh)`;
+  }
+  dur(n) { if (!n) return ''; const h = Math.floor(n / 60), r = n % 60; return h ? (r ? `${h} h ${r} min` : `${h} h`) : `${r} min`; }
+
+  renderVals() {
+    const s = this.state, C = Component, L = this.live();
+    const sala = s.sala || {};
+    // ---- de dónde salen los datos: en vivo o de ejemplo
+    const miembros = L
+      ? (sala.miembros || []).map(m => ({ nombre: m.apodo || '?', yo: m.es_yo, creador: m.anfitrion, on: m.es_yo || m.en_linea, votos: m.votos, h: this.hue(m.apodo) }))
+      : C.MIEMBROS.map(m => ({ ...m, votos: m.yo ? m.votos + s.history.length : m.votos }));
+    const N = L ? (sala.n_miembros || miembros.length || 1) : C.MIEMBROS.length;
+    const mazo = L ? s.cola : C.DECK.slice(s.idx).map(k => C.M[k]);
+    const matchList = L ? (sala.matches || []).map(f => this.norm(f)) : s.matches.map(k => C.M[k]);
+    const casiList = L ? (sala.casi || []).map(f => this.norm(f)) : s.casi.map(k => C.M[k]);
+    const codigo = L ? (sala.codigo || '') : 'K7P2QX';
+    const yo = miembros.find(m => m.yo);
+    const w = L ? (s.winObj || { titulo: '', anio: '', dur: 0, generos: [], dir: '', actors: '', sinopsis: '' }) : C.M[s.winner];
+    const pullerNombre = L ? (s.pullerApodo || '') : s.puller;
+    const pm = L ? { nombre: pullerNombre, yo: !!(yo && pullerNombre && yo.nombre === pullerNombre), h: this.hue(pullerNombre) }
+                 : (C.MIEMBROS.find(x => x.nombre === s.puller) || C.MIEMBROS[1]);
+    const sm = L ? s.matchObj : (s.showMatch ? C.M[s.showMatch] : null);
+    const deckVacio = L ? (s.cola.length === 0 && s.mazoFin) : s.idx >= C.DECK.length;
+    const hist = L ? s.hist.length : s.history.length;
+
+    const fly = { right: 'translate(130%, 40px) rotate(24deg)', left: 'translate(-130%, 40px) rotate(-24deg)', up: 'translate(0, -120%) rotate(-4deg)', down: 'translate(0, 120%) rotate(4deg)' };
+    const base = d => `translate3d(0, ${d * 14}px, 0) scale(${1 - d * 0.05})`;
+    const slots = mazo.slice(0, 3).map((m, i) => {
+      const top = i === 0, flying = s.phase === 'fly';
+      const d = flying && !top ? i - 1 : i;
+      return {
+        tf: top && flying ? fly[s.flyDir] : base(d),
+        tr: s.noTr ? 'none' : top && flying ? 'transform .38s cubic-bezier(.3,.5,.45,1), opacity .38s' : 'transform .38s cubic-bezier(.2,.8,.2,1)',
+        op: top && flying ? 0 : 1, z: 10 - i, dim: d * 0.22,
+        titulo: m.titulo, anio: m.anio, dur: this.dur(m.dur), generos: m.generos, genreLine: m.generos.join(' · '), director: m.dir,
+        posterBg: this.bg(m), posterFs: this.posterFs(m.titulo),
+        showLate: top && m.otros > 0 && !flying, lateTxt: `A ${m.otros} de ${N} ya les late`
+      };
+    });
+    const chip = sel => sel ? { bg: '#c4b5f0', fg: '#0c1122', bd: '#c4b5f0' } : { bg: 'rgba(255,255,255,0.03)', fg: '#dfe2ee', bd: 'rgba(255,255,255,0.14)' };
+    const mini = m => ({ titulo: m.titulo, anio: m.anio, bg: this.bg(m) });
+    const spinning = s.gPhase === 'spin';
+    const can = this.canAct();
+    const v = s.view;
+    const falta = m => {
+      if (!L) return m.falta || 'Falta Caro';
+      const f = m.faltan || [];
+      if (!f.length) return 'Falta un sí';
+      return 'Falta ' + (f.length <= 2 ? f.join(' y ') : `${f.slice(0, 2).join(', ')} y ${f.length - 2} más`);
+    };
+    const link = codigo ? this.link(codigo) : '';
+    const anf = L ? (sala.anfitrion || '') : 'Diego';
+    const nInv = L ? (sala.n_miembros || 0) : 3;
+    const salasAbiertas = L
+      ? s.misSalas.map(r => ({ code: r.codigo, personas: r.n_miembros === 1 ? '1 persona' : `${r.n_miembros} personas`,
+                               matches: r.matches === 1 ? '1 match' : `${r.matches} matches`, cierra: this.cierra(r.expira_en).toLowerCase(),
+                               onClick: () => this.abrirCodigo(r.codigo, false) }))
+      : [
+          { code: 'K7P2QX', personas: '4 personas', matches: '2 matches', cierra: 'cierra en 23 h', onClick: () => this.go('sala') },
+          { code: 'M4R9TS', personas: '3 personas', matches: '0 matches', cierra: 'cierra en 5 h', onClick: () => this.go('sala') }
+        ];
+    return {
+      vInicio: v === 'inicio', vInvitacion: v === 'invitacion', vSala: v === 'sala', vGanadora: v === 'ganadora', vCerrada: v === 'cerrada',
+      vCargando: v === 'cargando', vOffline: v === 'offline', vNoExiste: v === 'noexiste', vLlena: v === 'llena', vSalaCerrada: v === 'salacerrada',
+      nick: s.nick, nickCount: s.nick.length, onNick: e => this.setState({ nick: e.target.value.slice(0, 20) }),
+      code: s.code, onCode: e => this.setState({ code: this.limpiaCodigo(e.target.value) }),
+      crearOp: s.nick.trim() && !s.ocupado ? 1 : 0.45, entrarOp: s.code.length === 6 ? 1 : 0.45,
+      crear: () => { if (L) return this.crearVivo(); if (s.nick.trim()) this.go('sala'); },
+      entrarCodigo: () => {
+        if (s.code.length !== 6) return;
+        if (L) return this.abrirCodigo(s.code, false);
+        if (s.code === 'K7P2QX') this.go('sala'); else { this.setState({ codeTried: s.code }); this.go('noexiste', 700); }
+      },
+      entrarInvitacion: () => { if (L) return this.unirseVivo(); if (s.nick.trim()) this.go('sala'); },
+      genreChips: [{ label: 'Todos', ...chip(!s.genre), onClick: () => this.setState({ genre: null }) }, ...C.GENRES.map(g => ({ label: g, ...chip(s.genre === g), onClick: () => this.setState({ genre: g }) }))],
+      salasAbiertas,
+      codigo, waHref: 'https://wa.me/?text=' + encodeURIComponent(`Vamos a elegir película. Entra a mi sala de RuletonPeliculon: ${L ? link : codigo}`),
+      cierraTxt: L ? this.cierra(sala.expira_en) : 'Cierra en 23 h',
+      invIni: this.inicial(anf || '?'), invBg: `oklch(0.8 0.1 ${L ? this.hue(anf) : 35})`,
+      invTitulo: anf ? `${anf} te invitó a su sala` : 'Te invitaron a una sala',
+      invTxt: nInv === 1 ? '1 persona ya está en la sala' : `${nInv} personas ya están votando`,
+      invAvatares: (L ? Array.from({ length: Math.min(nInv, 3) }, (_, i) => i === 0 ? { ini: this.inicial(anf || '?'), h: this.hue(anf) } : { ini: '·', h: 230 })
+                      : [{ ini: 'D', h: 35 }, { ini: 'A', h: 290 }, { ini: 'B', h: 150 }])
+        .map((a, i) => ({ ini: a.ini, bg: `oklch(0.8 0.1 ${a.h})`, ml: i ? '-8px' : '0' })),
+      copiarTxt: s.copied ? 'Copiado' : 'Copiar',
+      copiar: () => {
+        const txt = L ? link : 'K7P2QX';
+        try { navigator.clipboard && navigator.clipboard.writeText(txt); } catch (_) {}
+        this.setState({ copied: true }); this.later(() => this.setState({ copied: false }), 1600);
+      },
+      miembros: miembros.map(m => ({ ini: this.inicial(m.nombre), nombre: m.yo ? `${m.nombre} (tú)` : m.nombre, votos: m.votos, creador: !!m.creador, on: !!m.on,
+        bg: `oklch(0.8 0.1 ${m.h})`, ring: m.yo ? '0 0 0 2px #0a0f1d, 0 0 0 4px #c4b5f0' : 'none', nameColor: m.yo ? '#e2d9ff' : '#dfe2ee' })),
+      showDeck: !deckVacio, showDone: deckVacio, slots, bulbs9: Array.from({ length: 9 }, (_, i) => i),
+      undo: this.undo, undoOp: hist && s.phase === 'idle' ? 1 : 0.35, actOp: can ? 1 : 0.35,
+      actLike: () => this.rate('right'), actNope: () => this.rate('left'), actSeenYes: () => this.rate('up'), actSeenNo: () => this.rate('down'),
+      hasMatches: matchList.length > 0, noMatches: matchList.length === 0, nMatches: matchList.length,
+      sinMatchTxt: N < 2 ? 'Invita a alguien: los match necesitan al menos 2 personas' : 'Sigan votando: todavía no hay una película que les late a todos',
+      matchCards: matchList.map(mini), todosTxt: N === 2 ? 'A los 2 les late' : `A los ${N} les late`,
+      casiCards: casiList.map(m => ({ ...mini(m), casiTxt: `A ${N - 1} de ${N} les late`, falta: falta(m) })),
+      jalar: () => (L ? this.jalarVivo() : this.spin('Ana')),
+      seguir: () => this.setState({ view: L && sala.activa === false ? 'cerrada' : 'sala', showMatch: null, matchObj: null }),
+      showMatch: !!sm, matchTitulo: sm ? sm.titulo : '', matchAnio: sm ? sm.anio : '', matchBg: sm ? this.bg(sm) : 'none',
+      load5: Array.from({ length: 5 }, (_, i) => ({ delay: (i * 0.14).toFixed(2) + 's' })),
+      chase12: Array.from({ length: 12 }, (_, i) => ({ delay: (i * 0.075).toFixed(3) + 's' })),
+      reel: s.reel, reelTf: `translateY(${-s.reelPos * 96}px)`, reelTr: s.reelTr, spinning, gDone: !spinning,
+      reelBulbs: Array.from({ length: 14 }, (_, i) => spinning
+        ? { bg: 'rgba(214,200,255,0.16)', sh: 'none', anim: 'bulbChase .7s ease-in-out infinite', delay: (i * 0.05).toFixed(2) + 's' }
+        : { bg: i % 2 ? 'rgba(214,200,255,0.3)' : 'rgba(226,216,255,1)', sh: i % 2 ? 'none' : '0 0 8px 2px rgba(196,176,255,0.7)', anim: 'none', delay: '0s' }),
+      win: { titulo: w.titulo, anio: w.anio, dur: this.dur(w.dur), generos: w.generos || [], genreLine: (w.generos || []).join(' · '), director: w.dir || '', actors: w.actors || '', sinopsis: w.sinopsis || '', bg: this.bg(w), posterFs: this.posterFs(w.titulo) },
+      puller: { ini: this.inicial(pm.nombre), bg: `oklch(0.8 0.1 ${pm.h})`, txt: pm.yo ? 'La sacaste tú' : `La sacó ${pm.nombre}` },
+      hayGanadora: L ? !!s.winObj : true, sinGanadora: L ? !s.winObj : false,
+      cerradaPor: pullerNombre ? (pm.yo ? 'La sacaste tú' : `La sacó ${pullerNombre}`) : '',
+      gBtnOp: spinning ? 0.4 : 1,
+      volverJalar: () => { if (spinning) return; if (L) this.jalarVivo(); else this.spin('Ana'); },
+      codeTried: s.codeTried,
+      irInicio: () => { if (L) return this.irInicioVivo(); this.setState({ view: 'inicio' }); },
+      reintentar: () => { if (L) return this.ultimo ? this.ultimo() : this.iniciar(); this.go('sala', 900); },
+      hayAviso: !!s.aviso, aviso: s.aviso
+    };
+  }
+}
+</script>
+</body>
+</html>

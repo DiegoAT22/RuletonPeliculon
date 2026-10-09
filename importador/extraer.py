@@ -41,9 +41,22 @@ PROPS_PELICULA = [
     "P1476",  # título original
     "P4947",  # ID de TMDB
     "P345",   # ID de IMDb
+    # --- rasgos extra para el modelo de recomendación
+    "P8345",  # franquicia (Universo Marvel, Star Wars…)
+    "P179",   # serie de películas a la que pertenece
+    "P444",   # calificación de la crítica (Rotten Tomatoes, Metacritic, IMDb)
+    "P166",   # premios ganados
+    "P1411",  # nominaciones
+    # --- pistas para clasificar mejor (no se guardan en la base)
+    "P921",   # tema principal
+    "P840",   # lugar donde transcurre
+    "P2408",  # época en que transcurre
 ]
 PROPS_REFERENCIA = ["P297", "P218", "P31"]  # código ISO de país, código ISO de idioma, tipo de obra
-QUALIFICADORES = ["P453", "P4633"]          # personaje (como elemento / como texto)
+QUALIFICADORES = ["P453", "P4633",          # personaje (como elemento / como texto)
+                  "P447", "P459"]             # quién da la calificación / cómo se calculó
+# Propiedades cuyos valores solo necesitamos por nombre
+PROPS_NOMBRE = ["P57", "P272", "P136", "P31", "P8345", "P179", "P166", "P1411", "P921", "P840", "P2408"]
 
 
 # ---------------------------------------------------------------------
@@ -230,7 +243,10 @@ def recortar(entidad, props):
                 vals = [x for x in vals if x is not None]
                 if vals:
                     quals[q] = vals
-            salida.append({"v": v, "q": quals} if quals else {"v": v})
+            dato = {"v": v, "q": quals} if quals else {"v": v}
+            if c.get("rank") == "preferred":     # el dato que Wikidata marca como vigente
+                dato["r"] = 1
+            salida.append(dato)
         if salida:
             claims[p] = salida
     return {
@@ -277,21 +293,27 @@ def entidades(ids, con_claims, props, archivo_cache, etiqueta):
     return cache
 
 
-def ids_en(ent, props, con_personaje=False):
+def es_qid(x):
+    return isinstance(x, str) and x[:1] == "Q" and x[1:].isdigit()
+
+
+def ids_en(ent, props, calificadores=()):
+    """IDs de Wikidata que aparecen como valor de esas propiedades (y de sus calificadores, si se piden)."""
     salida = []
     for p in props:
         for c in ent.get("c", {}).get(p, []):
-            if isinstance(c["v"], str) and c["v"].startswith("Q"):
+            if es_qid(c["v"]):
                 salida.append(c["v"])
-            if con_personaje:
-                salida += [x for x in c.get("q", {}).get("P453", []) if isinstance(x, str)]
+            for q in calificadores:
+                salida += [x for x in c.get("q", {}).get(q, []) if es_qid(x)]
     return salida
 
 
 def paso_detalles(peliculas):
     seleccion = sorted(peliculas, key=lambda p: p["vistas_12m"], reverse=True)[:config.LIMITE]
     print(f"3) Datos completos de las {len(seleccion)} más vistas")
-    pelis = entidades([p["qid"] for p in seleccion], True, PROPS_PELICULA, "cache_peliculas.json", "películas")
+    # v2: se agregaron franquicia, calificación de la crítica, premios y pistas (la caché anterior no los trae)
+    pelis = entidades([p["qid"] for p in seleccion], True, PROPS_PELICULA, "cache_peliculas_v2.json", "películas")
 
     # Países, idiomas y obras en que se basan: necesitamos sus códigos y tipos
     con_codigos = []
@@ -303,8 +325,9 @@ def paso_detalles(peliculas):
     nombres = []
     for p in seleccion:
         ent = pelis.get(p["qid"], {})
-        nombres += ids_en(ent, ["P57", "P272", "P136", "P31"])
-        nombres += ids_en(ent, ["P161"], con_personaje=True)
+        nombres += ids_en(ent, PROPS_NOMBRE)
+        nombres += ids_en(ent, ["P161"], calificadores=["P453"])
+        nombres += ids_en(ent, ["P444"], calificadores=["P447", "P459"])
     for qid in dict.fromkeys(con_codigos):
         nombres += ids_en(refs.get(qid, {}), ["P31"])
     solo_nombres = entidades(nombres, False, [], "cache_nombres.json", "nombres")

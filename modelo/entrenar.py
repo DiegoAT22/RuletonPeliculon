@@ -1,13 +1,17 @@
 """
 PASO 2 — ENTRENAR Y COMPARAR
-Entrena con los swipes bajados por descargar.py y compara cinco formas de adivinar
+Entrena con los swipes bajados por descargar.py y compara varias formas de adivinar
 si a una persona le va a gustar una película:
 
-  1. Tasa de la persona      siempre contesta "qué tanto dice que sí esa persona" (el piso)
-  2. Fórmula actual          el puntaje que hoy usa "Para ti" en Supabase
-  3. Regresión logística     aprende cuánto pesa cada grupo de rasgos (una sola neurona)
-  4. Red compacta            red neuronal con las mismas pocas entradas
-  5. Red tabla completa      red neuronal que recibe la tabla de gustos entera + la película
+  1. Tasa de la persona            siempre contesta "qué tanto dice que sí esa persona" (el piso)
+  2. Fórmula actual                el puntaje que hoy usa "Para ti" en Supabase
+  3. Logística (rasgos de hoy)     aprende cuánto pesa cada grupo de rasgos (una sola neurona)
+  4. Logística (+ rasgos nuevos)   la misma, sumando país, idioma, estudio, saga, crítica, premios y duración
+  5. Red compacta                  red neuronal con esas mismas pocas entradas (incluye los nuevos)
+  6. Red tabla completa            red neuronal que recibe la tabla de gustos entera + la película
+
+La 3 contra la 4 dice si los rasgos nuevos (17_mas_rasgos.sql) de verdad ayudan: es el mismo
+modelo con y sin ellos, calificado con los mismos swipes escondidos.
 
 Para que la calificación sea honesta, de cada persona se esconde una parte de sus
 swipes (la "prueba"): los modelos nunca los ven al entrenar y con ellos se les califica.
@@ -16,7 +20,7 @@ Todo se repite varias veces con repartos distintos; el ± dice cuánto cambia el
 Deja en modelo/salidas/:
   reporte.txt               la tabla comparativa
   curvas.png                pérdida por época (entrenamiento vs validación)
-  pesos_logistica.csv       qué aprendió la regresión logística
+  pesos_logistica.csv       qué aprendió la regresión logística (con todo lo que haya)
   modelo_*.keras            los modelos entrenados con todos los datos
   entradas.json             nombres de las entradas de cada modelo
 
@@ -185,13 +189,21 @@ def main():
        f"   de Descubrir: {int((usados & d.es_swipe).sum())}   de Para ti: {int((usados & ~d.es_swipe).sum())}")
     di(f"  catálogo: {len(d.titulo_ids)} películas, {len(d.claves)} rasgos ({len(d.frecuentes)} aparecen en "
        f"{C.MIN_TITULOS_RASGO}+ películas), {len(d.grupos)} grupos")
+    if d.hay_nuevos:
+        di(f"  rasgos nuevos: {int(d.es_nuevo.sum())} en {len(d.grupos_nuevos)} grupos ({', '.join(d.grupos_nuevos) or 'ninguno'});"
+           f"  con calificación de la crítica: {d.con_calificacion} películas")
+    else:
+        di("  rasgos nuevos: ninguno todavía (corre 17_mas_rasgos.sql, el importador y luego descargar.py)")
     if len(validas) == 0:
         raise SystemExit(f"\nTodavía nadie llega a {C.MIN_SWIPES_PERSONA} swipes. Junta más datos y vuelve a correr descargar.py.")
 
     print("\nCargando TensorFlow/Keras…")
     import keras
 
-    nombres = ["Tasa de la persona", "Fórmula actual", "Regresión logística", "Red compacta", "Red tabla completa"]
+    LOG_HOY, LOG_NUEVOS = "Logística (rasgos de hoy)", "Logística (+ rasgos nuevos)"
+    nombres = (["Tasa de la persona", "Fórmula actual", LOG_HOY] + ([LOG_NUEVOS] if d.hay_nuevos else [])
+               + ["Red compacta", "Red tabla completa"])
+    hoy = d.columnas_de_hoy()                       # columnas de la entrada compacta que la app ya usa
     res = {n: {"auc": [], "aucp": [], "exa": [], "per": []} for n in nombres}
     curvas, tamanos = {}, None
 
@@ -215,9 +227,11 @@ def main():
             "Tasa de la persona": cp[:, len(d.grupos) + 1],
             "Fórmula actual": calibrar(se, ye)(sp),
         }
-        for nombre, crear, Xe, Xv, Xp in (("Regresión logística", crear_logistica, ce, cv, cp),
-                                          ("Red compacta", crear_red, ce, cv, cp),
-                                          ("Red tabla completa", crear_red_completa, fe, fv, fp)):
+        a_entrenar = [(LOG_HOY, crear_logistica, ce[:, hoy], cv[:, hoy], cp[:, hoy])]
+        if d.hay_nuevos:
+            a_entrenar.append((LOG_NUEVOS, crear_logistica, ce, cv, cp))
+        a_entrenar += [("Red compacta", crear_red, ce, cv, cp), ("Red tabla completa", crear_red_completa, fe, fv, fp)]
+        for nombre, crear, Xe, Xv, Xp in a_entrenar:
             m = crear(keras, Xe)
             hist, mejor = ajustar(keras, m, (Xe, ye, we), (Xv, yv), nombre, mostrar)
             if mostrar:
@@ -240,10 +254,10 @@ def main():
     di("")
     di("=" * 78)
     di(f"RESULTADOS en los swipes escondidos (promedio de {C.REPETICIONES} repeticiones ± variación)")
-    di(f"  {'':22s}{'AUC por persona':>18s}{'AUC general':>16s}{'exactitud':>16s}{'pérdida':>16s}")
+    di(f"  {'':28s}{'AUC por persona':>18s}{'AUC general':>16s}{'exactitud':>16s}{'pérdida':>16s}")
     for n in nombres:
         r = res[n]
-        di(f"  {n:22s}{pm(r['aucp']):>18s}{pm(r['auc']):>16s}{pm(r['exa']):>16s}{pm(r['per']):>16s}")
+        di(f"  {n:28s}{pm(r['aucp']):>18s}{pm(r['auc']):>16s}{pm(r['exa']):>16s}{pm(r['per']):>16s}")
     di("")
     di("CÓMO LEERLO")
     di("  AUC por persona: de dos películas de la misma persona, una que le gustó y otra que no,")
@@ -283,6 +297,27 @@ def main():
         di("  OJO: " + "; ".join(avisos) + ".")
         di("  Con tan pocos datos estos números todavía no dicen qué modelo es mejor; sirven para ver que todo corre.")
 
+    # ¿Sirvieron los rasgos nuevos? Mismo modelo, mismos swipes escondidos: se compara repetición por repetición.
+    di("")
+    di("¿AYUDAN LOS RASGOS NUEVOS?")
+    if d.hay_nuevos:
+        dif = np.array(res[LOG_NUEVOS]["aucp"], dtype=np.float64) - np.array(res[LOG_HOY]["aucp"], dtype=np.float64)
+        dif = dif[~np.isnan(dif)]
+        if len(dif) == 0:
+            di("  No se pudo comparar (faltan swipes de prueba con 'sí' y 'no' de la misma persona).")
+        else:
+            m, sd, gano = dif.mean(), dif.std(), int((dif > 0).sum())
+            di(f"  Con ellos el AUC por persona cambia {m:+.3f} en promedio (± {sd:.3f}); "
+               f"fue mejor en {gano} de {len(dif)} repeticiones.")
+            if m > sd and gano >= len(dif) - 1:
+                di("  Sí ayudan: la mejora es más grande que su variación. Vale la pena prenderlos en la app.")
+            elif -m > sd and gano <= 1:
+                di("  Estorban: el modelo queda peor con ellos. No conviene prenderlos todavía.")
+            else:
+                di("  Todavía no se nota: la diferencia cabe en la variación. Se quedan guardados y se vuelve a medir con más swipes.")
+    else:
+        di("  Aún no hay rasgos nuevos en los datos: corre 17_mas_rasgos.sql, el importador y descargar.py.")
+
     # -----------------------------------------------------------------
     salidas.mkdir(exist_ok=True)
     try:
@@ -316,21 +351,31 @@ def main():
     cv, fv, _ = P.entradas(d, todo, val)
     ye, yv, we = d.y[todo], d.y[val], d.w_ejemplo[todo]
     finales = {}
-    for archivo, crear, Xe, Xv in (("modelo_logistica", crear_logistica, ce, cv), ("modelo_red_compacta", crear_red, ce, cv),
-                                   ("modelo_red_completa", crear_red_completa, fe, fv)):
+    a_guardar = [("modelo_logistica_hoy", crear_logistica, ce[:, hoy], cv[:, hoy])]
+    if d.hay_nuevos:
+        a_guardar.append(("modelo_logistica_nuevos", crear_logistica, ce, cv))
+    a_guardar += [("modelo_red_compacta", crear_red, ce, cv), ("modelo_red_completa", crear_red_completa, fe, fv)]
+    for archivo, crear, Xe, Xv in a_guardar:
         m = crear(keras, Xe)
         ajustar(keras, m, (Xe, ye, we), (Xv, yv), archivo, False)
         m.save(salidas / f"{archivo}.keras")
         finales[archivo] = m
 
-    pesos = finales["modelo_logistica"].layers[-1].get_weights()[0][:, 0]
+    # Lo que aprendió la logística más completa que haya (con rasgos nuevos si existen)
+    if d.hay_nuevos:
+        pesos = finales["modelo_logistica_nuevos"].layers[-1].get_weights()[0][:, 0]
+        entradas_log, nueva = d.nombres_compacta(), d.es_entrada_nueva()
+    else:
+        pesos = finales["modelo_logistica_hoy"].layers[-1].get_weights()[0][:, 0]
+        entradas_log, nueva = [d.nombres_compacta()[i] for i in hoy], [False] * len(hoy)
     with open(salidas / "pesos_logistica.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["entrada", "peso"])
+        w.writerow(["entrada", "peso", "es_nueva"])
         for i in np.argsort(-np.abs(pesos)):
-            w.writerow([d.nombres_compacta()[i], f"{pesos[i]:.4f}"])
+            w.writerow([entradas_log[i], f"{pesos[i]:.4f}", "sí" if nueva[i] else "no"])
     (salidas / "entradas.json").write_text(json.dumps({
-        "compacta": d.nombres_compacta(), "completa": d.nombres_completa(), "grupos": d.grupos,
+        "compacta": d.nombres_compacta(), "compacta_de_hoy": [d.nombres_compacta()[i] for i in hoy],
+        "completa": d.nombres_completa(), "grupos": d.grupos, "grupos_nuevos": d.grupos_nuevos,
         "rasgos_frecuentes": [d.claves[i] for i in d.frecuentes],
         "ajustes": {k: getattr(C, k) for k in ("PESO_PERFIL", "SUAVIZADO", "PESO_POPULARIDAD", "MIN_TITULOS_RASGO", "CAPAS", "DROPOUT", "L2",
                                                  "DROPOUT_COMPLETA", "DROPOUT_ENTRADA_COMPLETA", "L2_COMPLETA")},
@@ -338,8 +383,8 @@ def main():
 
     di("")
     di("QUÉ APRENDIÓ LA REGRESIÓN LOGÍSTICA (peso de cada entrada; más grande = importa más)")
-    for i in np.argsort(-np.abs(pesos))[:8]:
-        di(f"  {pesos[i]:+.2f}   {d.nombres_compacta()[i]}")
+    for i in np.argsort(-np.abs(pesos))[:10]:
+        di(f"  {pesos[i]:+.2f}   {entradas_log[i]}" + ("   ← nuevo" if nueva[i] else ""))
     (salidas / "reporte.txt").write_text("\n".join(lineas) + "\n", encoding="utf-8")
     print(f"\nListo. Revisa {salidas}: reporte.txt, curvas.png, pesos_logistica.csv y los modelos .keras")
 

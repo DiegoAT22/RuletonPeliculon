@@ -1,444 +1,822 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./supabase.js"></script>
-<script src="./cuenta.js"></script>
-<script src="./support.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="./supabase.js"></script>
+  <script src="./cuenta.js"></script>
+  <script src="./support.js"></script>
 </head>
+
 <body>
-<x-dc>
-<helmet>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-html,body{margin:0;padding:0;background:#0a0f1d;}
-*{box-sizing:border-box;}
-a{color:#c4b5f0;}
-a:hover{color:#e2d9ff;}
-button{font-family:inherit;}
-button:focus-visible,a:focus-visible{outline:2px solid #c4b5f0;outline-offset:3px;}
-*{scrollbar-width:thin;scrollbar-color:rgba(196,181,240,0.45) transparent;}
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(196,181,240,0.4);border-radius:3px;}
-@keyframes skPulse{0%,100%{opacity:.45;}50%{opacity:.9;}}
-</style>
-</helmet>
-<div style="min-height:100vh;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
-  <div style="max-width:1100px;margin:0 auto;padding:clamp(16px,4vw,40px) 14px 48px;display:flex;flex-direction:column;gap:16px;">
+  <x-dc>
+    <helmet>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+      <style>
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+          background: #0a0f1d;
+        }
 
-    <nav style="display:flex;justify-content:center;align-items:center;gap:6px;">
-      <div style="display:flex;min-width:0;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
-        <a href="Tragamonedas%20de%20Peliculas.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;" style-hover="color:#ffffff;">Tragamonedas</a>
-        <a href="Descubrir.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;" style-hover="color:#ffffff;">Descubrir</a>
-        <a href="Para%20ti.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;" style-hover="color:#ffffff;">Para ti</a>
-        <a href="Explorar.dc.html" style="display:flex;align-items:center;min-height:40px;padding:0 clamp(5px,1.5vw,12px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(11px,2.9vw,14px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.5px,0.25vw,1.4px);text-transform:uppercase;" style-hover="color:#ffffff;">Explorar</a>
-      </div>
-      <a href="Perfil.dc.html" aria-label="Tu perfil" aria-current="page" title="Tu perfil" style="flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:#c4b5f0;color:#0c1122;border:1px solid #c4b5f0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></a>
-    </nav>
+        * {
+          box-sizing: border-box;
+        }
 
-    <sc-if value="{{ showLoading }}" hint-placeholder-val="{{ false }}">
-      <div aria-busy="true" aria-label="Cargando tu perfil" style="display:flex;flex-direction:column;gap:16px;">
-        <div style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.12);padding:20px 18px;display:flex;align-items:center;gap:16px;">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out infinite;"></div>
-          <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
-            <div style="height:24px;width:50%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out .1s infinite;"></div>
-            <div style="height:14px;width:70%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out .2s infinite;"></div>
+        a {
+          color: #c4b5f0;
+        }
+
+        a:hover {
+          color: #e2d9ff;
+        }
+
+        button {
+          font-family: inherit;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+          outline: 2px solid #c4b5f0;
+          outline-offset: 3px;
+        }
+
+        * {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(196, 181, 240, 0.45) transparent;
+        }
+
+        ::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: rgba(196, 181, 240, 0.4);
+          border-radius: 3px;
+        }
+
+        @keyframes skPulse {
+
+          0%,
+          100% {
+            opacity: .45;
+          }
+
+          50% {
+            opacity: .9;
+          }
+        }
+      </style>
+    </helmet>
+    <div
+      style="min-height:100vh;background:radial-gradient(ellipse 90% 60% at 50% -10%, #182241 0%, #0a0f1d 60%);color:#eef0f6;font-family:'Barlow',sans-serif;">
+      <div
+        style="max-width:1100px;margin:0 auto;padding:clamp(16px,4vw,40px) 14px 48px;display:flex;flex-direction:column;gap:16px;">
+
+        <nav style="display:flex;margin:0 -10px;justify-content:center;align-items:center;gap:5px;">
+          <div
+            style="display:flex;min-width:0;padding:3px;border-radius:999px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.08);">
+            <a href="Tragamonedas%20de%20Peliculas.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(4px,1.2vw,9px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(10.5px,2.8vw,13.5px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.2px,0.15vw,1px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Tragamonedas</a>
+            <a href="Descubrir.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(4px,1.2vw,9px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(10.5px,2.8vw,13.5px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.2px,0.15vw,1px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Descubrir</a>
+            <a href="Para%20ti.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(4px,1.2vw,9px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(10.5px,2.8vw,13.5px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.2px,0.15vw,1px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Para ti</a>
+            <a href="Explorar.dc.html"
+              style="display:flex;align-items:center;min-height:40px;padding:0 clamp(4px,1.2vw,9px);white-space:nowrap;border-radius:999px;text-decoration:none;color:#c9cedd;font:600 clamp(10.5px,2.8vw,13.5px)/1 'Barlow Condensed',sans-serif;letter-spacing:clamp(0.2px,0.15vw,1px);text-transform:uppercase;"
+              style-hover="color:#ffffff;">Explorar</a>
           </div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start;">
-          <div style="display:flex;flex-direction:column;gap:16px;">
-            <div style="height:220px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(196,181,240,0.08);animation:skPulse 1.4s ease-in-out .15s infinite;"></div>
-            <div style="height:260px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(196,181,240,0.08);animation:skPulse 1.4s ease-in-out .3s infinite;"></div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="height:44px;border-radius:999px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .2s infinite;"></div>
-            <div style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .3s infinite;"></div>
-            <div style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .4s infinite;"></div>
-            <div style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .5s infinite;"></div>
-          </div>
-        </div>
-      </div>
-    </sc-if>
+          <a href="Perfil.dc.html" aria-label="Tu perfil" aria-current="page" title="Tu perfil"
+            style="flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:#c4b5f0;color:#0c1122;border:1px solid #c4b5f0;"><svg
+              width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 21a8 8 0 0 1 16 0"></path>
+            </svg></a><a href="Amigos.dc.html" aria-label="Modo amigos" title="Modo amigos"
+            style="flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;background:rgba(0,0,0,0.3);color:#c9cedd;border:1px solid rgba(255,255,255,0.08);"
+            style-hover="color:#ffffff;border-color:rgba(196,181,240,0.5);"><svg width="20" height="20"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <circle cx="9" cy="8" r="3.5"></circle>
+              <path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path>
+              <path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"></path>
+              <path d="M18 14a6.5 6.5 0 0 1 3.5 6"></path>
+            </svg></a>
+        </nav>
 
-    <sc-if value="{{ showOffline }}" hint-placeholder-val="{{ false }}">
-      <div style="max-width:460px;width:100%;margin:24px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px 28px;text-align:center;">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path><path d="M10 5.1A15 15 0 0 1 22 8.8"></path><path d="M5 12.5a10 10 0 0 1 5.2-2.8"></path><path d="M14.5 9.9A10 10 0 0 1 19 12.5"></path><path d="M8.5 16a5 5 0 0 1 7 0"></path><circle cx="12" cy="19.5" r="0.8" fill="#c4b5f0"></circle><line x1="3" y1="3" x2="21" y2="21"></line></svg>
-        <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sin conexión</h2>
-        <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">No pudimos cargar tu perfil. Lo que ya calificaste está guardado.</p>
-        <button onClick="{{ reintentar }}" style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:#d6cbfa;">Reintentar</button>
-      </div>
-    </sc-if>
-
-    <sc-if value="{{ showMain }}" hint-placeholder-val="{{ true }}">
-
-      <header style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;">
-        <sc-if value="{{ conCuenta }}" hint-placeholder-val="{{ true }}">
-          <sc-if value="{{ hasFoto }}" hint-placeholder-val="{{ false }}">
-            <div role="img" aria-label="{{ nombre }}" style="flex:none;width:64px;height:64px;border-radius:50%;background-image:{{ fotoCss }};background-size:cover;background-position:center;border:2px solid rgba(196,181,240,0.5);"></div>
-          </sc-if>
-          <sc-if value="{{ noFoto }}" hint-placeholder-val="{{ true }}">
-            <div aria-hidden="true" style="flex:none;width:64px;height:64px;border-radius:50%;background:#c4b5f0;color:#0d1224;display:flex;align-items:center;justify-content:center;font:600 32px/1 'Barlow Condensed',sans-serif;box-shadow:0 0 0 4px rgba(196,181,240,0.15);">{{ inicial }}</div>
-          </sc-if>
-          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
-            <h1 style="margin:0;font:600 32px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nombre }}</h1>
-            <p style="margin:0;font-size:14px;color:#a8b0c4;">{{ desdeTxt }}</p>
+        <sc-if value="{{ showLoading }}" hint-placeholder-val="{{ false }}">
+          <div aria-busy="true" aria-label="Cargando tu perfil" style="display:flex;flex-direction:column;gap:16px;">
+            <div
+              style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.12);padding:20px 18px;display:flex;align-items:center;gap:16px;">
+              <div
+                style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out infinite;">
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+                <div
+                  style="height:24px;width:50%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out .1s infinite;">
+                </div>
+                <div
+                  style="height:14px;width:70%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out .2s infinite;">
+                </div>
+              </div>
+            </div>
+            <div
+              style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start;">
+              <div style="display:flex;flex-direction:column;gap:16px;">
+                <div
+                  style="height:220px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(196,181,240,0.08);animation:skPulse 1.4s ease-in-out .15s infinite;">
+                </div>
+                <div
+                  style="height:260px;border-radius:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(196,181,240,0.08);animation:skPulse 1.4s ease-in-out .3s infinite;">
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div
+                  style="height:44px;border-radius:999px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .2s infinite;">
+                </div>
+                <div
+                  style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .3s infinite;">
+                </div>
+                <div
+                  style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .4s infinite;">
+                </div>
+                <div
+                  style="height:96px;border-radius:16px;background:rgba(255,255,255,0.05);animation:skPulse 1.4s ease-in-out .5s infinite;">
+                </div>
+              </div>
+            </div>
           </div>
         </sc-if>
-        <sc-if value="{{ sinCuenta }}" hint-placeholder-val="{{ false }}">
-          <div aria-hidden="true" style="flex:none;width:64px;height:64px;border-radius:50%;border:1.5px dashed rgba(196,181,240,0.5);color:#c4b5f0;display:flex;align-items:center;justify-content:center;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>
+
+        <sc-if value="{{ showOffline }}" hint-placeholder-val="{{ false }}">
+          <div
+            style="max-width:460px;width:100%;margin:24px auto 0;border-radius:22px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);display:flex;flex-direction:column;align-items:center;gap:14px;padding:36px 28px;text-align:center;">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path>
+              <path d="M10 5.1A15 15 0 0 1 22 8.8"></path>
+              <path d="M5 12.5a10 10 0 0 1 5.2-2.8"></path>
+              <path d="M14.5 9.9A10 10 0 0 1 19 12.5"></path>
+              <path d="M8.5 16a5 5 0 0 1 7 0"></path>
+              <circle cx="12" cy="19.5" r="0.8" fill="#c4b5f0"></circle>
+              <line x1="3" y1="3" x2="21" y2="21"></line>
+            </svg>
+            <h2 style="margin:0;font:600 34px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sin conexión</h2>
+            <p style="margin:0;font-size:15px;line-height:1.5;color:#b8bfd1;max-width:30ch;text-wrap:pretty;">No pudimos
+              cargar tu perfil. Lo que ya calificaste está guardado.</p>
+            <button onClick="{{ reintentar }}"
+              style="margin-top:6px;min-height:48px;padding:0 26px;border-radius:999px;border:none;background:#c4b5f0;color:#0d1224;font:700 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;"
+              style-hover="background:#d6cbfa;">Reintentar</button>
           </div>
-          <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px;">
-            <h1 style="margin:0;font:600 32px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sesión sin cuenta</h1>
-            <p style="margin:0;font-size:14px;line-height:1.4;color:#a8b0c4;">Entra con Google para no perder tu progreso</p>
-          </div>
-          <button onClick="{{ entrar }}" style="flex:none;min-height:48px;padding:0 22px;border-radius:999px;border:none;background:#f4f2ec;color:#0d1224;font:600 15px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ entrarOp }};" style-hover="background:#ffffff;">{{ entrarTxt }}</button>
         </sc-if>
-      </header>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start;">
-        <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
+        <sc-if value="{{ showMain }}" hint-placeholder-val="{{ true }}">
 
-          <section aria-labelledby="h-numeros" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:16px;">
-            <h2 id="h-numeros" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Tus números</h2>
-            <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
-              <span style="font:600 64px/0.9 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 28px rgba(196,181,240,0.3);">{{ total }}</span>
-              <span style="font:600 20px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.04em;color:#dfe2ee;">{{ totalLabel }}</span>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;">
-              <div style="display:flex;flex-direction:column;gap:6px;padding:12px 10px;border-radius:14px;background:rgba(126,224,166,0.12);color:#7ee0a6;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg>
-                <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nGusto }}</span>
-                <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Me gustaron</span>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:6px;padding:12px 10px;border-radius:14px;background:rgba(255,123,123,0.12);color:#ff7b7b;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(180deg);"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg>
-                <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nNoGusto }}</span>
-                <span style="font-size:12px;line-height:1.2;color:#c9cedd;">No me gustaron</span>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:6px;padding:11px 9px;border-radius:14px;border:1px solid rgba(126,224,166,0.55);color:#7ee0a6;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path><path d="M12 7v6M9 10h6"></path></svg>
-                <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nQuiero }}</span>
-                <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Quiero ver</span>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:6px;padding:11px 9px;border-radius:14px;border:1px solid rgba(255,123,123,0.55);color:#ff7b7b;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
-                <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nPaso }}</span>
-                <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Paso</span>
-              </div>
-            </div>
-            <div role="img" aria-label="{{ barAria }}" style="display:flex;gap:3px;height:14px;">
-              <div style="display:{{ dGusto }};width:{{ wGusto }};border-radius:4px;background:#7ee0a6;transition:width .4s;"></div>
-              <div style="display:{{ dNoGusto }};width:{{ wNoGusto }};border-radius:4px;background:#ff7b7b;transition:width .4s;"></div>
-              <div style="display:{{ dQuiero }};width:{{ wQuiero }};border-radius:4px;border:1.5px solid #7ee0a6;background:repeating-linear-gradient(135deg,rgba(126,224,166,0.5) 0 3px,transparent 3px 7px);transition:width .4s;"></div>
-              <div style="display:{{ dPaso }};width:{{ wPaso }};border-radius:4px;border:1.5px solid #ff7b7b;background:repeating-linear-gradient(135deg,rgba(255,123,123,0.5) 0 3px,transparent 3px 7px);transition:width .4s;"></div>
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#8e97ad;">
-              <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#7ee0a6;"></span>Vistas: lleno</span>
-              <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;border:1.5px solid #c9cedd;background:repeating-linear-gradient(135deg,rgba(201,206,221,0.6) 0 2px,transparent 2px 4px);"></span>No vistas: rayado</span>
-            </div>
-            <sc-if value="{{ showPct }}" hint-placeholder-val="{{ true }}">
-              <p style="margin:0;font:600 19px/1.2 'Barlow Condensed',sans-serif;letter-spacing:.03em;color:#eef0f6;">{{ pctTxt }}</p>
-            </sc-if>
-          </section>
-
-          <section aria-labelledby="h-precision" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:16px;">
-            <h2 id="h-precision" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Qué tan bien te conozco</h2>
-            <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
-                <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí verás tus gustos</p>
-                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+          <header
+            style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;">
+            <sc-if value="{{ conCuenta }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ hasFoto }}" hint-placeholder-val="{{ false }}">
+                <div role="img" aria-label="{{ nombre }}"
+                  style="flex:none;width:64px;height:64px;border-radius:50%;background-image:{{ fotoCss }};background-size:cover;background-position:center;border:2px solid rgba(196,181,240,0.5);">
+                </div>
+              </sc-if>
+              <sc-if value="{{ noFoto }}" hint-placeholder-val="{{ true }}">
+                <div aria-hidden="true"
+                  style="flex:none;width:64px;height:64px;border-radius:50%;background:#c4b5f0;color:#0d1224;display:flex;align-items:center;justify-content:center;font:600 32px/1 'Barlow Condensed',sans-serif;box-shadow:0 0 0 4px rgba(196,181,240,0.15);">
+                  {{ inicial }}</div>
+              </sc-if>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
+                <h1 style="margin:0;font:600 32px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nombre }}</h1>
+                <p style="margin:0;font-size:14px;color:#a8b0c4;">{{ desdeTxt }}</p>
               </div>
             </sc-if>
-            <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
-              <div style="border-radius:18px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
-                <div style="background:#121724;border-radius:12px;padding:14px 14px 16px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
-                  <div aria-hidden="true" style="align-self:stretch;display:flex;justify-content:space-between;padding:0 2px;">
-                    <sc-for list="{{ deco }}" as="d" hint-placeholder-count="16">
-                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);"></div>
-                    </sc-for>
+            <sc-if value="{{ sinCuenta }}" hint-placeholder-val="{{ false }}">
+              <div aria-hidden="true"
+                style="flex:none;width:64px;height:64px;border-radius:50%;border:1.5px dashed rgba(196,181,240,0.5);color:#c4b5f0;display:flex;align-items:center;justify-content:center;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4"></circle>
+                  <path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path>
+                </svg>
+              </div>
+              <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px;">
+                <h1 style="margin:0;font:600 32px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">Sesión sin cuenta</h1>
+                <p style="margin:0;font-size:14px;line-height:1.4;color:#a8b0c4;">Entra con Google para no perder tu
+                  progreso</p>
+              </div>
+              <button onClick="{{ entrar }}"
+                style="flex:none;min-height:48px;padding:0 22px;border-radius:999px;border:none;background:#f4f2ec;color:#0d1224;font:600 15px/1 'Barlow',sans-serif;cursor:pointer;opacity:{{ entrarOp }};"
+                style-hover="background:#ffffff;">{{ entrarTxt }}</button>
+            </sc-if>
+          </header>
+
+          <div
+            style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;align-items:start;">
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
+
+              <section aria-labelledby="h-numeros"
+                style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:16px;">
+                <h2 id="h-numeros"
+                  style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">
+                  Tus números</h2>
+                <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+                  <span
+                    style="font:600 64px/0.9 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 28px rgba(196,181,240,0.3);">{{
+                    total }}</span>
+                  <span style="font:600 20px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.04em;color:#dfe2ee;">{{
+                    totalLabel }}</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;">
+                  <div
+                    style="display:flex;flex-direction:column;gap:6px;padding:12px 10px;border-radius:14px;background:rgba(126,224,166,0.12);color:#7ee0a6;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M7 10v11H3V10h4z"></path>
+                      <path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path>
+                    </svg>
+                    <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nGusto }}</span>
+                    <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Me gustaron</span>
                   </div>
-                  <sc-if value="{{ mNum }}" hint-placeholder-val="{{ true }}">
-                    <div style="display:flex;align-items:baseline;justify-content:center;gap:12px;font:600 26px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#e2d9ff;">
-                      <span>Atino</span>
-                      <span style="font:600 96px/0.85 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 30px rgba(196,181,240,0.55);">{{ aucN }}</span>
-                      <span>de cada 10</span>
-                    </div>
-                  </sc-if>
-                  <sc-if value="{{ mLow }}" hint-placeholder-val="{{ false }}">
-                    <div style="padding:10px 0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">Todavía no te atino. Sigue calificando.</div>
-                  </sc-if>
-                  <sc-if value="{{ mNull }}" hint-placeholder-val="{{ false }}">
-                    <div style="padding:10px 0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">Todavía no puedo medirlo</div>
-                  </sc-if>
-                  <sc-if value="{{ hasAuc }}" hint-placeholder-val="{{ true }}">
-                    <div aria-hidden="true" style="display:flex;gap:10px;">
-                      <sc-for list="{{ aucBulbs }}" as="b" hint-placeholder-count="10">
-                        <div style="width:11px;height:11px;border-radius:50%;background:{{ b.bg }};box-shadow:{{ b.sh }};"></div>
-                      </sc-for>
-                    </div>
-                  </sc-if>
-                  <div aria-hidden="true" style="align-self:stretch;display:flex;justify-content:space-between;padding:0 2px;">
-                    <sc-for list="{{ deco }}" as="d" hint-placeholder-count="16">
-                      <div style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);"></div>
-                    </sc-for>
+                  <div
+                    style="display:flex;flex-direction:column;gap:6px;padding:12px 10px;border-radius:14px;background:rgba(255,123,123,0.12);color:#ff7b7b;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                      style="transform:rotate(180deg);">
+                      <path d="M7 10v11H3V10h4z"></path>
+                      <path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path>
+                    </svg>
+                    <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nNoGusto }}</span>
+                    <span style="font-size:12px;line-height:1.2;color:#c9cedd;">No me gustaron</span>
+                  </div>
+                  <div
+                    style="display:flex;flex-direction:column;gap:6px;padding:11px 9px;border-radius:14px;border:1px solid rgba(126,224,166,0.55);color:#7ee0a6;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M6 3h12v18l-6-4-6 4z"></path>
+                      <path d="M12 7v6M9 10h6"></path>
+                    </svg>
+                    <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nQuiero }}</span>
+                    <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Quiero ver</span>
+                  </div>
+                  <div
+                    style="display:flex;flex-direction:column;gap:6px;padding:11px 9px;border-radius:14px;border:1px solid rgba(255,123,123,0.55);color:#ff7b7b;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                      stroke-linecap="round" aria-hidden="true">
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                    </svg>
+                    <span style="font:600 28px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nPaso }}</span>
+                    <span style="font-size:12px;line-height:1.2;color:#c9cedd;">Paso</span>
                   </div>
                 </div>
-              </div>
-              <sc-if value="{{ hasAuc }}" hint-placeholder-val="{{ true }}">
-                <p style="margin:-4px 0 0;font-size:13px;line-height:1.45;color:#a8b0c4;text-align:center;text-wrap:pretty;">Tomo una película que te gustó y una que no, y adivino cuál es cuál.</p>
-              </sc-if>
-              <sc-if value="{{ mNull }}" hint-placeholder-val="{{ false }}">
-                <p style="margin:-4px 0 0;font-size:13px;line-height:1.45;color:#a8b0c4;text-align:center;text-wrap:pretty;">Me faltan películas que te gusten y que no: llevas {{ posN }} y {{ negN }}, necesito al menos 8 de cada una.</p>
-              </sc-if>
-
-              <div style="display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">
-                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;">
-                  <span style="font:600 22px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nivelNombre }}</span>
-                  <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">Nivel {{ nivelNum }} de 4</span>
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;">
-                  <sc-for list="{{ niveles }}" as="n" hint-placeholder-count="4">
-                    <div style="display:flex;flex-direction:column;gap:6px;">
-                      <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.08);overflow:hidden;">
-                        <div style="height:100%;width:{{ n.fill }};background:#c4b5f0;box-shadow:0 0 8px rgba(196,176,255,0.6);border-radius:999px;"></div>
-                      </div>
-                      <span style="font-size:11px;line-height:1.2;color:{{ n.fg }};font-weight:{{ n.fw }};">{{ n.nombre }}</span>
-                    </div>
-                  </sc-for>
-                </div>
-                <p style="margin:0;font-size:14px;color:#c9cedd;">{{ faltanTxt }}</p>
-              </div>
-            </sc-if>
-          </section>
-
-          <section aria-labelledby="h-late" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:14px;">
-            <h2 id="h-late" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Lo que más te late</h2>
-            <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
-                <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí verás tus gustos</p>
-                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
-              </div>
-            </sc-if>
-            <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
-              <div style="display:flex;flex-direction:column;gap:9px;">
-                <sc-for list="{{ gustos }}" as="g" hint-placeholder-count="8">
-                  <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 40px;gap:10px;align-items:center;">
-                    <span style="font-size:15px;color:#eef0f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ g.rasgo }}</span>
-                    <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.06);overflow:hidden;">
-                      <div style="height:100%;width:{{ g.w }};border-radius:999px;background:#7ee0a6;"></div>
-                    </div>
-                    <span style="font:600 14px/1 'Barlow Condensed',sans-serif;color:#7ee0a6;text-align:right;">{{ g.val }}</span>
+                <div role="img" aria-label="{{ barAria }}" style="display:flex;gap:3px;height:14px;">
+                  <div
+                    style="display:{{ dGusto }};width:{{ wGusto }};border-radius:4px;background:#7ee0a6;transition:width .4s;">
                   </div>
-                </sc-for>
-              </div>
-              <sc-if value="{{ hasNoTanto }}" hint-placeholder-val="{{ true }}">
-                <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
-                  <span style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#7c859c;">No tanto</span>
-                  <sc-for list="{{ noTanto }}" as="g" hint-placeholder-count="5">
-                    <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 40px;gap:10px;align-items:center;">
-                      <span style="font-size:13px;color:#a8b0c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ g.rasgo }}</span>
-                      <div style="height:5px;border-radius:999px;background:rgba(255,255,255,0.05);overflow:hidden;">
-                        <div style="height:100%;width:{{ g.w }};border-radius:999px;background:rgba(255,123,123,0.7);"></div>
-                      </div>
-                      <span style="font:600 13px/1 'Barlow Condensed',sans-serif;color:#ff9a9a;text-align:right;">{{ g.val }}</span>
-                    </div>
-                  </sc-for>
+                  <div
+                    style="display:{{ dNoGusto }};width:{{ wNoGusto }};border-radius:4px;background:#ff7b7b;transition:width .4s;">
+                  </div>
+                  <div
+                    style="display:{{ dQuiero }};width:{{ wQuiero }};border-radius:4px;border:1.5px solid #7ee0a6;background:repeating-linear-gradient(135deg,rgba(126,224,166,0.5) 0 3px,transparent 3px 7px);transition:width .4s;">
+                  </div>
+                  <div
+                    style="display:{{ dPaso }};width:{{ wPaso }};border-radius:4px;border:1.5px solid #ff7b7b;background:repeating-linear-gradient(135deg,rgba(255,123,123,0.5) 0 3px,transparent 3px 7px);transition:width .4s;">
+                  </div>
                 </div>
-              </sc-if>
-            </sc-if>
-          </section>
+                <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#8e97ad;">
+                  <span style="display:flex;align-items:center;gap:6px;"><span
+                      style="width:10px;height:10px;border-radius:2px;background:#7ee0a6;"></span>Vistas: lleno</span>
+                  <span style="display:flex;align-items:center;gap:6px;"><span
+                      style="width:10px;height:10px;border-radius:2px;border:1.5px solid #c9cedd;background:repeating-linear-gradient(135deg,rgba(201,206,221,0.6) 0 2px,transparent 2px 4px);"></span>No
+                    vistas: rayado</span>
+                </div>
+                <sc-if value="{{ showPct }}" hint-placeholder-val="{{ true }}">
+                  <p
+                    style="margin:0;font:600 19px/1.2 'Barlow Condensed',sans-serif;letter-spacing:.03em;color:#eef0f6;">
+                    {{ pctTxt }}</p>
+                </sc-if>
+              </section>
 
-          <section aria-labelledby="h-tabla" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:12px;">
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <h2 id="h-tabla" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Tu tabla de gustos</h2>
-              <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
-                <p style="margin:0;font-size:13px;color:#8e97ad;">Se actualiza sola cada vez que calificas una película.</p>
-              </sc-if>
-            </div>
-            <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
-                <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí verás tus gustos</p>
-                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
-              </div>
-            </sc-if>
-            <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
-              <div aria-hidden="true" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) 48px;gap:10px;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;">
-                <span></span>
-                <div style="display:flex;justify-content:space-between;"><span>← No</span><span>Sí →</span></div>
-                <span></span>
-              </div>
-              <div style="display:flex;flex-direction:column;">
-                <sc-for list="{{ tabla }}" as="t" hint-placeholder-count="5">
-                  <div style="border-top:1px solid rgba(255,255,255,0.08);">
-                    <button onClick="{{ t.toggle }}" aria-expanded="{{ t.open }}" style="width:100%;min-height:48px;padding:0 2px;border:none;background:transparent;color:#eef0f6;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;" style-hover="color:#ffffff;">
-                      <span style="flex:1;font:600 19px/1 'Barlow Condensed',sans-serif;letter-spacing:.03em;">{{ t.nombre }}</span>
-                      <span style="font-size:12px;color:#8e97ad;">{{ t.cuenta }}</span>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:{{ t.chev }};transition:transform .2s;"><path d="M6 9l6 6 6-6"></path></svg>
-                    </button>
-                    <sc-if value="{{ t.open }}" hint-placeholder-val="{{ false }}">
-                      <div style="display:flex;flex-direction:column;gap:10px;padding:2px 2px 16px;">
-                        <sc-for list="{{ t.rasgos }}" as="r" hint-placeholder-count="4">
-                          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) 48px;gap:10px;align-items:center;">
-                            <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
-                              <span style="font-size:14px;color:#eef0f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.rasgo }}</span>
-                              <span style="font-size:11px;color:#7c859c;">{{ r.veces }}</span>
-                            </div>
-                            <div style="position:relative;height:10px;border-radius:999px;background:rgba(255,255,255,0.06);">
-                              <div style="position:absolute;top:0;bottom:0;left:{{ r.l }};width:{{ r.w }};border-radius:999px;background:{{ r.bg }};"></div>
-                              <div style="position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:rgba(255,255,255,0.35);"></div>
-                            </div>
-                            <span style="font:600 15px/1 'Barlow Condensed',sans-serif;color:{{ r.fg }};text-align:right;">{{ r.val }}</span>
+              <section aria-labelledby="h-precision"
+                style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:16px;">
+                <h2 id="h-precision"
+                  style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">
+                  Qué tan bien te conozco</h2>
+                <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+                    <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí
+                      verás tus gustos</p>
+                    <a href="Descubrir.dc.html"
+                      style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;"
+                      style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+                  <div
+                    style="border-radius:18px;padding:10px 12px;background:linear-gradient(180deg,#4d576c 0%,#3b4458 50%,#323a4b 100%);box-shadow:0 24px 50px -24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.25);">
+                    <div
+                      style="background:#121724;border-radius:12px;padding:14px 14px 16px;box-shadow:inset 0 3px 10px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+                      <div aria-hidden="true"
+                        style="align-self:stretch;display:flex;justify-content:space-between;padding:0 2px;">
+                        <sc-for list="{{ deco }}" as="d" hint-placeholder-count="16">
+                          <div
+                            style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);">
                           </div>
                         </sc-for>
                       </div>
-                    </sc-if>
-                  </div>
-                </sc-for>
-              </div>
-            </sc-if>
-          </section>
-
-          <section aria-labelledby="h-generos" style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:14px;">
-            <h2 id="h-generos" style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Por género</h2>
-            <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
-                <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí verás tus gustos</p>
-                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
-              </div>
-            </sc-if>
-            <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
-              <div style="display:flex;flex-direction:column;gap:12px;">
-                <sc-for list="{{ generos }}" as="g" hint-placeholder-count="8">
-                  <div style="display:flex;flex-direction:column;gap:6px;">
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;">
-                      <span style="font-size:15px;color:#eef0f6;">{{ g.nombre }} <span style="font-size:12px;color:#7c859c;">· {{ g.total }} calificadas</span></span>
-                      <span style="font-size:12px;color:#a8b0c4;white-space:nowrap;">{{ g.pos }}</span>
-                    </div>
-                    <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden;">
-                      <div style="height:100%;width:{{ g.pct }};border-radius:999px;background:#7ee0a6;"></div>
-                    </div>
-                  </div>
-                </sc-for>
-              </div>
-            </sc-if>
-          </section>
-        </div>
-
-        <section aria-labelledby="h-pelis" style="min-width:0;border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 0;display:flex;flex-direction:column;gap:14px;">
-          <h2 id="h-pelis" style="margin:0;padding:0 18px;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">Tus películas</h2>
-          <div role="tablist" aria-label="Tus películas" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 18px 4px;">
-            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
-              <button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.onClick }}" style="flex:none;min-height:40px;padding:0 14px;border-radius:999px;display:flex;align-items:center;gap:7px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};">{{ t.label }}<span style="font:600 12px/1 'Barlow',sans-serif;padding:3px 7px;border-radius:999px;background:{{ t.cbg }};">{{ t.count }}</span></button>
-            </sc-for>
-          </div>
-
-          <div role="tabpanel" style="display:flex;flex-direction:column;padding:0 18px;">
-            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
-              <div style="border-top:1px solid rgba(255,255,255,0.07);padding:12px 0;display:flex;flex-direction:column;gap:12px;">
-                <div style="display:flex;align-items:center;gap:12px;">
-                  <div aria-hidden="true" style="flex:none;width:54px;height:80px;border-radius:8px;overflow:hidden;position:relative;background:{{ r.posterBg }};border:1px solid rgba(196,181,240,0.16);">
-                    <sc-if value="{{ r.hasPoster }}" hint-placeholder-val="{{ false }}">
-                      <div style="position:absolute;inset:0;background-image:{{ r.posterCss }};background-size:cover;background-position:center;"></div>
-                    </sc-if>
-                    <sc-if value="{{ r.noPoster }}" hint-placeholder-val="{{ true }}">
-                      <div style="position:absolute;inset:3px;border:1px solid rgba(214,200,255,0.22);border-radius:5px;display:flex;flex-direction:column;justify-content:space-between;padding:4px 3px;">
-                        <div style="display:flex;justify-content:space-between;padding:0 2px;">
-                          <sc-for list="{{ miniBulbs }}" as="d" hint-placeholder-count="4">
-                            <div style="width:2.5px;height:2.5px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 3px rgba(196,176,255,0.7);"></div>
+                      <sc-if value="{{ mNum }}" hint-placeholder-val="{{ true }}">
+                        <div
+                          style="display:flex;align-items:baseline;justify-content:center;gap:12px;font:600 26px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#e2d9ff;">
+                          <span>Atino</span>
+                          <span
+                            style="font:600 96px/0.85 'Barlow Condensed',sans-serif;color:#f6f4ee;text-shadow:0 0 30px rgba(196,181,240,0.55);">{{
+                            aucN }}</span>
+                          <span>de cada 10</span>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ mLow }}" hint-placeholder-val="{{ false }}">
+                        <div
+                          style="padding:10px 0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">
+                          Todavía no te atino. Sigue calificando.</div>
+                      </sc-if>
+                      <sc-if value="{{ mNull }}" hint-placeholder-val="{{ false }}">
+                        <div
+                          style="padding:10px 0;font:600 30px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">
+                          Todavía no puedo medirlo</div>
+                      </sc-if>
+                      <sc-if value="{{ hasAuc }}" hint-placeholder-val="{{ true }}">
+                        <div aria-hidden="true" style="display:flex;gap:10px;">
+                          <sc-for list="{{ aucBulbs }}" as="b" hint-placeholder-count="10">
+                            <div
+                              style="width:11px;height:11px;border-radius:50%;background:{{ b.bg }};box-shadow:{{ b.sh }};">
+                            </div>
                           </sc-for>
                         </div>
-                        <div style="text-align:center;font:600 8.5px/0.95 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;word-break:break-word;">{{ r.titulo }}</div>
-                        <div style="display:flex;justify-content:space-between;padding:0 2px;">
-                          <sc-for list="{{ miniBulbs }}" as="d" hint-placeholder-count="4">
-                            <div style="width:2.5px;height:2.5px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 3px rgba(196,176,255,0.7);"></div>
-                          </sc-for>
-                        </div>
+                      </sc-if>
+                      <div aria-hidden="true"
+                        style="align-self:stretch;display:flex;justify-content:space-between;padding:0 2px;">
+                        <sc-for list="{{ deco }}" as="d" hint-placeholder-count="16">
+                          <div
+                            style="width:5px;height:5px;border-radius:50%;background:rgba(226,216,255,0.85);box-shadow:0 0 6px 1px rgba(196,176,255,0.55);">
+                          </div>
+                        </sc-for>
                       </div>
-                    </sc-if>
+                    </div>
                   </div>
-                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;">
-                    <h3 style="margin:0;font:600 19px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ r.titulo }}</h3>
-                    <span style="font-size:13px;color:#a8b0c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.meta }}</span>
-                    <span style="align-self:flex-start;display:inline-flex;align-items:center;gap:5px;padding:4px 9px 4px 7px;border-radius:999px;font:600 12px/1 'Barlow',sans-serif;color:{{ r.tagFg }};background:{{ r.tagBg }};border:1.5px solid {{ r.tagBd }};">
-                      <sc-if value="{{ r.isG }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg></sc-if>
-                      <sc-if value="{{ r.isN }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(180deg);"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg></sc-if>
-                      <sc-if value="{{ r.isL }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path><path d="M12 7v6M9 10h6"></path></svg></sc-if>
-                      <sc-if value="{{ r.isP }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></sc-if>
-                      {{ r.tag }}
-                    </span>
+                  <sc-if value="{{ hasAuc }}" hint-placeholder-val="{{ true }}">
+                    <p
+                      style="margin:-4px 0 0;font-size:13px;line-height:1.45;color:#a8b0c4;text-align:center;text-wrap:pretty;">
+                      Tomo una película que te gustó y una que no, y adivino cuál es cuál.</p>
+                  </sc-if>
+                  <sc-if value="{{ mNull }}" hint-placeholder-val="{{ false }}">
+                    <p
+                      style="margin:-4px 0 0;font-size:13px;line-height:1.45;color:#a8b0c4;text-align:center;text-wrap:pretty;">
+                      Me faltan películas que te gusten y que no: llevas {{ posN }} y {{ negN }}, necesito al menos 8 de
+                      cada una.</p>
+                  </sc-if>
+
+                  <div
+                    style="display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">
+                    <div
+                      style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;">
+                      <span style="font:600 22px/1 'Barlow Condensed',sans-serif;color:#f6f4ee;">{{ nivelNombre
+                        }}</span>
+                      <span
+                        style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">Nivel
+                        {{ nivelNum }} de 4</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;">
+                      <sc-for list="{{ niveles }}" as="n" hint-placeholder-count="4">
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                          <div
+                            style="height:8px;border-radius:999px;background:rgba(255,255,255,0.08);overflow:hidden;">
+                            <div
+                              style="height:100%;width:{{ n.fill }};background:#c4b5f0;box-shadow:0 0 8px rgba(196,176,255,0.6);border-radius:999px;">
+                            </div>
+                          </div>
+                          <span style="font-size:11px;line-height:1.2;color:{{ n.fg }};font-weight:{{ n.fw }};">{{
+                            n.nombre }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <p style="margin:0;font-size:14px;color:#c9cedd;">{{ faltanTxt }}</p>
                   </div>
-                  <button onClick="{{ r.toggle }}" aria-expanded="{{ r.open }}" aria-label="{{ r.cambiarAria }}" style="flex:none;min-height:40px;padding:0 13px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);background:{{ r.cBg }};color:#ddd5fb;font:600 13px/1 'Barlow',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;" style-hover="background:rgba(196,181,240,0.12);">Cambiar<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:{{ r.chev }};transition:transform .2s;"><path d="M6 9l6 6 6-6"></path></svg></button>
+                </sc-if>
+              </section>
+
+              <section aria-labelledby="h-late"
+                style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:14px;">
+                <h2 id="h-late"
+                  style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">
+                  Lo que más te late</h2>
+                <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+                    <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí
+                      verás tus gustos</p>
+                    <a href="Descubrir.dc.html"
+                      style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;"
+                      style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;gap:9px;">
+                    <sc-for list="{{ gustos }}" as="g" hint-placeholder-count="8">
+                      <div
+                        style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 40px;gap:10px;align-items:center;">
+                        <span
+                          style="font-size:15px;color:#eef0f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{
+                          g.rasgo }}</span>
+                        <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.06);overflow:hidden;">
+                          <div style="height:100%;width:{{ g.w }};border-radius:999px;background:#7ee0a6;"></div>
+                        </div>
+                        <span style="font:600 14px/1 'Barlow Condensed',sans-serif;color:#7ee0a6;text-align:right;">{{
+                          g.val }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <sc-if value="{{ hasNoTanto }}" hint-placeholder-val="{{ true }}">
+                    <div
+                      style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);">
+                      <span
+                        style="font:600 11px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#7c859c;">No
+                        tanto</span>
+                      <sc-for list="{{ noTanto }}" as="g" hint-placeholder-count="5">
+                        <div
+                          style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 40px;gap:10px;align-items:center;">
+                          <span
+                            style="font-size:13px;color:#a8b0c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{
+                            g.rasgo }}</span>
+                          <div
+                            style="height:5px;border-radius:999px;background:rgba(255,255,255,0.05);overflow:hidden;">
+                            <div
+                              style="height:100%;width:{{ g.w }};border-radius:999px;background:rgba(255,123,123,0.7);">
+                            </div>
+                          </div>
+                          <span style="font:600 13px/1 'Barlow Condensed',sans-serif;color:#ff9a9a;text-align:right;">{{
+                            g.val }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </sc-if>
+              </section>
+
+              <section aria-labelledby="h-tabla"
+                style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <h2 id="h-tabla"
+                    style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">
+                    Tu tabla de gustos</h2>
+                  <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+                    <p style="margin:0;font-size:13px;color:#8e97ad;">Se actualiza sola cada vez que calificas una
+                      película.</p>
+                  </sc-if>
                 </div>
+                <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+                    <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí
+                      verás tus gustos</p>
+                    <a href="Descubrir.dc.html"
+                      style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;"
+                      style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+                  <div aria-hidden="true"
+                    style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) 48px;gap:10px;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7c859c;">
+                    <span></span>
+                    <div style="display:flex;justify-content:space-between;"><span>← No</span><span>Sí →</span></div>
+                    <span></span>
+                  </div>
+                  <div style="display:flex;flex-direction:column;">
+                    <sc-for list="{{ tabla }}" as="t" hint-placeholder-count="5">
+                      <div style="border-top:1px solid rgba(255,255,255,0.08);">
+                        <button onClick="{{ t.toggle }}" aria-expanded="{{ t.open }}"
+                          style="width:100%;min-height:48px;padding:0 2px;border:none;background:transparent;color:#eef0f6;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;"
+                          style-hover="color:#ffffff;">
+                          <span style="flex:1;font:600 19px/1 'Barlow Condensed',sans-serif;letter-spacing:.03em;">{{
+                            t.nombre }}</span>
+                          <span style="font-size:12px;color:#8e97ad;">{{ t.cuenta }}</span>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4b5f0"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                            style="transform:{{ t.chev }};transition:transform .2s;">
+                            <path d="M6 9l6 6 6-6"></path>
+                          </svg>
+                        </button>
+                        <sc-if value="{{ t.open }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:10px;padding:2px 2px 16px;">
+                            <sc-for list="{{ t.rasgos }}" as="r" hint-placeholder-count="4">
+                              <div
+                                style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) 48px;gap:10px;align-items:center;">
+                                <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
+                                  <span
+                                    style="font-size:14px;color:#eef0f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{
+                                    r.rasgo }}</span>
+                                  <span style="font-size:11px;color:#7c859c;">{{ r.veces }}</span>
+                                </div>
+                                <div
+                                  style="position:relative;height:10px;border-radius:999px;background:rgba(255,255,255,0.06);">
+                                  <div
+                                    style="position:absolute;top:0;bottom:0;left:{{ r.l }};width:{{ r.w }};border-radius:999px;background:{{ r.bg }};">
+                                  </div>
+                                  <div
+                                    style="position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:rgba(255,255,255,0.35);">
+                                  </div>
+                                </div>
+                                <span
+                                  style="font:600 15px/1 'Barlow Condensed',sans-serif;color:{{ r.fg }};text-align:right;">{{
+                                  r.val }}</span>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </section>
 
-                <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);">
-                    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
-                      <div role="group" aria-label="Ya la vi" style="display:flex;flex-direction:column;gap:6px;">
-                        <span style="text-align:center;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">Ya la vi</span>
-                        <div style="display:flex;gap:6px;">
-                          <button onClick="{{ r.setG }}" aria-pressed="{{ r.curG }}" aria-label="Ya la vi y me gustó" style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid transparent;background:rgba(126,224,166,0.2);color:#7ee0a6;box-shadow:{{ r.shG }};" style-hover="background:rgba(126,224,166,0.3);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg>Me gustó</button>
-                          <button onClick="{{ r.setN }}" aria-pressed="{{ r.curN }}" aria-label="Ya la vi y no me gustó" style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid transparent;background:rgba(255,123,123,0.2);color:#ff7b7b;box-shadow:{{ r.shN }};" style-hover="background:rgba(255,123,123,0.3);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(180deg);"><path d="M7 10v11H3V10h4z"></path><path d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7"></path></svg>No me gustó</button>
+              <section aria-labelledby="h-generos"
+                style="border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 18px;display:flex;flex-direction:column;gap:14px;">
+                <h2 id="h-generos"
+                  style="margin:0;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">
+                  Por género</h2>
+                <sc-if value="{{ pocos }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+                    <p style="margin:0;font-size:15px;line-height:1.45;color:#b8bfd1;">Califica unas cuantas más y aquí
+                      verás tus gustos</p>
+                    <a href="Descubrir.dc.html"
+                      style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;"
+                      style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ datos }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;gap:12px;">
+                    <sc-for list="{{ generos }}" as="g" hint-placeholder-count="8">
+                      <div style="display:flex;flex-direction:column;gap:6px;">
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;">
+                          <span style="font-size:15px;color:#eef0f6;">{{ g.nombre }} <span
+                              style="font-size:12px;color:#7c859c;">· {{ g.total }} calificadas</span></span>
+                          <span style="font-size:12px;color:#a8b0c4;white-space:nowrap;">{{ g.pos }}</span>
+                        </div>
+                        <div style="height:8px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden;">
+                          <div style="height:100%;width:{{ g.pct }};border-radius:999px;background:#7ee0a6;"></div>
                         </div>
                       </div>
-                      <div role="group" aria-label="No la he visto" style="display:flex;flex-direction:column;gap:6px;">
-                        <span style="text-align:center;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">No la he visto</span>
-                        <div style="display:flex;gap:6px;">
-                          <button onClick="{{ r.setL }}" aria-pressed="{{ r.curL }}" aria-label="No la he visto, quiero verla" style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid rgba(126,224,166,0.75);background:transparent;color:#7ee0a6;box-shadow:{{ r.shL }};" style-hover="background:rgba(126,224,166,0.1);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path><path d="M12 7v6M9 10h6"></path></svg>Quiero verla</button>
-                          <button onClick="{{ r.setP }}" aria-pressed="{{ r.curP }}" aria-label="No la he visto, paso" style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid rgba(255,123,123,0.75);background:transparent;color:#ff7b7b;box-shadow:{{ r.shP }};" style-hover="background:rgba(255,123,123,0.1);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>Paso</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </section>
+            </div>
+
+            <section aria-labelledby="h-pelis"
+              style="min-width:0;border-radius:20px;background:linear-gradient(180deg,#141c31,#0e1526);border:1px solid rgba(196,181,240,0.16);padding:20px 0;display:flex;flex-direction:column;gap:14px;">
+              <h2 id="h-pelis"
+                style="margin:0;padding:0 18px;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#c4b5f0;">
+                Tus películas</h2>
+              <div role="tablist" aria-label="Tus películas"
+                style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 18px 4px;">
+                <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+                  <button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.onClick }}"
+                    style="flex:none;min-height:40px;padding:0 14px;border-radius:999px;display:flex;align-items:center;gap:7px;font:500 14px/1 'Barlow',sans-serif;cursor:pointer;white-space:nowrap;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }};">{{
+                    t.label }}<span
+                      style="font:600 12px/1 'Barlow',sans-serif;padding:3px 7px;border-radius:999px;background:{{ t.cbg }};">{{
+                      t.count }}</span></button>
+                </sc-for>
+              </div>
+
+              <div role="tabpanel" style="display:flex;flex-direction:column;padding:0 18px;">
+                <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+                  <div
+                    style="border-top:1px solid rgba(255,255,255,0.07);padding:12px 0;display:flex;flex-direction:column;gap:12px;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <div aria-hidden="true"
+                        style="flex:none;width:54px;height:80px;border-radius:8px;overflow:hidden;position:relative;background:{{ r.posterBg }};border:1px solid rgba(196,181,240,0.16);">
+                        <sc-if value="{{ r.hasPoster }}" hint-placeholder-val="{{ false }}">
+                          <div
+                            style="position:absolute;inset:0;background-image:{{ r.posterCss }};background-size:cover;background-position:center;">
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ r.noPoster }}" hint-placeholder-val="{{ true }}">
+                          <div
+                            style="position:absolute;inset:3px;border:1px solid rgba(214,200,255,0.22);border-radius:5px;display:flex;flex-direction:column;justify-content:space-between;padding:4px 3px;">
+                            <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                              <sc-for list="{{ miniBulbs }}" as="d" hint-placeholder-count="4">
+                                <div
+                                  style="width:2.5px;height:2.5px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 3px rgba(196,176,255,0.7);">
+                                </div>
+                              </sc-for>
+                            </div>
+                            <div
+                              style="text-align:center;font:600 8.5px/0.95 'Barlow Condensed',sans-serif;text-transform:uppercase;color:#f6f4ee;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;word-break:break-word;">
+                              {{ r.titulo }}</div>
+                            <div style="display:flex;justify-content:space-between;padding:0 2px;">
+                              <sc-for list="{{ miniBulbs }}" as="d" hint-placeholder-count="4">
+                                <div
+                                  style="width:2.5px;height:2.5px;border-radius:50%;background:rgba(226,216,255,0.9);box-shadow:0 0 3px rgba(196,176,255,0.7);">
+                                </div>
+                              </sc-for>
+                            </div>
+                          </div>
+                        </sc-if>
+                      </div>
+                      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;">
+                        <h3
+                          style="margin:0;font:600 19px/1.05 'Barlow Condensed',sans-serif;color:#f6f4ee;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                          {{ r.titulo }}</h3>
+                        <span
+                          style="font-size:13px;color:#a8b0c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{
+                          r.meta }}</span>
+                        <span
+                          style="align-self:flex-start;display:inline-flex;align-items:center;gap:5px;padding:4px 9px 4px 7px;border-radius:999px;font:600 12px/1 'Barlow',sans-serif;color:{{ r.tagFg }};background:{{ r.tagBg }};border:1.5px solid {{ r.tagBd }};">
+                          <sc-if value="{{ r.isG }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13"
+                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                              <path d="M7 10v11H3V10h4z"></path>
+                              <path
+                                d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7">
+                              </path>
+                            </svg></sc-if>
+                          <sc-if value="{{ r.isN }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13"
+                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                              style="transform:rotate(180deg);">
+                              <path d="M7 10v11H3V10h4z"></path>
+                              <path
+                                d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7">
+                              </path>
+                            </svg></sc-if>
+                          <sc-if value="{{ r.isL }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13"
+                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                              <path d="M6 3h12v18l-6-4-6 4z"></path>
+                              <path d="M12 7v6M9 10h6"></path>
+                            </svg></sc-if>
+                          <sc-if value="{{ r.isP }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13"
+                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+                              stroke-linecap="round" aria-hidden="true">
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                            </svg></sc-if>
+                          {{ r.tag }}
+                        </span>
+                      </div>
+                      <button onClick="{{ r.toggle }}" aria-expanded="{{ r.open }}" aria-label="{{ r.cambiarAria }}"
+                        style="flex:none;min-height:40px;padding:0 13px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);background:{{ r.cBg }};color:#ddd5fb;font:600 13px/1 'Barlow',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;"
+                        style-hover="background:rgba(196,181,240,0.12);">Cambiar<svg width="13" height="13"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                          style="transform:{{ r.chev }};transition:transform .2s;">
+                          <path d="M6 9l6 6 6-6"></path>
+                        </svg></button>
+                    </div>
+
+                    <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+                      <div
+                        style="display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);">
+                        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+                          <div role="group" aria-label="Ya la vi" style="display:flex;flex-direction:column;gap:6px;">
+                            <span
+                              style="text-align:center;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">Ya
+                              la vi</span>
+                            <div style="display:flex;gap:6px;">
+                              <button onClick="{{ r.setG }}" aria-pressed="{{ r.curG }}"
+                                aria-label="Ya la vi y me gustó"
+                                style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid transparent;background:rgba(126,224,166,0.2);color:#7ee0a6;box-shadow:{{ r.shG }};"
+                                style-hover="background:rgba(126,224,166,0.3);"><svg width="17" height="17"
+                                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                  <path d="M7 10v11H3V10h4z"></path>
+                                  <path
+                                    d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7">
+                                  </path>
+                                </svg>Me gustó</button>
+                              <button onClick="{{ r.setN }}" aria-pressed="{{ r.curN }}"
+                                aria-label="Ya la vi y no me gustó"
+                                style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid transparent;background:rgba(255,123,123,0.2);color:#ff7b7b;box-shadow:{{ r.shN }};"
+                                style-hover="background:rgba(255,123,123,0.3);"><svg width="17" height="17"
+                                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                                  style="transform:rotate(180deg);">
+                                  <path d="M7 10v11H3V10h4z"></path>
+                                  <path
+                                    d="M7 10l4-8a2.5 2.5 0 0 1 2.5 2.5V9h5.6a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.7 21H7">
+                                  </path>
+                                </svg>No me gustó</button>
+                            </div>
+                          </div>
+                          <div role="group" aria-label="No la he visto"
+                            style="display:flex;flex-direction:column;gap:6px;">
+                            <span
+                              style="text-align:center;font:600 10px/1 'Barlow Condensed',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#a8b0c4;">No
+                              la he visto</span>
+                            <div style="display:flex;gap:6px;">
+                              <button onClick="{{ r.setL }}" aria-pressed="{{ r.curL }}"
+                                aria-label="No la he visto, quiero verla"
+                                style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid rgba(126,224,166,0.75);background:transparent;color:#7ee0a6;box-shadow:{{ r.shL }};"
+                                style-hover="background:rgba(126,224,166,0.1);"><svg width="17" height="17"
+                                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                  <path d="M6 3h12v18l-6-4-6 4z"></path>
+                                  <path d="M12 7v6M9 10h6"></path>
+                                </svg>Quiero verla</button>
+                              <button onClick="{{ r.setP }}" aria-pressed="{{ r.curP }}"
+                                aria-label="No la he visto, paso"
+                                style="flex:1;min-width:0;min-height:52px;padding:6px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:1.5px solid rgba(255,123,123,0.75);background:transparent;color:#ff7b7b;box-shadow:{{ r.shP }};"
+                                style-hover="background:rgba(255,123,123,0.1);"><svg width="17" height="17"
+                                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                                  stroke-linecap="round" aria-hidden="true">
+                                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                                </svg>Paso</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);">
+                          <span style="font-size:12px;color:#8e97ad;">Respuesta actual: {{ r.tag }}</span>
+                          <button onClick="{{ r.quitar }}" aria-label="{{ r.quitarAria }}"
+                            style="min-height:40px;padding:0 12px;border-radius:999px;border:none;background:transparent;color:#ff9a9a;font:500 13px/1 'Barlow',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;"
+                            style-hover="background:rgba(255,123,123,0.1);"><svg width="15" height="15"
+                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                              <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path>
+                            </svg>Quitar de mi lista</button>
                         </div>
                       </div>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);">
-                      <span style="font-size:12px;color:#8e97ad;">Respuesta actual: {{ r.tag }}</span>
-                      <button onClick="{{ r.quitar }}" aria-label="{{ r.quitarAria }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:none;background:transparent;color:#ff9a9a;font:500 13px/1 'Barlow',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;" style-hover="background:rgba(255,123,123,0.1);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>Quitar de mi lista</button>
-                    </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+
+                <sc-if value="{{ listaCargando }}" hint-placeholder-val="{{ false }}">
+                  <div aria-busy="true" style="display:flex;flex-direction:column;">
+                    <sc-for list="{{ skRows }}" as="k" hint-placeholder-count="3">
+                      <div
+                        style="border-top:1px solid rgba(255,255,255,0.07);padding:12px 0;display:flex;align-items:center;gap:12px;">
+                        <div
+                          style="width:54px;height:80px;border-radius:8px;background:rgba(255,255,255,0.07);animation:skPulse 1.4s ease-in-out infinite;">
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+                          <div
+                            style="height:18px;width:65%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out .1s infinite;">
+                          </div>
+                          <div
+                            style="height:12px;width:45%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out .2s infinite;">
+                          </div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ emptyTab }}" hint-placeholder-val="{{ false }}">
+                  <div
+                    style="border-top:1px solid rgba(255,255,255,0.07);padding:32px 8px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+                    <p
+                      style="margin:0;font:600 22px/1.15 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">
+                      {{ emptyTitle }}</p>
+                    <p style="margin:0;font-size:14px;color:#a8b0c4;max-width:32ch;text-wrap:pretty;">Califica películas
+                      en Descubrir y aparecerán aquí.</p>
+                    <a href="Descubrir.dc.html"
+                      style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;"
+                      style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ hayMas }}" hint-placeholder-val="{{ false }}">
+                  <div
+                    style="border-top:1px solid rgba(255,255,255,0.07);padding-top:14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <button onClick="{{ cargarMas }}"
+                      style="min-height:44px;padding:0 24px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);background:transparent;color:#ddd5fb;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;"
+                      style-hover="background:rgba(196,181,240,0.12);">Cargar más</button>
+                    <span style="font-size:12px;color:#7c859c;">{{ mostrandoTxt }}</span>
                   </div>
                 </sc-if>
               </div>
-            </sc-for>
-
-            <sc-if value="{{ listaCargando }}" hint-placeholder-val="{{ false }}">
-              <div aria-busy="true" style="display:flex;flex-direction:column;">
-                <sc-for list="{{ skRows }}" as="k" hint-placeholder-count="3">
-                  <div style="border-top:1px solid rgba(255,255,255,0.07);padding:12px 0;display:flex;align-items:center;gap:12px;">
-                    <div style="width:54px;height:80px;border-radius:8px;background:rgba(255,255,255,0.07);animation:skPulse 1.4s ease-in-out infinite;"></div>
-                    <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
-                      <div style="height:18px;width:65%;border-radius:6px;background:rgba(255,255,255,0.08);animation:skPulse 1.4s ease-in-out .1s infinite;"></div>
-                      <div style="height:12px;width:45%;border-radius:6px;background:rgba(255,255,255,0.06);animation:skPulse 1.4s ease-in-out .2s infinite;"></div>
-                    </div>
-                  </div>
-                </sc-for>
-              </div>
-            </sc-if>
-
-            <sc-if value="{{ emptyTab }}" hint-placeholder-val="{{ false }}">
-              <div style="border-top:1px solid rgba(255,255,255,0.07);padding:32px 8px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
-                <p style="margin:0;font:600 22px/1.15 'Barlow Condensed',sans-serif;color:#f6f4ee;text-wrap:balance;">{{ emptyTitle }}</p>
-                <p style="margin:0;font-size:14px;color:#a8b0c4;max-width:32ch;text-wrap:pretty;">Califica películas en Descubrir y aparecerán aquí.</p>
-                <a href="Descubrir.dc.html" style="display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#c4b5f0;color:#0d1224;text-decoration:none;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;" style-hover="background:#d6cbfa;color:#0d1224;">Ir a Descubrir</a>
-              </div>
-            </sc-if>
-
-            <sc-if value="{{ hayMas }}" hint-placeholder-val="{{ false }}">
-              <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:14px;display:flex;flex-direction:column;align-items:center;gap:8px;">
-                <button onClick="{{ cargarMas }}" style="min-height:44px;padding:0 24px;border-radius:999px;border:1px solid rgba(196,181,240,0.45);background:transparent;color:#ddd5fb;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(196,181,240,0.12);">Cargar más</button>
-                <span style="font-size:12px;color:#7c859c;">{{ mostrandoTxt }}</span>
-              </div>
-            </sc-if>
+              <div aria-live="polite"
+                style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">{{ aviso }}</div>
+            </section>
           </div>
-          <div aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">{{ aviso }}</div>
-        </section>
+        </sc-if>
       </div>
-    </sc-if>
-  </div>
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;con datos&quot;,&quot;sin cuenta&quot;,&quot;pocos datos&quot;,&quot;cargando&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;precision&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;baja&quot;,&quot;sin medir&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+    </div>
+  </x-dc>
+  <script type="text/x-dc" data-dc-script
+    data-props="{&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;interactivo&quot;,&quot;con datos&quot;,&quot;sin cuenta&quot;,&quot;pocos datos&quot;,&quot;cargando&quot;,&quot;sin conexión&quot;],&quot;default&quot;:&quot;interactivo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;precision&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;baja&quot;,&quot;sin medir&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   // ================== CONEXIÓN A SUPABASE ==================
   // En el estado "interactivo" los datos salen de la base (16_perfil.sql).
@@ -927,4 +1305,5 @@ class Component extends DCLogic {
 }
 </script>
 </body>
+
 </html>

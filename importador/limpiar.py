@@ -91,6 +91,64 @@ DIMENSIONES_UNICAS = {"audiencia", "escala"}
 
 IDIOMAS_LATINOS = {"en", "es", "fr", "it", "pt", "de", "nl", "sv", "da", "no", "pl", "cs", "ro", "ca", "tr", "fi"}
 
+# Premios que cuentan como rasgo (por su nombre en inglés en Wikidata)
+PREMIO_OSCAR = r"academy award"
+PREMIO_FESTIVAL = r"palme d'or|palme d’or|golden lion|golden bear"
+MAX_SAGAS = 2
+
+# Calificación de la crítica. Cada fuente califica distinto (en Rotten Tomatoes casi todo lo famoso
+# pasa de 80%; en Metacritic un 75 ya es muy bueno), así que antes de promediar se pone cada fuente
+# en la misma escala: qué tan arriba o abajo queda la película frente a las demás del catálogo.
+CAL_MEDIA, CAL_DESV = 6.5, 1.5     # la película promedio queda en 6.5; "aclamada" (8 o más) es más o menos 1 de cada 6
+MIN_PARA_CALIBRAR = 30             # con menos películas en una fuente no se puede comparar: se usa su número tal cual
+NOMBRE_FUENTE = {"rotten": "Rotten Tomatoes (% de críticas positivas)", "rotten_promedio": "Rotten Tomatoes (promedio)",
+                 "metacritic": "Metacritic", "imdb": "IMDb"}
+
+
+def leer_calificacion(texto, quien, metodo):
+    """Convierte una calificación de Wikidata a escala 0–10.
+    Regresa (fuente, valor) o (None, None) si no es de una fuente conocida o no se entiende."""
+    texto = texto.strip().replace(",", ".")
+    del_publico = "audience" in metodo or "user" in metodo      # Rotten y Metacritic también publican la del público
+    if "rotten tomatoes" in quien and not del_publico:
+        m = re.fullmatch(r"(\d{1,3})\s*%", texto)
+        if m and int(m.group(1)) <= 100:
+            return "rotten", int(m.group(1)) / 10
+        m = re.fullmatch(r"(\d{1,2}(?:\.\d+)?)\s*/\s*10", texto)
+        if m and float(m.group(1)) <= 10:
+            return "rotten_promedio", float(m.group(1))
+    elif "metacritic" in quien and not del_publico:
+        m = re.fullmatch(r"(\d{1,3})(?:\s*/\s*100)?", texto)
+        if m and int(m.group(1)) <= 100:
+            return "metacritic", int(m.group(1)) / 10
+    elif "imdb" in quien or "internet movie database" in quien:
+        m = re.fullmatch(r"(\d{1,2}(?:\.\d+)?)(?:\s*/\s*10)?", texto)
+        if m and float(m.group(1)) <= 10:
+            return "imdb", float(m.group(1))
+    return None, None
+
+
+def calibrar_calificaciones(limpio):
+    """Llena r["calificacion"] (0–10) a partir de r["_cal"] = {fuente: valor 0–10}. Regresa las estadísticas por fuente."""
+    stats = {}
+    for fuente in NOMBRE_FUENTE:
+        vals = [r["_cal"][fuente] for r in limpio if fuente in r["_cal"]]
+        if not vals:
+            continue
+        media = sum(vals) / len(vals)
+        desv = (sum((v - media) ** 2 for v in vals) / len(vals)) ** 0.5
+        stats[fuente] = {"n": len(vals), "media": media, "desv": desv,
+                         "calibrada": len(vals) >= MIN_PARA_CALIBRAR and desv > 0.05}
+    for r in limpio:
+        cal = r.pop("_cal")
+        if not cal:
+            r["calificacion"] = None
+            continue
+        z = [(v - stats[f]["media"]) / stats[f]["desv"] for f, v in cal.items() if stats[f]["calibrada"]]
+        valor = CAL_MEDIA + CAL_DESV * sum(z) / len(z) if z else sum(cal.values()) / len(cal)
+        r["calificacion"] = round(min(max(valor, 0.0), 10.0), 1)
+    return stats
+
 
 def main():
     crudo = json.loads((DATOS / "2_crudo.json").read_text(encoding="utf-8"))
@@ -123,6 +181,7 @@ def main():
     faltantes = Counter()
     generos_sin_regla = Counter()
     paises_sin_codigo = Counter()
+    calificaciones_vistas = Counter()      # (quién califica, método, cómo se tomó) → para revisar que se lean bien
 
     for p in crudo["peliculas"]:
         ent = p["entidad"]
@@ -254,6 +313,31 @@ def main():
         for dim in DIMENSIONES_UNICAS & tags.keys():
             tags[dim] = tags[dim][:1]                      # audiencia y escala: solo un valor
 
+        # --- Saga o franquicia (candidatas; al final se eligen las que más se repiten en el catálogo)
+        sagas_cand = unicos(items(ent, "P8345") + items(ent, "P179"))
+
+        # --- Calificación de la crítica: promedio de las fuentes conocidas, en escala 0–10
+        fuentes_cal = {}
+        for c in claims(ent, "P444"):
+            if not isinstance(c["v"], str):
+                continue
+            q = c.get("q", {})
+            quien = " ".join(en(x) for x in q.get("P447", []) if isinstance(x, str))
+            metodo = " ".join(en(x) for x in q.get("P459", []) if isinstance(x, str))
+            fuente, val = leer_calificacion(c["v"], quien, metodo)
+            calificaciones_vistas[(quien or "(sin fuente)", metodo or "-", fuente or "NO SE USA")] += 1
+            if fuente and (fuente not in fuentes_cal or c.get("r", 0) >= fuentes_cal[fuente][0]):
+                fuentes_cal[fuente] = (c.get("r", 0), val)       # gana el dato marcado como vigente; si no, el último
+        if "rotten" in fuentes_cal:
+            fuentes_cal.pop("rotten_promedio", None)             # con el porcentaje basta
+
+        # --- Premios
+        ganados = [en(x) for x in items(ent, "P166")]
+        nominada = [en(x) for x in items(ent, "P1411")]
+        oscars = sum(1 for t in ganados if re.search(PREMIO_OSCAR, t))
+        oscar_nominaciones = max(oscars, sum(1 for t in nominada if re.search(PREMIO_OSCAR, t)))
+        premio_festival = any(re.search(PREMIO_FESTIVAL, t) for t in ganados)
+
         # --- IDs externos
         tmdb = next((c["v"] for c in claims(ent, "P4947")), None)
         imdb = next((c["v"] for c in claims(ent, "P345")), None)
@@ -276,18 +360,52 @@ def main():
             "tmdb_id": int(tmdb) if tmdb and str(tmdb).isdigit() else None,
             "imdb_id": imdb,
             "popularidad": p["vistas_12m"],
+            # Rasgos extra para el modelo
+            "sagas": [],                               # se llena al final
+            "calificacion": None,                      # crítica, 0–10; se calcula al final (None si Wikidata no la tiene)
+            "oscars": oscars,
+            "oscar_nominaciones": oscar_nominaciones,
+            "premio_festival": premio_festival,
             # Contexto para Claude en la etapa 3 (no se guarda en la base)
             "_pistas": {
                 "generos_wikidata": unicos(generos_wd),
                 "animada": es_animada,
                 "basado_en": fuentes,
                 "sitelinks": p["sitelinks"],
+                "temas": unicos([etiqueta(x) for x in items(ent, "P921")], 6),
+                "lugares": unicos([etiqueta(x) for x in items(ent, "P840")], 5),
+                "epoca": unicos([etiqueta(x) for x in items(ent, "P2408")], 3),
             },
+            "_sagas_cand": sagas_cand,
+            "_cal": {f: v for f, (_, v) in fuentes_cal.items()},
         }
         for campo in ("duracion_min", "idioma_original", "directores", "actores", "paises", "estudios", "generos"):
             if not registro[campo]:
                 faltantes[campo] += 1
         limpio.append(registro)
+
+    # --- Calificación de la crítica: todas las fuentes a la misma escala y luego el promedio
+    stats_cal = calibrar_calificaciones(limpio)
+
+    # --- Sagas: de las candidatas de cada película se quedan las que más se repiten en el catálogo
+    #     (así "Universo Marvel" le gana a "trilogía de Iron Man"); si empatan, la franquicia va primero.
+    veces_saga = Counter(q for r in limpio for q in r["_sagas_cand"])
+    for r in limpio:
+        orden = sorted(r.pop("_sagas_cand"), key=lambda q: -veces_saga[q])     # sorted es estable: respeta el empate
+        elegidas = []
+        for q in orden:
+            nombre = etiqueta(q)
+            if not nombre or re.match(r"^(list of|anexo:|lista de)", nombre.lower()):
+                continue
+            clave = re.sub(r"[^a-z0-9]+", " ", nombre.lower()).strip()
+            if any(clave in c or c in clave for c, _ in elegidas):              # "El padrino" y "trilogía de El padrino"
+                continue
+            elegidas.append((clave, {"nombre": nombre, "wikidata_id": q}))
+            if len(elegidas) >= MAX_SAGAS:
+                break
+        r["sagas"] = [s for _, s in elegidas]
+        if r["sagas"]:
+            r["_pistas"]["saga"] = [s["nombre"] for s in r["sagas"]]
 
     limpio.sort(key=lambda r: r["popularidad"], reverse=True)
     (DATOS / "3_limpio.json").write_text(json.dumps(limpio, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -304,6 +422,32 @@ def main():
         "Películas limpias a las que les falta algo (Claude o tú lo pueden completar):",
         *[f"  sin {campo}: {n} ({n * 100 // max(len(limpio), 1)}%)" for campo, n in faltantes.most_common()],
         "",
+        "Rasgos extra para el modelo (cuántas películas los traen desde Wikidata):",
+        *[f"  {nombre}: {n} ({n * 100 // max(len(limpio), 1)}%)" for nombre, n in [
+            ("con calificación de la crítica", sum(1 for r in limpio if r["calificacion"] is not None)),
+            ("con saga o franquicia", sum(1 for r in limpio if r["sagas"])),
+            ("  de esas, con otra película de la misma saga en el catálogo",
+             sum(1 for r in limpio if any(veces_saga[s["wikidata_id"]] >= 2 for s in r["sagas"]))),
+            ("ganadoras de algún Óscar", sum(1 for r in limpio if r["oscars"])),
+            ("nominadas al Óscar", sum(1 for r in limpio if r["oscar_nominaciones"])),
+            ("premiadas en Cannes, Venecia o Berlín", sum(1 for r in limpio if r["premio_festival"])),
+            ("con pistas de tema / lugar / época",
+             sum(1 for r in limpio if r["_pistas"]["temas"] or r["_pistas"]["lugares"] or r["_pistas"]["epoca"])),
+        ]],
+        "  (si alguno sale en 0% o muy bajo, avísale a Claude: hay que ajustar cómo se lee de Wikidata)",
+        "",
+        "Calificación de la crítica, por fuente:",
+        *([f"  {NOMBRE_FUENTE[f]}: {e['n']} películas, promedio {e['media']:.1f} de 10"
+           + ("" if e["calibrada"] else "  (muy pocas: se usa su número tal cual)") for f, e in stats_cal.items()] or ["  ninguna"]),
+        "  Cómo quedaron repartidas: " + ", ".join(f"{nombre} {n}" for nombre, n in [
+            ("aclamadas (8+)", sum(1 for r in limpio if (r["calificacion"] or 0) >= 8)),
+            ("bien recibidas (6.5–8)", sum(1 for r in limpio if 6.5 <= (r["calificacion"] or 0) < 8)),
+            ("divididas (5–6.5)", sum(1 for r in limpio if 5 <= (r["calificacion"] or 0) < 6.5)),
+            ("mal recibidas (<5)", sum(1 for r in limpio if r["calificacion"] is not None and r["calificacion"] < 5)),
+            ("sin dato", sum(1 for r in limpio if r["calificacion"] is None))]),
+        "  Calificaciones encontradas en Wikidata (quién | método | cómo se tomó | cuántas):",
+        *[f"    {quien} | {metodo} | {uso} | {n}" for (quien, metodo, uso), n in calificaciones_vistas.most_common(15)],
+        "",
         "Géneros de Wikidata SIN regla (considera agregarlos a REGLAS_GENERO):",
         *([f"  {n:>4}  {g}" for g, n in generos_sin_regla.most_common(30)] or ["  ninguno"]),
         "",
@@ -315,7 +459,10 @@ def main():
           for r in limpio[:25]],
     ]
     (DATOS / "reporte_limpieza.txt").write_text("\n".join(lineas) + "\n", encoding="utf-8")
-    print("\n".join(lineas[:12]))
+    ini = lineas.index("Rasgos extra para el modelo (cuántas películas los traen desde Wikidata):")
+    print("\n".join(lineas[:min(12, ini - 1)]))
+    fin = lineas.index("Géneros de Wikidata SIN regla (considera agregarlos a REGLAS_GENERO):")
+    print("\n".join(lineas[ini - 1:fin - 1]))
     print("\nListo: datos/3_limpio.json y datos/reporte_limpieza.txt")
 
 
